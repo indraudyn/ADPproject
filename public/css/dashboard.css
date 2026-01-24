@@ -3,6 +3,12 @@ body {
     font-family: "Segoe UI", sans-serif;
 }
 
+/* ====== WRAPPER UTAMA DASHBOARD ====== */
+#wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
 /* Sidebar */
 .sidebar {
     width: 240px;

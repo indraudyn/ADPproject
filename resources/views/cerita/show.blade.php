@@ -18,7 +18,7 @@
 <div id="wrapper">
 
     {{-- SIDEBAR --}}
-    @include('layouts.sidebar-user')
+    {{-- @include('layouts.sidebar-user') --}}
 
     {{-- CONTENT --}}
     <div class="content">

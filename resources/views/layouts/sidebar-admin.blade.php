@@ -14,14 +14,14 @@
                     <span>User</span>
                 </a>
             </li>
-            <li>
-                <a href="#">
+            <li class="{{ request()->routeIs('admin.cerita.index') ? 'active' : '' }}">
+                <a href="{{ route('admin.cerita.index') }}">
                     <i class="bi bi-book"></i>
                     <span>Cerita</span>
                 </a>
             </li>
-            <li>
-                <a href="#">
+            <li class="{{ request()->routeIs('admin.forum.index') ? 'active' : '' }}">
+                <a href="{{ route('admin.forum.index') }}">
                     <i class="bi bi-chat-dots"></i>
                     <span>Forum Diskusi</span>
                 </a>

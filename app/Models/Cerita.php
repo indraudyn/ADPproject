@@ -12,6 +12,7 @@ class Cerita extends Model
 
     protected $fillable = [
         'user_id',
+        'name',
         'sumber',
         'cerita',
         'status',

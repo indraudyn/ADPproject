@@ -9,6 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CeritaController as AdminCeritaController;
+use App\Http\Controllers\Admin\ForumAdminController;
 
 /*
 | HALAMAN AWAL
@@ -182,7 +184,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 */
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    Route::get('/admin/dashboard', [AdminDashboard::class, 'index'])
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
 });
 
@@ -239,6 +241,26 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/users/{id}/role', [UserController::class, 'updateRole'])
         ->name('admin.users.updateRole');
 
+});
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.cerita.')
+    ->group(function () {
+
+        Route::get('/cerita', [AdminCeritaController::class, 'index'])
+            ->name('index');
+
+        Route::put('/cerita/{id}/status', [AdminCeritaController::class, 'updateStatus'])
+            ->name('updateStatus');
+
+        Route::get('/cerita/{id}', [AdminCeritaController::class, 'show'])
+            ->name('show');
+    });
+
+    Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/forum', [ForumAdminController::class, 'index'])->name('admin.forum.index');
+    Route::post('/forum', [ForumAdminController::class, 'store'])->name('admin.forum.store');
 });
 
 //AUTH ROUTES

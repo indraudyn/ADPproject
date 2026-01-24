@@ -15,6 +15,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     {{-- Custom CSS --}}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/cerita-create.css') }}">
 </head>
 <body>
@@ -22,7 +23,7 @@
 <div class="d-flex">
 
     {{-- SIDEBAR --}}
-    <aside class="sidebar">
+    {{-- <aside class="sidebar">
         <h5 class="logo">ASTA<br>DASA PARWA</h5>
 
         <ul class="menu">
@@ -42,39 +43,13 @@
                 <i class="bi bi-gear"></i> Settings
             </li>
         </ul>
-    </aside>
+    </aside> --}}
 
     {{-- CONTENT --}}
     <div class="content flex-fill">
 
         {{-- TOPBAR --}}
-        <div class="topbar d-flex justify-content-between align-items-center">
-            <button class="btn btn-light">
-                <i class="bi bi-list"></i>
-            </button>
-
-            <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('dashboard') }}" class="home-link text-center">
-                    <i class="bi bi-house fs-4"></i>
-                    <small>home</small>
-                </a>
-
-                <div class="dropdown">
-                    <button class="btn profile-btn dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ route('profile') }}">Profil</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="dropdown-item text-danger">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        @include('layouts.topbar-user')
 
         {{-- PAGE TITLE --}}
         <div class="container-fluid mt-4">
