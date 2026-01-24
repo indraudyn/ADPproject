@@ -1,0 +1,117 @@
+body {
+    background: #f6f7fb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    border-right: 1px solid #eee;
+}
+
+.logo {
+    color: #8b0000;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.menu li.active,
+.menu li:hover {
+    background: #8b0000;
+    color: white;
+}
+
+/* Content */
+.content {
+    padding: 20px;
+}
+
+/* Topbar */
+.topbar {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+/* Cards */
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    position: relative;
+}
+
+.stat-card i {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 30px;
+}
+
+.approved {
+    border-left: 6px solid #28c76f;
+}
+.pending {
+    border-left: 6px solid #ff9f43;
+}
+.rejected {
+    border-left: 6px solid #ea5455;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+.home-icon i {
+    font-size: 28px;
+    color: #000;
+}
+
+.home-icon div {
+    color: #000;
+}
+
+.home-icon:hover i,
+.home-icon:hover div {
+    color: #b00000;
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    width: 100%;
+}
+
+.menu li a:hover {
+    color: inherit;
+}
+
+.sidebar a {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.sidebar a:hover {
+    text-decoration: none;
+}

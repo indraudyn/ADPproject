@@ -1,0 +1,147 @@
+body {
+    background: #f6f7fb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    border-right: 1px solid #eee;
+}
+
+.logo {
+    color: #8b0000;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu li.active,
+.menu li:hover {
+    background: #8b0000;
+    color: #fff;
+}
+
+/* Content */
+.content {
+    padding: 20px;
+}
+
+/* Topbar */
+/* ===== TOPBAR ===== */
+.topbar {
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid #eee;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.topbar-spacer {
+    flex: 1;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.home-icon i {
+    font-size: 22px;
+    color: #000;
+}
+
+.home-icon:hover i {
+    color: #8b0000;
+}
+
+/* Back */
+.back-btn {
+    font-size: 22px;
+    color: #000;
+    margin-right: 12px;
+}
+
+/* Card */
+.create-card {
+    border-radius: 16px;
+    border: 1px solid #eee;
+    padding: 20px;
+}
+
+/* Form */
+.form-control {
+    border-radius: 10px;
+}
+
+/* Button */
+.btn-upload {
+    background: #8b0000;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-upload:hover {
+    background: #a00000;
+    color: #fff;
+}
+
+/* Home icon */
+.home-link {
+    color: #000;
+    text-decoration: none;
+}
+
+.home-link:hover {
+    color: #8b0000;
+}
+
+/* ===== TABLE CARD (UPLOAD CERITA STYLE) ===== */
+.table-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    color: #9ca3af;
+    font-weight: 500;
+    border-bottom: 1px solid #eee;
+    padding: 16px;
+}
+
+.table td {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}

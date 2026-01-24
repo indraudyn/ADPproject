@@ -1,0 +1,204 @@
+/* ===============================
+   FORUM DISKUSI - FIX LAYOUT
+================================ */
+
+.forum-page #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* CONTENT */
+.forum-page .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* PAGE WRAPPER */
+.forum-page .page-wrapper {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ⬅️ CENTER */
+}
+
+/* TITLE */
+.forum-page .page-title {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* CARD UTAMA */
+.forum-card {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    min-height: 650px;
+}
+
+/* AREA CHAT */
+.answer-box {
+    flex: 1;
+    background: #f9fafb;
+    border-radius: 14px;
+    padding: 20px 20px 8px 20px;
+    overflow-y: auto;
+}
+
+/* PESAN */
+.forum-message {
+    margin-bottom: 14px;
+}
+
+.forum-message strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+.forum-message p {
+    margin: 4px 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+}
+
+.forum-message small {
+    font-size: 12px;
+}
+
+/* INPUT CHAT */
+.chat-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: auto;
+}
+
+.chat-input input {
+    flex: 1;
+    border-radius: 10px;
+    height: 44px;
+}
+
+.btn-send {
+    background: #8b0000;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 18px;
+    height: 44px;
+}
+
+.btn-send:hover {
+    background: #6f0000;
+}
+
+/* CHAT BODY */
+.chat-body {
+    height: 525px; /* ukuran TETAP */
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #f9fafb;
+    border-radius: 14px;
+}
+
+/* ROW */
+.chat-row {
+    display: flex;
+}
+
+.chat-row.me {
+    justify-content: flex-end;
+}
+
+.chat-row.other {
+    justify-content: flex-start;
+}
+
+/* BUBBLE */
+.chat-bubble {
+    max-width: 65%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* USER LOGIN (KANAN – MERAH) */
+.bubble-me {
+    background: #8b0000;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+/* USER LAIN / ADMIN (KIRI – ABU) */
+.bubble-other {
+    background: #f1f5f9;
+    color: #111827;
+    border-bottom-left-radius: 4px;
+}
+
+/* NAMA USER */
+.chat-username {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #6b7280;
+}
+
+/* JAM */
+.chat-time {
+    font-size: 11px;
+    text-align: right;
+    margin-top: 6px;
+    opacity: 0.7;
+}
+
+/* INPUT AREA */
+.chat-input {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+    background: #fff;
+    border-radius: 0 0 14px 14px;
+}
+
+.chat-text-input {
+    flex: 1;
+    border-radius: 12px;
+    height: 42px;
+}
+
+/* SEND BUTTON */
+.btn-send {
+    background: #8b0000;
+    color: #fff;
+    border-radius: 12px;
+    padding: 0 18px;
+}
+
+.btn-send:hover {
+    background: #6f0000;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .forum-page .page-wrapper {
+        padding: 16px;
+    }
+
+    .forum-card {
+        padding: 16px;
+    }
+}

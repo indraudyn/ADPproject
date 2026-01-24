@@ -1,0 +1,77 @@
+body {
+    min-height: 100vh;
+    background-color: #8b1e1e;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    border-radius: 20px;
+    padding: 40px 30px;
+}
+
+.auth-card h3 {
+    font-weight: 600;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.btn-auth {
+    background-color: #8b1e1e;
+    color: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 500;
+    border: none;
+}
+
+.btn-auth:hover {
+    background-color: #701717;
+}
+
+.link {
+    color: #8b1e1e;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 30px 20px;
+    }
+}
+
+.toggle-password {
+    position: absolute;
+    top: 42px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #888; /* default */
+    transition: color 0.2s ease;
+}
+
+.toggle-password.active {
+    color: #8b1e1e; /* merah saat aktif */
+}
+
+.toggle-password:hover {
+    color: #8b1e1e;
+}

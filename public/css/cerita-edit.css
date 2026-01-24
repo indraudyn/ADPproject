@@ -1,0 +1,108 @@
+/* ===============================
+   EDIT CERITA – FINAL STABLE
+================================ */
+
+body.cerita-edit-page {
+    background: #f8fafc;
+}
+
+/* WRAPPER */
+body.cerita-edit-page #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* CONTENT */
+body.cerita-edit-page .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TOPBAR */
+body.cerita-edit-page .topbar {
+    margin: 16px;
+    border-radius: 14px;
+}
+
+/* PAGE */
+body.cerita-edit-page .page-wrapper {
+    padding: 32px;
+    width: 100%;
+}
+
+/* HEADER */
+body.cerita-edit-page .page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+body.cerita-edit-page .page-header h3 {
+    margin: 0;
+    font-weight: 600;
+    color: #111;
+}
+
+body.cerita-edit-page .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    text-decoration: none;
+}
+
+/* CARD */
+body.cerita-edit-page .create-card {
+    max-width: 2000px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+body.cerita-edit-page .create-card .card-body {
+    padding: 32px;
+}
+
+/* QUILL */
+body.cerita-edit-page .quill-editor {
+    min-height: 320px;
+    border-radius: 12px;
+}
+
+body.cerita-edit-page .ql-toolbar {
+    border-radius: 12px 12px 0 0;
+}
+
+body.cerita-edit-page .ql-container {
+    border-radius: 0 0 12px 12px;
+    font-size: 15.5px;
+    line-height: 1.7;
+}
+
+/* BUTTON */
+body.cerita-edit-page .btn-upload {
+    background: #8b0000;
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 18px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    body.cerita-edit-page .page-wrapper {
+        padding: 16px;
+    }
+
+    body.cerita-edit-page .create-card {
+        max-width: 100%;
+    }
+}

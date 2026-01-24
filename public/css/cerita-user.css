@@ -1,0 +1,100 @@
+/* ===============================
+   RESET KHUSUS HALAMAN CERITA
+================================ */
+body.cerita-user-page {
+    background: #f6f7fb;
+}
+
+/* Wrapper */
+body.cerita-user-page #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Sidebar tetap */
+body.cerita-user-page .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+}
+
+/* Content */
+body.cerita-user-page .content {
+    margin-left: 0 !important;
+    width: calc(100% - 240px) !important;
+    max-width: none !important;
+    padding: 0 !important;
+}
+
+/* Topbar */
+body.cerita-user-page .topbar {
+    margin: 16px;
+    border-radius: 14px;
+    background: #fff;
+}
+
+/* Page wrapper */
+body.cerita-user-page .page-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 32px 32px !important;
+}
+
+/* Header */
+body.cerita-user-page .page-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* Search */
+body.cerita-user-page .search-box {
+    position: relative;
+    width: 240px;
+}
+
+body.cerita-user-page .search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+body.cerita-user-page .search-box i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+/* Card table */
+body.cerita-user-page .cerita-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Table */
+body.cerita-user-page .cerita-table th {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #9ca3af;
+    border-bottom: 1px solid #eee;
+}
+
+body.cerita-user-page .cerita-table td {
+    padding: 16px;
+    vertical-align: middle;
+}
+
+/* Detail button */
+body.cerita-user-page .detail-btn {
+    font-size: 22px;
+    color: #9b1c1c;
+}
+
+body.cerita-user-page .detail-btn:hover {
+    color: #7f1d1d;
+}
