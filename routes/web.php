@@ -8,6 +8,7 @@ use App\Http\Controllers\CeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 | HALAMAN AWAL
@@ -226,6 +227,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
     Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
     Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('forum.destroy');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+
+    // Halaman daftar user
+    Route::get('/users', [UserController::class, 'index'])
+        ->name('admin.users.index');
+
+    // (OPSIONAL) Update role user
+    Route::post('/users/{id}/role', [UserController::class, 'updateRole'])
+        ->name('admin.users.updateRole');
+
 });
 
 //AUTH ROUTES

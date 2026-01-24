@@ -1,0 +1,106 @@
+/* ===============================
+   ADMIN USER PAGE - FIX LAYOUT
+================================ */
+
+.admin-user-page #wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* CONTENT */
+.admin-user-page .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TOPBAR FIX */
+
+/* PAGE WRAPPER */
+.admin-user-page .page-wrapper {
+    padding: 32px;
+    margin-top: 0; /* ⬅️ INI KUNCI */
+}
+
+/* HEADER */
+.admin-user-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+/* SEARCH */
+.admin-user-page .search-box {
+    position: relative;
+}
+
+.admin-user-page .search-box i {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.admin-user-page .search-box input {
+    padding-left: 38px;
+    border-radius: 12px;
+    height: 42px;
+}
+
+/* CARD */
+.admin-user-page .user-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* TABLE */
+.admin-user-page table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+}
+
+.admin-user-page thead th {
+    font-size: 13px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.admin-user-page tbody tr {
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.admin-user-page tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+}
+
+/* ROLE DROPDOWN */
+.role-select {
+    border-radius: 12px;
+    height: 38px;
+}
+
+/* PAGINATION */
+.admin-user-page .pagination {
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.admin-user-page .page-item.active .page-link {
+    background: #8b0000;
+    border-color: #8b0000;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .admin-user-page .page-wrapper {
+        padding: 16px;
+    }
+}

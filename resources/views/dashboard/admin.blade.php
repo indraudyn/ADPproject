@@ -18,79 +18,13 @@
 <div class="d-flex">
 
     {{-- SIDEBAR --}}
-    <aside class="sidebar">
-        <h5 class="logo">ASTA<br>DASA PARWA</h5>
-
-        <ul class="menu">
-            <li class="active">
-                <a href="{{ route('admin.dashboard') }}">
-                    <i class="bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-people"></i>
-                    <span>User</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-book"></i>
-                    <span>Cerita</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Forum Diskusi</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-question-circle"></i>
-                    <span>Kuis</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
-                </a>
-            </li>
-        </ul>
-    </aside>
+    @include('layouts.sidebar-admin')
 
     {{-- CONTENT --}}
     <div class="content flex-fill">
 
         {{-- TOPBAR --}}
-        <div class="topbar d-flex justify-content-between align-items-center px-3">
-            <button class="btn btn-light" id="menu-toggle">
-                <i class="bi bi-list"></i>
-            </button>
-
-            <div class="d-flex align-items-center gap-4">
-                <a href="{{ url('/') }}" class="home-icon text-decoration-none text-center">
-                    <i class="bi bi-house"></i>
-                </a>
-
-                <div class="dropdown">
-                    <button class="btn profile-btn dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ route('profile') }}">Profil</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="dropdown-item text-danger">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        @include('layouts.topbar-user')
 
         {{-- DASHBOARD --}}
         <div class="container-fluid mt-4">
