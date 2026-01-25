@@ -26,8 +26,8 @@
                     <span>Forum Diskusi</span>
                 </a>
             </li>
-            <li>
-                <a href="#">
+            <li class="{{ request()->routeIs('admin.quiz.index') ? 'active' : '' }}">
+                <a href="{{ route('admin.quiz.index') }}">
                     <i class="bi bi-question-circle"></i>
                     <span>Kuis</span>
                 </a>

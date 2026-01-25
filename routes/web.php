@@ -11,6 +11,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CeritaController as AdminCeritaController;
 use App\Http\Controllers\Admin\ForumAdminController;
+use App\Http\Controllers\Admin\QuizController;
 
 /*
 | HALAMAN AWAL
@@ -261,6 +262,30 @@ Route::middleware(['auth', 'admin'])
     Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/forum', [ForumAdminController::class, 'index'])->name('admin.forum.index');
     Route::post('/forum', [ForumAdminController::class, 'store'])->name('admin.forum.store');
+});
+
+Route::middleware(['auth','admin'])
+->prefix('admin')
+->group(function(){
+
+    Route::get('/quiz', [QuizController::class,'index'])
+        ->name('admin.quiz.index');
+
+    Route::get('/quiz/create', [QuizController::class,'create'])
+        ->name('admin.quiz.create');
+
+    Route::post('/quiz/store', [QuizController::class,'store'])
+        ->name('admin.quiz.store');
+
+    Route::get('/quiz/{id}/edit', [QuizController::class,'edit'])
+        ->name('admin.quiz.edit');
+
+    Route::put('/quiz/{id}', [QuizController::class,'update'])
+        ->name('admin.quiz.update');
+
+    Route::delete('/quiz/{id}', [QuizController::class,'destroy'])
+        ->name('admin.quiz.destroy');
+
 });
 
 //AUTH ROUTES
