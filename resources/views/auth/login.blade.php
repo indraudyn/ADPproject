@@ -39,12 +39,12 @@
                     @enderror
                 </div>
 
-                <div class="mb-2 d-flex justify-content-between">
-                    <label class="form-label">Password</label>
+                {{-- <div class="mb-2 d-flex justify-content-between">
+                    <label class="form-label"></label>
                     <a href="{{ route('password.request') }}" class="link">
                         Forget Password?
                     </a>
-                </div>
+                </div> --}}
 
                 <div class="mb-3 position-relative">
                     <label class="form-label">Password</label>
@@ -53,7 +53,7 @@
                         name="password"
                         id="login_password"
                         class="form-control @error('password') is-invalid @enderror"
-                        placeholder="••••••••"
+                        placeholder="Password"
                         required
                     >
 

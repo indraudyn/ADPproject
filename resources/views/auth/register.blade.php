@@ -64,7 +64,7 @@
                         name="password"
                         id="register_password"
                         class="form-control @error('password') is-invalid @enderror"
-                        placeholder="••••••••"
+                        placeholder="Password"
                         required
                     >
 
@@ -85,7 +85,7 @@
                         name="password_confirmation"
                         id="register_password_confirmation"
                         class="form-control"
-                        placeholder="••••••••"
+                        placeholder="Password"
                         required
                     >
 
