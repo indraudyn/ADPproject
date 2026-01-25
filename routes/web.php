@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CeritaController as AdminCeritaController;
 use App\Http\Controllers\Admin\ForumAdminController;
 use App\Http\Controllers\Admin\QuizController;
+use App\Http\Controllers\QuizPlayController;
 
 /*
 | HALAMAN AWAL
@@ -287,6 +288,25 @@ Route::middleware(['auth','admin'])
         ->name('admin.quiz.destroy');
 
 });
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/quiz/start', [App\Http\Controllers\QuizPlayController::class,'start'])
+        ->name('quiz.start');
+
+    Route::post('/quiz/submit', [App\Http\Controllers\QuizPlayController::class,'submit'])
+        ->name('quiz.submit');
+
+});
+
+Route::get('/quiz/play', [QuizPlayController::class,'start'])
+    ->name('quiz.play');
+
+Route::post('/quiz/submit', [QuizPlayController::class,'submit'])
+    ->name('quiz.submit');
+
+Route::get('/quiz/result', [QuizPlayController::class,'result'])
+    ->name('quiz.result');
 
 //AUTH ROUTES
 require __DIR__.'/auth.php';

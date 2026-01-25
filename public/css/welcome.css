@@ -1,50 +1,43 @@
+/* RESET */
+html,
 body {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
     font-family: "Segoe UI", sans-serif;
 }
 
 /* HERO */
 .hero {
-    height: calc(100vh - 60px);
-    background-color: #8b1e1e;
+    min-height: 100vh;
+
+    /* 🔥 BACKGROUND IMAGE */
+    background-image: url("/images/bgkosongan.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     position: relative;
-    overflow: hidden;
 }
 
-/* Background abstract */
+/* HILANGKAN SHAPE LAMA */
 .hero::before,
 .hero::after {
-    content: "";
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 50%;
+    display: none;
 }
 
-.hero::before {
-    top: -100px;
-    right: -100px;
-}
-
-.hero::after {
-    bottom: -120px;
-    left: -120px;
-}
-
-/* TITLE */
-.title {
-    color: white;
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 800;
-    letter-spacing: 3px;
-    text-align: center;
+/* TITLE IMAGE */
+.title-img {
+    width: 520px;
+    max-width: 85%;
     margin-bottom: 40px;
-    transform: rotate(-5deg);
+    transition: all 0.3s ease;
 }
 
 /* START BUTTON */
@@ -56,10 +49,68 @@ body {
     font-size: 22px;
     font-weight: 700;
     text-decoration: none;
+    border: none;
     transition: all 0.3s ease;
 }
 
 .btn-start:hover {
     background-color: #ffffff;
     transform: scale(1.05);
+}
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 1200px) {
+    .title-img {
+        width: 460px;
+    }
+}
+
+@media (max-width: 992px) {
+    .title-img {
+        width: 400px;
+    }
+
+    .btn-start {
+        padding: 12px 60px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .title-img {
+        width: 320px;
+        margin-bottom: 32px;
+    }
+
+    .btn-start {
+        padding: 12px 50px;
+        font-size: 18px;
+        border-radius: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .title-img {
+        width: 260px;
+        margin-bottom: 26px;
+    }
+
+    .btn-start {
+        padding: 10px 44px;
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title-img {
+        width: 220px;
+    }
+
+    .btn-start {
+        padding: 10px 38px;
+        font-size: 16px;
+    }
 }

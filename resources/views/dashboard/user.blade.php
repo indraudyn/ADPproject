@@ -127,7 +127,7 @@
             <div class="card mt-5">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-                        <h5 class="mb-0">Cerita Disetujui</h5>
+                        <h5 class="mb-0">Cerita</h5>
                         <input type="text" class="form-control w-auto" placeholder="Search">
                     </div>
 
@@ -140,18 +140,20 @@
                                     <th class="text-end"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                           <tbody id="ceritaTable">
                                 @forelse ($ceritas as $cerita)
                                     <tr>
                                         <td>{{ $cerita->user->name }}</td>
                                         <td>{{ $cerita->sumber }}</td>
                                         <td class="text-end">
-                                            <a href="{{ route('cerita.show', $cerita->id) }}">View</a>
+                                            <a href="{{ route('cerita.show', $cerita->id) }}" class="detail-btn">
+                                                <i class="bi bi-arrow-right-circle"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted">
+                                        <td colspan="5" class="text-center text-muted py-4">
                                             Belum ada cerita
                                         </td>
                                     </tr>

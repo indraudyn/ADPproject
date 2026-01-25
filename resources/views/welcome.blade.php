@@ -62,16 +62,16 @@
 
 <!-- HERO SECTION -->
 <section class="hero">
-    <h1 class="title">ASTA DASA PARWA</h1>
+ <img src="{{ asset('images/textasd.png') }}" class="title-img" alt="Asta Dasa Parwa">
 
     @auth
         @if(auth()->user()->role === 'admin')
             <a href="{{ route('admin.dashboard') }}" class="btn-start">
-                DASHBOARD
+                START
             </a>
         @else
-            <a href="{{ route('dashboard') }}" class="btn-start">
-                DASHBOARD
+            <a href="{{ route('quiz.start') }}" class="btn-start">
+                START
             </a>
         @endif
     @else
