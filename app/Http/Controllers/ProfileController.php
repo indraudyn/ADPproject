@@ -28,12 +28,32 @@ class ProfileController extends Controller
         $user->name  = $request->name;
         $user->email = $request->email;
 
-        if ($request->hasFile('photo')) {
-            if ($user->photo) {
-                Storage::delete($user->photo);
-            }
+        // Handle cropped photo from base64 (Cropper.js)
+        if ($request->filled('photo_data')) {
+            $data = $request->input('photo_data');
+            if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
+                $data = substr($data, strpos($data, ',') + 1);
+                $type = strtolower($type[1]); // jpg, png, gif
 
-            $user->photo = $request->file('photo')->store('profile');
+                if (in_array($type, ['jpg', 'jpeg', 'png'])) {
+                    $data = base64_decode($data);
+
+                    if ($user->photo) {
+                        Storage::disk('public')->delete($user->photo);
+                    }
+
+                    $filename = 'profile/' . uniqid() . '.' . $type;
+                    Storage::disk('public')->put($filename, $data);
+                    $user->photo = $filename;
+                }
+            }
+        } 
+        // Fallback to standard file upload
+        elseif ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $user->photo = $request->file('photo')->store('profile', 'public');
         }
 
         $user->save();
@@ -41,5 +61,19 @@ class ProfileController extends Controller
         return redirect()
             ->route('profile')
             ->with('success', 'Profil berhasil diperbarui');
+    }
+
+    public function destroyPhoto(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->photo) {
+            Storage::disk('public')->delete($user->photo);
+            $user->photo = null;
+            $user->save();
+        }
+
+        return redirect()->route('profile');
     }
 }

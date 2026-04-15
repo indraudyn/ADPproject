@@ -1,88 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <title>Asta Dasa Parwa</title>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asta Dasa Parwa</title>
 
-    <!-- Bootstrap -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- CSS -->
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-light bg-white px-4">
-    <div class="ms-auto d-flex align-items-center gap-2">
-
-        @guest
-            <!-- BELUM LOGIN -->
-            <a href="{{ route('login') }}" class="btn btn-light">Login</a>
-            <a href="{{ route('register') }}" class="btn btn-danger">Register</a>
-        @endguest
-
-        @auth
-            <!-- SUDAH LOGIN -->
-            <div class="dropdown">
-                <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    {{ auth()->user()->name }}
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        @if(auth()->user()->role === 'admin')
-                            <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
-                                Dashboard Admin
-                            </a>
-                        @else
-                            <a class="dropdown-item" href="{{ route('dashboard') }}">
-                                Dashboard
-                            </a>
-                        @endif
-                    </li>
-
-                    <li><hr class="dropdown-divider"></li>
-
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button class="dropdown-item text-danger" type="submit">
-                                Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+    <!-- NAVBAR -->
+    <x-navbar />
+    <!-- HERO SECTION -->
+    <section class="hero d-flex align-items-center justify-content-center text-center text-white">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Title Image or Text -->
+                <!-- Use the image if it contains the stylized text, otherwise fallback to text -->
+                <img src="{{ asset('images/astadasaparwa.png') }}" alt="Asta Dasa Parwa" class="img-fluid mb-3 hero-title-img">
+                
+                <p class="hero-description mx-auto">
+                    Asta Dasa Parwa adalah sebutan untuk delapan belas kitab (bagian) yang menyusun epos besar Mahabharata. 
+                    Berasal dari bahasa Sanskerta, Asta berarti delapan, Dasa berarti sepuluh, dan Parwa berarti kitab atau bagian.
+                </p>
             </div>
-        @endauth
+        </div>
+    </section>
 
-    </div>
-</nav>
+    <!-- PARWA SECTION -->
+    <section id="parwa" class="parwa-section py-5">
+        <div class="container-fluid px-5">
+            <h2 class="text-center section-title mb-5">PARWA</h2>
+            
+            <div class="row g-4 justify-content-center">
+                @foreach($parwas as $parwa)
+                <div class="col-md-4">
+                    <div class="card parwa-card h-100 text-center p-5">
+                        <h3 class="card-title fw-bold mb-3">{{ $parwa->name }}</h3>
+                        <p class="card-text text-muted">
+                            {{ \Illuminate\Support\Str::limit($parwa->description, 100) }}
+                        </p>
+                        <div>
+                            <a href="{{ route('parwa.detail', $parwa->slug) }}" class="btn btn-danger w-100">Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
 
-<!-- HERO SECTION -->
-<section class="hero">
- <img src="{{ asset('images/textasd.png') }}" class="title-img" alt="Asta Dasa Parwa">
+            <div class="text-center mt-5">
+                <a href="{{ route('parwa.index') }}" class="btn btn-danger btn-lg px-5">Lihat Selengkapnya</a>
+            </div>
+        </div>
+    </section>
 
-    @auth
-        @if(auth()->user()->role === 'admin')
-            <a href="{{ route('admin.dashboard') }}" class="btn-start">
-                START
-            </a>
-        @else
-            <a href="{{ route('quiz.start') }}" class="btn-start">
-                START
-            </a>
-        @endif
-    @else
-        <a href="{{ route('login') }}" class="btn-start">
-            START
-        </a>
-    @endauth
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/welcome.js') }}"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
 
 </body>
 </html>

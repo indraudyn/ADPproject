@@ -18,6 +18,7 @@
 </head>
 
 <body class="cerita-edit-page">
+    <x-loading-screen />
 
 <div id="wrapper">
 

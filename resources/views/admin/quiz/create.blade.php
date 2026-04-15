@@ -13,6 +13,7 @@
 </head>
 
 <body class="admin-quiz-page">
+    <x-loading-screen />
 
 <div id="wrapper">
 

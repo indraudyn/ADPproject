@@ -13,6 +13,7 @@
 </head>
 
 <body class="admin-quiz-page">
+    <x-loading-screen />
 
 <div id="wrapper">
 
@@ -26,16 +27,18 @@
 
 {{-- ================= HEADER ================= --}}
 <div class="page-header">
-    <h3>Kuis</h3>
+    <h3>
+        <i></i> Manajemen Kuis
+    </h3>
 
     <div class="header-action">
         <div class="search-box">
             <i class="bi bi-search"></i>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search">
+            <input type="text" id="searchInput" placeholder="Search">
         </div>
 
-        <a href="{{ route('admin.quiz.create') }}" class="btn btn-danger btn-create">
-            Create New <i class="bi bi-plus-lg"></i>
+        <a href="{{ route('admin.quiz.create') }}" class="btn-create">
+            <i class="bi bi-plus-circle-fill"></i> Create New
         </a>
     </div>
 </div>
@@ -43,66 +46,72 @@
 {{-- ================= CARD ================= --}}
 <div class="quiz-card">
 
-<table class="table align-middle">
-<thead>
-<tr>
-    <th>Id</th>
-    <th>Soal</th>
-    <th>Tanggal Upload</th>
-    <th class="text-end">Aksi</th>
-</tr>
-</thead>
+    <table class="table">
+        <thead>
+            <tr>
+                <th width="10%">ID</th>
+                <th width="50%">Pertanyaan Soal</th>
+                <th width="20%">Dibuat Pada</th>
+                <th width="20%" class="text-end">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($questions as $q)
+            <tr>
+                <td><span class="badge bg-light text-secondary border">#{{ $q->id }}</span></td>
+                <td>
+                    <span class="question-text" title="{{ $q->question }}">
+                        {{ $q->question }}
+                    </span>
+                </td>
+                <td>
+                    <span class="text-muted"><i class="bi bi-calendar3 me-1"></i> {{ $q->created_at->format('d M Y') }}</span>
+                </td>
 
-<tbody>
-@forelse ($questions as $q)
-<tr>
-    <td>{{ $q->id }}</td>
-    <td>{{ $q->question }}</td>
-    <td>{{ $q->created_at->format('Y-m-d') }}</td>
+                <td>
+                    <div class="action-buttons">
+                        {{-- EDIT --}}
+                        <a href="{{ route('admin.quiz.edit', $q->id) }}" class="btn-icon edit" title="Edit Soal">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
 
-    <td class="text-end">
+                        {{-- DELETE --}}
+                        <button type="button" class="btn-icon delete btn-delete" data-id="{{ $q->id }}" title="Hapus Soal">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
 
-        {{-- EDIT --}}
-        <a href="{{ route('admin.quiz.edit',$q->id) }}" class="btn-icon">
-            <i class="bi bi-pencil"></i>
-        </a>
+                        <form id="delete-form-{{ $q->id }}" action="{{ route('admin.quiz.destroy', $q->id) }}" method="POST" style="display:none;">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4">
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>Belum ada soal kuis yang ditambahkan</p>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 
-        {{-- DELETE --}}
-        <button type="button"
-                class="btn-icon text-danger btn-delete"
-                data-id="{{ $q->id }}">
-            <i class="bi bi-trash"></i>
-        </button>
+    {{-- ================= FOOTER ================= --}}
+    <div class="table-footer">
+        <div class="text-muted">
+            Menampilkan <strong>{{ $questions->firstItem() ?? 0 }}</strong> 
+            hingga <strong>{{ $questions->lastItem() ?? 0 }}</strong> 
+            dari <strong>{{ $questions->total() }}</strong> soal
+        </div>
 
-        <form id="delete-form-{{ $q->id }}"
-              action="{{ route('admin.quiz.destroy',$q->id) }}"
-              method="POST" style="display:none;">
-            @csrf
-            @method('DELETE')
-        </form>
-
-    </td>
-</tr>
-@empty
-<tr>
-<td colspan="4" class="text-center text-muted py-4">
-    Belum ada soal kuis
-</td>
-</tr>
-@endforelse
-</tbody>
-</table>
-
-{{-- ================= FOOTER ================= --}}
-<div class="table-footer">
-    <div>
-        Showing {{ $questions->firstItem() }}
-        to {{ $questions->lastItem() }}
-        of {{ $questions->total() }} entries
+        <div>
+            {{ $questions->links('pagination::bootstrap-5') }}
+        </div>
     </div>
-
-    {{ $questions->links('pagination::bootstrap-5') }}
-</div>
 
 </div>
 
@@ -130,7 +139,10 @@ document.querySelectorAll('.btn-delete').forEach(btn => {
             confirmButtonColor: '#8b0000',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Yes',
-            cancelButtonText: 'Cancel'
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'rounded-4'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('delete-form-' + id).submit();
@@ -149,7 +161,10 @@ Swal.fire({
     title: 'Berhasil',
     text: '{{ session('success') }}',
     timer: 1500,
-    showConfirmButton: false
+    showConfirmButton: false,
+    customClass: {
+        popup: 'rounded-4'
+    }
 });
 </script>
 @endif

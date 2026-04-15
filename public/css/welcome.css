@@ -1,116 +1,98 @@
-/* RESET */
-html,
+/* Global Styles */
 body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
+    font-family: 'Figtree', sans-serif;
+    background-color: #f8f9fa;
 }
 
-/* HERO */
-.hero {
-    min-height: 100vh;
 
-    /* 🔥 BACKGROUND IMAGE */
-    background-image: url("/images/bgkosongan.png");
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    /* Reduced opacity to 0.4 for a lighter overlay */
+    background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/BGhome.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    position: relative;
+    /* Eliminate default margin if any */
+    margin-top: 0;
+}
 
+.hero-title-img {
+    max-width: 800px;
+    width: 100%;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+}
+
+.hero-description {
+    max-width: 800px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+/* Parwa Section */
+.parwa-section {
+    background-color: #f4f6f8;
+    min-height: 80vh; /* Ensure it takes up space */
+}
+
+.section-title {
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.parwa-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Soft shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    /* Make it square */
+    aspect-ratio: 1 / 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-
-    position: relative;
+    align-items: center;
+    /* Limit size so it's not too huge on wide screens */
+    max-width: 400px; 
+    margin: 0 auto; /* Center in column */
 }
 
-/* HILANGKAN SHAPE LAMA */
-.hero::before,
-.hero::after {
-    display: none;
+.parwa-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
 
-/* TITLE IMAGE */
-.title-img {
-    width: 520px;
-    max-width: 85%;
-    margin-bottom: 40px;
-    transition: all 0.3s ease;
+.parwa-card .card-title {
+    color: #333;
+    font-size: 1.5rem;
 }
 
-/* START BUTTON */
-.btn-start {
-    background-color: #f3eaea;
-    color: #8b1e1e;
-    padding: 14px 70px;
-    border-radius: 14px;
-    font-size: 22px;
-    font-weight: 700;
-    text-decoration: none;
-    border: none;
-    transition: all 0.3s ease;
+.parwa-card .card-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
 }
 
-.btn-start:hover {
-    background-color: #ffffff;
-    transform: scale(1.05);
+.parwa-card .btn-danger,
+.parwa-section .btn-danger {
+    background-color: #8b0000; /* Dark red */
+    border-color: #8b0000;
+    border-radius: 50px; /* Rounded pill buttons */
+    padding: 10px 30px;
+    font-weight: 600;
+    transition: background-color 0.3s;
 }
 
-/* ============================= */
-/* RESPONSIVE */
-/* ============================= */
-
-@media (max-width: 1200px) {
-    .title-img {
-        width: 460px;
-    }
+.parwa-card .btn-danger:hover,
+.parwa-section .btn-danger:hover {
+    background-color: #a50000;
+    border-color: #a50000;
 }
 
-@media (max-width: 992px) {
-    .title-img {
-        width: 400px;
-    }
 
-    .btn-start {
-        padding: 12px 60px;
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    .title-img {
-        width: 320px;
-        margin-bottom: 32px;
-    }
-
-    .btn-start {
-        padding: 12px 50px;
-        font-size: 18px;
-        border-radius: 12px;
-    }
-}
-
-@media (max-width: 576px) {
-    .title-img {
-        width: 260px;
-        margin-bottom: 26px;
-    }
-
-    .btn-start {
-        padding: 10px 44px;
-        font-size: 17px;
-    }
-}
-
-@media (max-width: 400px) {
-    .title-img {
-        width: 220px;
-    }
-
-    .btn-start {
-        padding: 10px 38px;
-        font-size: 16px;
-    }
-}

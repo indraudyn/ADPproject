@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/user-dashboard.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="layout">
     @include('layouts.sidebar-user')

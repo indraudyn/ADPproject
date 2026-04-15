@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/regis.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="auth-container">
     <div class="card auth-card shadow">

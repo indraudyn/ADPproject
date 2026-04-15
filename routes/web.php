@@ -18,8 +18,17 @@ use App\Http\Controllers\QuizPlayController;
 | HALAMAN AWAL
 */
 Route::get('/', function () {
-    return view('welcome');
+    $parwas = \App\Models\Parwa::take(3)->get();
+    return view('welcome', compact('parwas'));
 });
+
+Route::controller(App\Http\Controllers\ParwaController::class)->group(function () {
+    Route::get('/parwa', 'index')->name('parwa.index');
+    Route::get('/parwa/{slug}', 'show')->name('parwa.detail');
+    Route::get('/parwa/{slug}/video', 'video')->name('parwa.video');
+});
+
+Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 
 /*
 | DASHBOARD (DEFAULT)
@@ -71,6 +80,10 @@ Route::get('/profile', [ProfileController::class, 'index'])
 Route::put('/profile', [ProfileController::class, 'update'])
     ->middleware('auth')
     ->name('profile.update');
+
+Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
+    ->middleware('auth')
+    ->name('profile.photo.destroy');
 
 /*
 | DASHBOARD USER (VIEW)
@@ -217,6 +230,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
             ->name('admin.dashboard');
     });
+
+    // Dashbaord Video (User)
+    Route::get('/video/upload', [App\Http\Controllers\VideoController::class, 'upload'])
+        ->name('video.upload');
+        
+    Route::get('/video/create', [App\Http\Controllers\VideoController::class, 'create'])
+        ->name('video.create');
+        
+    Route::post('/video/store-user', [App\Http\Controllers\VideoController::class, 'storeUser'])
+        ->name('video.storeUser');
+        
+    Route::delete('/video/{video}', [App\Http\Controllers\VideoController::class, 'destroy'])
+        ->name('video.destroy');
 });
 
 Route::middleware(['auth'])->get('/cerita', function () {
@@ -229,8 +255,11 @@ Route::middleware(['auth'])->get('/cerita', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
+    Route::get('/forum/{slug}', [ForumController::class, 'show'])->name('forum.show');
     Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
+    Route::post('/forum/topic', [ForumController::class, 'storeTopic'])->name('forum.store-topic');
     Route::delete('/forum/{id}', [ForumController::class, 'destroy'])->name('forum.destroy');
+    Route::delete('/forum/topic/{id}', [ForumController::class, 'destroyTopic'])->name('forum.destroy-topic');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -258,6 +287,26 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/cerita/{id}', [AdminCeritaController::class, 'show'])
             ->name('show');
+
+        Route::get('/cerita/{id}/edit', [AdminCeritaController::class, 'edit'])
+            ->name('edit');
+
+        Route::put('/cerita/{id}', [AdminCeritaController::class, 'update'])
+            ->name('update');
+            
+        Route::delete('/cerita/{id}', [AdminCeritaController::class, 'destroy'])
+            ->name('destroy');
+    });
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.video.')
+    ->group(function () {
+        Route::get('/video', [\App\Http\Controllers\Admin\VideoController::class, 'index'])->name('index');
+        Route::get('/video/create', [\App\Http\Controllers\Admin\VideoController::class, 'create'])->name('create');
+        Route::post('/video/store', [\App\Http\Controllers\Admin\VideoController::class, 'store'])->name('store');
+        Route::put('/video/{id}/status', [\App\Http\Controllers\Admin\VideoController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/video/{id}', [\App\Http\Controllers\Admin\VideoController::class, 'destroy'])->name('destroy');
     });
 
     Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -269,7 +318,7 @@ Route::middleware(['auth','admin'])
 ->prefix('admin')
 ->group(function(){
 
-    Route::get('/quiz', [QuizController::class,'index'])
+    Route::get('/quiz/index', [QuizController::class,'index'])
         ->name('admin.quiz.index');
 
     Route::get('/quiz/create', [QuizController::class,'create'])
@@ -299,14 +348,37 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/quiz/play', [QuizPlayController::class,'start'])
-    ->name('quiz.play');
+Route::get('/quiz', [QuizPlayController::class, 'index'])->name('quiz.index');
+Route::get('/quiz/play', [QuizPlayController::class, 'start'])->name('quiz.play');
 
 Route::post('/quiz/submit', [QuizPlayController::class,'submit'])
     ->name('quiz.submit');
 
 Route::get('/quiz/result', [QuizPlayController::class,'result'])
     ->name('quiz.result');
+
+/*
+| DASHBOARD NARASUMBER & CERITA
+*/
+Route::middleware(['auth', 'narasumber'])
+    ->prefix('narasumber')
+    ->name('narasumber.')
+    ->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Narasumber\DashboardController::class, 'index'])->name('dashboard');
+        
+        Route::get('/cerita', [\App\Http\Controllers\Narasumber\CeritaController::class, 'index'])->name('cerita.index');
+        Route::get('/cerita/{id}', [\App\Http\Controllers\Narasumber\CeritaController::class, 'show'])->name('cerita.show');
+        Route::get('/cerita/{id}/edit', [\App\Http\Controllers\Narasumber\CeritaController::class, 'edit'])->name('cerita.edit');
+        Route::put('/cerita/{id}', [\App\Http\Controllers\Narasumber\CeritaController::class, 'update'])->name('cerita.update');
+        Route::put('/cerita/{id}/status', [\App\Http\Controllers\Narasumber\CeritaController::class, 'updateStatus'])->name('cerita.updateStatus');
+        Route::delete('/cerita/{id}', [\App\Http\Controllers\Narasumber\CeritaController::class, 'destroy'])->name('cerita.destroy');
+
+        Route::get('/video', [\App\Http\Controllers\Narasumber\VideoController::class, 'index'])->name('video.index');
+        Route::get('/video/create', [\App\Http\Controllers\Narasumber\VideoController::class, 'create'])->name('video.create');
+        Route::post('/video/store', [\App\Http\Controllers\Narasumber\VideoController::class, 'store'])->name('video.store');
+        Route::put('/video/{id}/status', [\App\Http\Controllers\Narasumber\VideoController::class, 'updateStatus'])->name('video.updateStatus');
+        Route::delete('/video/{id}', [\App\Http\Controllers\Narasumber\VideoController::class, 'destroy'])->name('video.destroy');
+    });
 
 //AUTH ROUTES
 require __DIR__.'/auth.php';

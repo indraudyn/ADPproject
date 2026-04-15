@@ -1,204 +1,407 @@
-/* ===============================
-   FORUM DISKUSI - FIX LAYOUT
-================================ */
+/* ==========================================================================
+   FORUM DISKUSI - SCREENSHOT ACCURATE LANDING DESIGN
+   ========================================================================== */
 
-.forum-page #wrapper {
-    display: flex;
-    width: 100%;
+:root {
+    --forum-red: #8b0000;
+    --forum-gold: #ffd700;
+}
+
+body.forum-landing-page {
+    font-family: 'Figtree', sans-serif;
+    background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('../images/diskusi.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
+    margin: 0;
 }
 
-/* CONTENT */
-.forum-page .content {
-    flex: 1;
+
+
+/* HERO SECTION */
+.forum-hero {
+    height: 60vh;
     display: flex;
-    flex-direction: column;
-}
-
-/* PAGE WRAPPER */
-.forum-page .page-wrapper {
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* ⬅️ CENTER */
-}
-
-/* TITLE */
-.forum-page .page-title {
-    width: 100%;
-    max-width: 900px;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-/* CARD UTAMA */
-.forum-card {
-    width: 100%;
-    max-width: 900px;
-    background: #fff;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    min-height: 650px;
-}
-
-/* AREA CHAT */
-.answer-box {
-    flex: 1;
-    background: #f9fafb;
-    border-radius: 14px;
-    padding: 20px 20px 8px 20px;
-    overflow-y: auto;
-}
-
-/* PESAN */
-.forum-message {
-    margin-bottom: 14px;
-}
-
-.forum-message strong {
-    font-size: 14px;
-    color: #111827;
-}
-
-.forum-message p {
-    margin: 4px 0;
-    font-size: 14.5px;
-    line-height: 1.6;
-}
-
-.forum-message small {
-    font-size: 12px;
-}
-
-/* INPUT CHAT */
-.chat-input {
-    display: flex;
-    gap: 10px;
+    justify-content: center;
     align-items: center;
-    margin-top: auto;
+    text-align: center;
+    padding-top: 80px;
 }
 
-.chat-input input {
+.forum-hero-title {
+    font-size: 8.5rem;
+    font-weight: 700;
+    font-family: 'Oleo Script', cursive;
+    color: var(--forum-red);
+    text-shadow: 
+        -3px -3px 0 #fff,  
+         3px -3px 0 #fff,
+        -3px  3px 0 #fff,
+         3px  3px 0 #fff;
+    position: relative;
+    z-index: 1;
+    max-width: 90%;
+    margin: 0 auto;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+}
+
+/* MAIN CONTENT CONTAINER */
+.forum-main-content {
+    background: white;
+    min-height: 40vh;
+    padding: 4rem 0;
+    border-top-left-radius: 40px; /* Optional slight curve? Screenshot shows flat top but I'll add a clean transition */
+}
+
+.forum-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* LANDING TOPIC CARDS - SCREENSHOT STYLE */
+.landing-topic-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.landing-topic-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.landing-topic-content {
     flex: 1;
-    border-radius: 10px;
-    height: 44px;
 }
 
-.btn-send {
+.landing-topic-content h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 0.5rem;
+}
+
+.landing-topic-content p {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0;
+    max-width: 80%;
+}
+
+/* DELETE TOPIC BUTTON (ADMIN ONLY) */
+.landing-topic-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.landing-topic-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #444;
+    transition: all 0.3s;
+}
+.landing-topic-icon:hover {
+    color: var(--forum-red);
+    transform: translateX(4px);
+}
+
+.form-delete-topic-inline {
+    margin: 0;
+}
+
+.btn-delete-topic-inline {
+    background: #fef2f2;
+    color: #ef4444;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-delete-topic-inline:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* CREATE TOPIC BUTTON (FLOATING OR BOTTOM) */
+.btn-create-topic-landing {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--forum-red);
+    color: white;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 10px 25px rgba(139, 0, 0, 0.4);
+    z-index: 1000;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-create-topic-landing:hover {
+    transform: scale(1.1);
+    background: #a50000;
+    color: white;
+}
+
+/* ==========================================================================
+   TOPIC SHOW PAGE - SCREENSHOT ACCURATE
+   ========================================================================== */
+
+body.forum-show-page {
+    background: #f0f2f5;
+    font-family: 'Figtree', sans-serif;
+    margin: 0;
+}
+
+.show-hero {
     background: #8b0000;
-    color: #fff;
-    border-radius: 10px;
-    padding: 0 18px;
-    height: 44px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    position: relative;
+    color: white;
 }
 
-.btn-send:hover {
-    background: #6f0000;
+.back-link-show {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 2rem;
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: opacity 0.3s;
 }
 
-/* CHAT BODY */
-.chat-body {
-    height: 525px; /* ukuran TETAP */
-    overflow-y: auto;
-    padding: 24px;
+.back-link-show:hover {
+    opacity: 0.7;
+    color: white;
+}
+
+.show-hero-title {
+    font-family: 'Oleo Script', cursive;
+    font-size: 2.5rem;
+    color: #8b0000;
+    text-shadow: 
+        -2px -2px 0 #fff,  
+         2px -2px 0 #fff,
+        -2px  2px 0 #fff,
+         2px  2px 0 #fff;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.show-hero-subtitle {
+    font-family: Poppins, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    opacity: 0.95;
+}
+
+/* CHAT CARD */
+.chat-container-show {
+    max-width: 1000px;
+    margin: 2rem auto 3rem; /* Changed from -3rem to positive margin */
+    position: relative;
+    z-index: 10;
+}
+
+.chat-card-v2 {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08); /* Softer shadow */
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    background: #f9fafb;
-    border-radius: 14px;
+    height: 600px; /* Fixed height */
+    border: 1px solid #eef0f2;
+    overflow: hidden;
 }
 
-/* ROW */
-.chat-row {
+/* BUBBLE USERNAME */
+.bubble-name-v2 {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    opacity: 0.8;
+}
+
+.bubble-other-v2 .bubble-name-v2 {
+    color: #8b0000;
+}
+
+/* BUBBLE FOOTER (TIME + ACTIONS) */
+.bubble-footer-v2 {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    opacity: 0.6;
 }
 
-.chat-row.me {
-    justify-content: flex-end;
+.bubble-time-v2 {
+    font-weight: 500;
 }
 
-.chat-row.other {
-    justify-content: flex-start;
+.bubble-me-v2 .bubble-time-v2 {
+    color: rgba(255, 255, 255, 0.8);
 }
 
-/* BUBBLE */
-.chat-bubble {
-    max-width: 65%;
-    padding: 12px 16px;
-    border-radius: 16px;
-    font-size: 14.5px;
-    line-height: 1.6;
-    position: relative;
+.bubble-delete-v2 {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s;
 }
 
-/* USER LOGIN (KANAN – MERAH) */
-.bubble-me {
-    background: #8b0000;
-    color: #fff;
-    border-bottom-right-radius: 4px;
+.bubble-delete-v2:hover {
+    opacity: 1;
+    color: #ff4d4d;
 }
 
-/* USER LAIN / ADMIN (KIRI – ABU) */
-.bubble-other {
-    background: #f1f5f9;
-    color: #111827;
-    border-bottom-left-radius: 4px;
-}
-
-/* NAMA USER */
-.chat-username {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: #6b7280;
-}
-
-/* JAM */
-.chat-time {
-    font-size: 11px;
-    text-align: right;
-    margin-top: 6px;
-    opacity: 0.7;
-}
-
-/* INPUT AREA */
-.chat-input {
-    display: flex;
-    gap: 12px;
-    padding: 16px;
-    border-top: 1px solid #e5e7eb;
-    background: #fff;
-    border-radius: 0 0 14px 14px;
-}
-
-.chat-text-input {
+.chat-body-v2 {
     flex: 1;
-    border-radius: 12px;
-    height: 42px;
+    padding: 3rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    scroll-behavior: smooth;
 }
 
-/* SEND BUTTON */
-.btn-send {
+/* Custom Scrollbar */
+.chat-body-v2::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-body-v2::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-body-v2::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.chat-body-v2::-webkit-scrollbar-thumb:hover {
     background: #8b0000;
-    color: #fff;
-    border-radius: 12px;
-    padding: 0 18px;
 }
 
-.btn-send:hover {
-    background: #6f0000;
+/* BUBBLES V2 */
+.bubble-v2 {
+    max-width: 65%;
+    padding: 1.25rem 2rem;
+    border-radius: 15px;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-/* RESPONSIVE */
+.bubble-other-v2 {
+    align-self: flex-start;
+    background: #f1f1f1;
+    color: #444;
+}
+
+.bubble-me-v2 {
+    align-self: flex-end;
+    background: #8b0000;
+    color: white;
+    box-shadow: 0 4px 10px rgba(139, 0, 0, 0.2);
+}
+
+/* CHAT FOOTER V2 */
+.chat-footer-v2 {
+    padding: 1.5rem 3rem;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.chat-input-v2 {
+    flex: 1;
+    background: #f8f9fa;
+    border: 1px solid #eef0f2;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.chat-input-v2::placeholder {
+    color: #adb5bd;
+}
+
+.chat-footer-icons {
+    display: flex;
+    gap: 1rem;
+    color: #999;
+    font-size: 1.25rem;
+}
+
+.chat-footer-icons i {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.chat-footer-icons i:hover {
+    color: #666;
+}
+
+.btn-send-v2 {
+    background: #8b0000;
+    color: white;
+    border: none;
+    padding: 0.6rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-send-v2:hover {
+    background: #a50000;
+    color: white;
+}
+
 @media (max-width: 768px) {
-    .forum-page .page-wrapper {
-        padding: 16px;
-    }
-
-    .forum-card {
-        padding: 16px;
-    }
+    .show-hero-title { font-size: 3rem; }
+    .show-hero-subtitle { font-size: 1.75rem; }
+    .bubble-v2 { max-width: 85%; }
+    .chat-body-v2 { padding: 1.5rem; }
+    .chat-footer-v2 { padding: 1rem 1.5rem; }
 }

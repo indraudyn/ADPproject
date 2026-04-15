@@ -1,3 +1,12 @@
+/* ===============================
+   PREMIUM QUIZ ADMIN DASHBOARD
+================================ */
+
+.admin-quiz-page {
+    background: #f8f9fc;
+    font-family: 'Inter', sans-serif;
+}
+
 .admin-quiz-page #wrapper {
     display: flex;
     min-height: 100vh;
@@ -13,96 +22,297 @@
     padding: 32px;
 }
 
-/* HEADER */
+/* HEADER SECTION */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    /* background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%); */
+    padding: 24px 32px;
+    /* border-radius: 20px; */
+    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); */
+    /* border: 1px solid rgba(255, 255, 255, 0.8); */
+}
+
+.page-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 24px;
+    color: #1e293b;
+    background: linear-gradient(45deg, #000000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .header-action {
     display: flex;
-    gap: 14px;
+    gap: 16px;
     align-items: center;
 }
 
-/* SEARCH */
+/* SEARCH BOX (MODERN) */
 .search-box {
     position: relative;
-    width: 260px;
+    width: 280px;
 }
 
 .search-box i {
     position: absolute;
     top: 50%;
-    left: 14px;
+    left: 16px;
     transform: translateY(-50%);
-    color: #9ca3af;
+    color: #94a3b8;
+    transition: color 0.3s ease;
 }
 
 .search-box input {
-    padding-left: 38px;
-    height: 42px;
-    border-radius: 12px;
+    width: 100%;
+    padding: 10px 16px 10px 44px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: #f1f5f9;
+    font-size: 14px;
+    color: #334155;
+    transition: all 0.3s ease;
+    height: 46px;
 }
 
-/* BUTTON */
+.search-box input:focus {
+    background: #ffffff;
+    border-color: #8b0000;
+    box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1);
+    outline: none;
+}
+
+.search-box input:focus + i {
+    color: #8b0000;
+}
+
+/* CREATE BUTTON */
 .btn-create {
-    height: 42px;
-    border-radius: 12px;
+    height: 46px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-/* CARD */
-.quiz-card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-}
-
-/* TABLE */
-.quiz-card table {
-    width: 100%;
-}
-
-.quiz-card thead th {
-    font-size: 13px;
-    color: #9ca3af;
+    gap: 10px;
+    padding: 0 24px;
+    background: linear-gradient(45deg, #8b0000);
+    color: white;
     font-weight: 600;
-}
-
-.quiz-card tbody td {
-    font-size: 14px;
-}
-
-/* ICON BUTTON */
-.btn-icon {
-    background: #f3f4f6;
     border: none;
-    padding: 6px 10px;
-    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-.btn-icon:hover {
-    background: #e5e7eb;
+.btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 0, 0, 0.3);
+    color: white;
 }
 
-/* FOOTER */
+/* MAIN CARD */
+.quiz-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+/* TABLE STYLING */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 700;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 16px;
+    padding-top: 0;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.table tbody td {
+    padding: 20px 12px;
+    font-size: 15px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 500;
+    color: #1e293b;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+/* ACTION BUTTONS */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.btn-icon.edit:hover {
+    background: #eff6ff;
+    color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.btn-icon.delete:hover {
+    background: #fef2f2;
+    color: #ef4444;
+    transform: translateY(-2px);
+}
+
+/* EMPTY STATE */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.empty-state p {
+    color: #64748b;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* FOOTER / PAGINATION */
 .table-footer {
-    margin-top: 18px;
+    margin-top: 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13px;
-    color: #9ca3af;
+    font-size: 14px;
+    color: #64748b;
+    padding-top: 24px;
+    border-top: 1px solid #f1f5f9;
 }
 
-/* PAGINATION ACTIVE */
+.pagination {
+    margin: 0;
+    gap: 4px;
+}
+
+.page-item .page-link {
+    border-radius: 8px;
+    border: none;
+    color: #475569;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.page-item .page-link:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
 .page-item.active .page-link {
-    background: #8b0000;
-    border-color: #8b0000;
+    background: linear-gradient(45deg, #8b0000, #b91c1c);
+    color: white;
+    box-shadow: 0 4px 10px rgba(139, 0, 0, 0.2);
+}
+
+/* Custom Alert */
+.swal2-popup.rounded-4 {
+    border-radius: 20px !important;
+    padding: 24px !important;
+}
+
+/* Sembunyikan keterangan teks pagination bawaan Laravel (Showing to of results) */
+.table-footer nav .d-none.d-sm-flex > div:first-child {
+    display: none !important;
+}
+.table-footer nav .d-none.d-sm-flex {
+    justify-content: flex-end !important;
+}
+
+/* RESPONSIVE LAYOUT */
+@media (max-width: 768px) {
+    .page-wrapper {
+        padding: 16px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 16px;
+        gap: 16px;
+    }
+
+    .header-action {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .btn-create {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .quiz-card {
+        padding: 16px;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        text-align: center;
+    }
 }

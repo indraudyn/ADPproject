@@ -138,35 +138,49 @@ a {
 /* =====================
    PHOTO UPLOAD
 ===================== */
+/* =====================
+   PHOTO UPLOAD ENHANCED
+===================== */
 .photo-wrapper {
-    text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
 }
 
-.photo-placeholder,
-#preview {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #f1f1f1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.photo-preview-container {
+    transition: all 0.3s ease;
+    border: 4px solid #fff !important;
+}
+
+.photo-preview-container:hover .photo-overlay {
+    opacity: 1 !important;
+}
+
+.photo-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    transition: opacity 0.3s ease;
+}
+
+.edit-icon-btn:hover {
+    transform: scale(1.1);
+    background: #a00000 !important;
+}
+
+.photo-placeholder {
+    background: #f8f9fa;
+    color: #adb5bd;
+}
+
+.cursor-pointer {
     cursor: pointer;
-    margin: auto;
-    object-fit: cover;
 }
 
-.photo-placeholder i {
-    font-size: 32px;
-    color: #555;
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
 }
 
-.upload-text {
-    color: #0d6efd;
-    font-size: 14px;
-    margin-top: 8px;
-    cursor: pointer;
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
 }
 
 /* =====================

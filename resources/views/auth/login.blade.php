@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="login-container">
     <div class="card login-card shadow">

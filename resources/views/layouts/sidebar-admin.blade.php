@@ -20,10 +20,10 @@
                     <span>Cerita</span>
                 </a>
             </li>
-            <li class="{{ request()->routeIs('admin.forum.index') ? 'active' : '' }}">
-                <a href="{{ route('admin.forum.index') }}">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Forum Diskusi</span>
+            <li class="{{ request()->routeIs('admin.video.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.video.index') }}">
+                    <i class="bi bi-camera-video"></i>
+                    <span>Video</span>
                 </a>
             </li>
             <li class="{{ request()->routeIs('admin.quiz.index') ? 'active' : '' }}">

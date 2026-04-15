@@ -15,6 +15,7 @@
 </head>
 
 <body class="admin-cerita-page">
+    <x-loading-screen />
 
 <div id="wrapper">
 
@@ -32,7 +33,7 @@
 
             {{-- HEADER --}}
             <div class="page-header">
-                <h3>Upload Cerita</h3>
+                <h3>Management Cerita</h3>
 
                 <div class="header-action">
                     <div class="search-box">
@@ -73,13 +74,29 @@
                             <td>{{ $cerita->sumber }}</td>
                             <td>{{ $cerita->created_at->format('Y-m-d') }}</td>
                             <td>
-                                <select class="form-select status-select">
-                                    <option {{ $cerita->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                    <option {{ $cerita->status === 'unapproved' ? 'selected' : '' }}>Unapproved</option>
-                                </select>
+                                <form action="{{ route('admin.cerita.updateStatus', $cerita->id) }}" method="POST" class="status-form">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status" class="form-select status-select" onchange="this.form.submit()">
+                                        <option value="approved" {{ $cerita->status === 'approved' ? 'selected' : '' }}>Approved</option>
+                                        <option value="unapproved" {{ $cerita->status === 'unapproved' ? 'selected' : '' }}>Unapproved</option>
+                                    </select>
+                                </form>
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('cerita.show', $cerita->id) }}" class="view-link">View</a>
+                                <a href="{{ route('admin.cerita.edit', $cerita->id) }}" class="btn btn-sm btn-outline-primary me-2" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{{ route('cerita.show', $cerita->id) }}" class="btn btn-sm btn-outline-secondary me-2" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <form id="delete-form-{{ $cerita->id }}" action="{{ route('admin.cerita.destroy', $cerita->id) }}" method="POST" style="display:none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-delete" data-id="{{ $cerita->id }}" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </td>
                         </tr>
                         @endforeach
@@ -105,5 +122,48 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{{-- SWEETALERT DELETE --}}
+<script>
+document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', function () {
+        let id = this.dataset.id;
+        Swal.fire({
+            title: 'Hapus Cerita?',
+            text: 'Cerita yang dihapus tidak bisa dikembalikan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b0000',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    });
+});
+</script>
+
+{{-- ALERT SUKSES --}}
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    timer: 1500,
+    showConfirmButton: false,
+    customClass: {
+        popup: 'rounded-4'
+    }
+});
+</script>
+@endif
 </body>
 </html>

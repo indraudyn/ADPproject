@@ -9,8 +9,13 @@
                 </a>
 
                 <div class="dropdown">
-                    <button class="btn profile-btn dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
+                    <button class="btn profile-btn dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                        @if(auth()->user()->photo)
+                            <img src="{{ asset('storage/'.auth()->user()->photo) }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                        @else
+                            <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                        @endif
+                        <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{{ route('profile') }}">Profil</a></li>
@@ -24,3 +29,19 @@
                 </div>
             </div>
         </div>
+
+        {{-- Sembunyikan dan Munculkan Sidebar Function Global --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const toggleBtn = document.getElementById('menu-toggle');
+                const sidebar = document.querySelector('.sidebar');
+                
+                // Pastikan tidak melakukan set listener dua kali
+                if (toggleBtn && sidebar && typeof window.sidebarToggleBound === 'undefined') {
+                    window.sidebarToggleBound = true;
+                    toggleBtn.addEventListener('click', function() {
+                        sidebar.classList.toggle('collapsed');
+                    });
+                }
+            });
+        </script>

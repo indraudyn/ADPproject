@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <x-loading-screen />
 
 <section class="result-hero">
 

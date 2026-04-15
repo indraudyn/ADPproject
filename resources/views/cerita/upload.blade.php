@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/upload-cerita.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="d-flex">
 

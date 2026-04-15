@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class QuizPlayController extends Controller
 {
+    public function index()
+    {
+        return view('quiz.landing');
+    }
+
     public function start()
     {
         $questions = Quiz::select(

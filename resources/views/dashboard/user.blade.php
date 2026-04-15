@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="d-flex" id="wrapper">
 
@@ -31,23 +32,16 @@
             </li>
 
             <li class="{{ request()->routeIs('cerita.upload') ? 'active' : '' }}">
-                <a href="{{ route('cerita.upload') }}">
+                        <a href="{{ route('cerita.upload') }}">
                     <i class="bi bi-upload"></i>
                     <span>Upload Cerita</span>
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('cerita.index') ? 'active' : '' }}">
-                <a href="{{ route('cerita.index') }}">
-                    <i class="bi bi-book"></i>
-                    <span>Cerita</span>
-                </a>
-            </li>
-
-            <li class="{{ request()->routeIs('forum.index') ? 'active' : '' }}">
-                <a href="{{ route('forum.index') }}">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Forum Diskusi</span>
+            <li class="{{ request()->routeIs('video.upload') ? 'active' : '' }}">
+                <a href="{{ route('video.upload') }}">
+                    <i class="bi bi-camera-video"></i>
+                    <span>Upload Video</span>
                 </a>
             </li>
 
@@ -75,8 +69,13 @@
                 </a>
 
                 <div class="dropdown">
-                    <button class="btn profile-btn dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
+                    <button class="btn profile-btn dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                        @if(auth()->user()->photo)
+                            <img src="{{ asset('storage/'.auth()->user()->photo) }}" alt="Profile" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                        @else
+                            <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                        @endif
+                        <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{{ route('profile') }}">Profil</a></li>
@@ -165,12 +164,56 @@
                 </div>
             </div>
 
+            {{-- TABLE VIDEO SAYA --}}
+            <div class="card mt-5">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+                        <h5 class="mb-0">Video</h5>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Judul</th>
+                                    <th>Tipe</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                           <tbody id="videoTable">
+                                @forelse ($videos as $video)
+                                    <tr>
+                                        <td>{{ $video->title }}</td>
+                                        <td>{{ $video->type === 'youtube' ? 'YouTube' : 'Upload File' }}</td>
+                                        <td>
+                                            @if($video->status == 'approved')
+                                                <span class="badge bg-success">Approved</span>
+                                            @elseif($video->status == 'rejected')
+                                                <span class="badge bg-danger">Rejected</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            Belum ada video
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 {{-- JS --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/dashboard.js') }}"></cript>
+<script src="{{ asset('js/dashboard.js') }}"></script>
 </body>
 </html>

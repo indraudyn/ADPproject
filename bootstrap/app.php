@@ -12,10 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\PreventBackHistory::class,
+        ]);
 
         // Daftarkan alias middleware admin
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'narasumber' => \App\Http\Middleware\NarasumberMiddleware::class,
         ]);
 
     })
@@ -23,5 +27,4 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->create();
-
     

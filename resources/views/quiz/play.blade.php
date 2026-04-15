@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <x-loading-screen />
 
 <!-- TITLE -->
 <div class="logo-title">

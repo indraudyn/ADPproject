@@ -15,6 +15,7 @@
 </head>
 
 <body class="forum-page">
+    <x-loading-screen />
 
 <div id="wrapper">
 

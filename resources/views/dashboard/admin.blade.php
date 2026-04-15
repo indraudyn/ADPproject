@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard-admin.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="d-flex">
 
@@ -72,41 +73,54 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5>User</h5>
-                        <input type="text" class="form-control search-box" placeholder="Search">
+                        <form action="{{ route('admin.dashboard') }}" method="GET" class="d-flex gap-2">
+                            <input type="text" name="search" class="form-control search-box" 
+                                   placeholder="Search user or email..." value="{{ request('search') }}"
+                                   style="max-width: 200px;">
+                        </form>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle custom-admin-table">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>ID</th>
+                                    <th>User</th>
                                     <th>Email</th>
-                                    <th class="text-end">Role</th>
+                                    <th>Role</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ $user->name }}</td>
+                                    <td>#{{ $user->id }}</td>
+                                    <td>
+                                        <div class="fw-bold">{{ $user->name }}</div>
+                                    </td>
                                     <td>{{ $user->email }}</td>
-                                    <td class="text-end">
-                                        <form method="POST" action="{{ route('admin.user.role', $user->id) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <select name="role"
-                                                    class="form-select role-select"
-                                                    onchange="this.form.submit()">
-                                                <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>
-                                                    Admin
-                                                </option>
-                                                <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>
-                                                    User
-                                                </option>
-                                                <option value="narasumber" {{ $user->role === 'narasumber' ? 'selected' : '' }}>
-                                                    Narasumber
-                                                </option>
-                                            </select>
-                                        </form>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @php
+                                                $roleClasses = [
+                                                    'admin' => 'role-select-admin',
+                                                    'user' => 'role-select-user',
+                                                    'narasumber' => 'role-select-narasumber'
+                                                ];
+                                                $currentClass = $roleClasses[$user->role] ?? '';
+                                            @endphp
+
+                                            <form method="POST" action="{{ route('admin.user.role', $user->id) }}" style="min-width: 160px;">
+                                                @csrf
+                                                @method('PUT')
+                                                <select name="role"
+                                                        class="form-select form-select-sm role-select-premium {{ $currentClass }}"
+                                                        onchange="this.form.submit()">
+                                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                                                    <option value="narasumber" {{ $user->role === 'narasumber' ? 'selected' : '' }}>Narasumber</option>
+                                                </select>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

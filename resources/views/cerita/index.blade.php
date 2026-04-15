@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/cerita-user.css') }}">
 </head>
 <body class="cerita-user-page">
+    <x-loading-screen />
     
 <div id="wrapper">
 

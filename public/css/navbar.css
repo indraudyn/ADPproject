@@ -1,0 +1,67 @@
+/* Shared Navbar Styles */
+.navbar {
+    background: transparent;
+    transition: background 0.3s ease, padding 0.3s ease;
+    padding: 0; /* Moved padding to internal elements so border touches bottom */
+}
+
+.navbar.scrolled {
+    background: #8B0000; /* Dark red background when scrolled */
+    padding: 0; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1.05rem; 
+    letter-spacing: 1px;
+    padding: 1.5rem 1.5rem !important; /* Thick vertical padding replaces navbar padding */
+    border-bottom: 4px solid transparent; 
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled .navbar-nav .nav-link {
+    padding: 1.1rem 1.5rem !important; /* Shrink vertically when scrolled */
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #ffd700 !important; /* Gold highlight */
+}
+
+/* Gold underline only appears when scrolled */
+.navbar.scrolled .navbar-nav .nav-link:hover,
+.navbar.scrolled .navbar-nav .nav-link.active {
+    border-bottom-color: #ffd700 !important;
+}
+
+/* Adjust auth buttons and toggler margin to maintain centering without expanding navbar height too much */
+.navbar:not(.scrolled) .auth-buttons,
+.navbar:not(.scrolled) .navbar-toggler {
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.navbar.scrolled .auth-buttons,
+.navbar.scrolled .navbar-toggler {
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+/* Auth Buttons in Navbar */
+.auth-buttons .btn {
+    border-radius: 5px;
+}
+
+.auth-buttons .btn-danger {
+    background-color: #8b0000;
+    border-color: #8b0000;
+    color: white;
+}
+.auth-buttons .btn-danger:hover {
+    background-color: #a50000;
+    border-color: #a50000;
+    color: white;
+}

@@ -12,7 +12,9 @@ class Cerita extends Model
 
     protected $fillable = [
         'user_id',
-        'name',
+        'judul',
+        'parwa_id',
+        'sub_parwa',
         'sumber',
         'cerita',
         'status',
@@ -21,5 +23,10 @@ class Cerita extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function parwa(): BelongsTo
+    {
+        return $this->belongsTo(Parwa::class);
     }
 }

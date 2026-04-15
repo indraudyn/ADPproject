@@ -8,7 +8,7 @@ use App\Models\Cerita;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         // 1. TOTAL USER
         $totalUser = User::count();
@@ -18,8 +18,12 @@ class DashboardController extends Controller
         $pendingCount    = Cerita::where('status', 'pending')->count();
         $unapprovedCount = Cerita::where('status', 'unapproved')->count();
 
-        // 3. DATA USER UNTUK TABEL
-        $users = User::latest()->get();
+        // 3. DATA USER UNTUK TABEL (DENGAN FILTRASI SEARCH)
+        $search = $request->query('search');
+        $users = User::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+        })->latest()->get();
 
         return view('dashboard.admin', compact(
             'totalUser',

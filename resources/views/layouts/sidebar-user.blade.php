@@ -16,17 +16,10 @@
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('cerita.index') ? 'active' : '' }}">
-                <a href="{{ route('cerita.index') }}">
-                    <i class="bi bi-book"></i>
-                    <span>Cerita</span>
-                </a>
-            </li>
-
-            <li class="{{ request()->routeIs('forum.index') ? 'active' : '' }}">
-                <a href="{{ route('forum.index') }}">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Forum Diskusi</span>
+            <li class="{{ request()->routeIs('video.*') ? 'active' : '' }}">
+                <a href="{{ route('video.upload') }}">
+                    <i class="bi bi-camera-video"></i>
+                    <span>Upload Video</span>
                 </a>
             </li>
 

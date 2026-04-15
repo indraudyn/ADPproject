@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/cerita-create.css') }}">
 </head>
 <body>
+    <x-loading-screen />
 
 <div class="d-flex">
 
@@ -66,6 +67,27 @@
 
                     <form action="{{ route('cerita.store') }}" method="POST" id="ceritaForm">
                         @csrf
+
+                        <div class="mb-3">
+                            <label class="form-label">Judul Cerita</label>
+                            <input type="text" name="judul" class="form-control" placeholder="Masukkan judul cerita" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Pilih Parwa</label>
+                                <select name="parwa_id" class="form-select" required>
+                                    <option value="" selected disabled>-- Pilih Parwa --</option>
+                                    @foreach($parwas as $parwa)
+                                        <option value="{{ $parwa->id }}">{{ $parwa->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bagian (Sub-Parwa)</label>
+                                <input type="text" name="sub_parwa" class="form-control" placeholder="Contoh: Section I">
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label">Sumber</label>
