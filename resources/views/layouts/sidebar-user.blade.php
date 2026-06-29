@@ -23,11 +23,12 @@
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('settings') ? 'active' : '' }}">
-                <a href="{{ route('settings') }}">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
+            <li class="{{ request()->routeIs('audio.*') ? 'active' : '' }}">
+                <a href="{{ route('audio.upload') }}">
+                    <i class="bi bi-music-note-beamed"></i>
+                    <span>Upload Audio</span>
                 </a>
             </li>
+
         </ul>
     </aside>

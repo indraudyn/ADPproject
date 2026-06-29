@@ -55,12 +55,6 @@
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('settings') ? 'active' : '' }}">
-                <a href="{{ route('settings') }}">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
-                </a>
-            </li>
         </ul>
     </aside>
 

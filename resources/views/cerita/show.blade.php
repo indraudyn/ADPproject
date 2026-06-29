@@ -27,7 +27,20 @@
     </a>
     
     <h1 class="parwa-main-title">{{ $cerita->parwa->nama ?? 'Adi Parwa' }}</h1>
-    <p class="sub-parwa-subtitle">{{ $cerita->sub_parwa ?? 'Section I' }}</p>
+    <p class="sub-parwa-subtitle mb-2">{{ $cerita->sub_parwa ?? 'Section I' }}</p>
+
+    <!-- Reading Mode Selector (In Header, below chapter title) -->
+    <div class="reading-mode-selector shadow-sm">
+        <span class="mode-label text-white opacity-75 small"><i class="bi bi-book-half"></i> Mode Baca:</span>
+        <div class="btn-group premium-toggle" role="group" aria-label="Mode Membaca">
+            <button type="button" class="btn btn-outline-premium" id="btn-mode-split">
+                <i class="bi bi-file-earmark-text"></i> Di Pisah
+            </button>
+            <button type="button" class="btn btn-outline-premium" id="btn-mode-full">
+                <i class="bi bi-file-earmark-richtext"></i> Langsung
+            </button>
+        </div>
+    </div>
 </header>
 
 {{-- CONTENT WRAPPER --}}
@@ -37,8 +50,64 @@
             
             <h2 class="story-title-heading">{{ $cerita->judul }}</h2>
 
+            {{-- Language info & switcher --}}
+            @php
+                $langLabel = match($cerita->content_lang ?? 'id') {
+                    'en'   => 'English',
+                    'id'   => 'Bahasa Indonesia',
+                    'both' => 'Bilingual',
+                    default=> 'Bahasa Indonesia',
+                };
+                $hasBoth = ($cerita->content_lang ?? '') === 'both';
+            @endphp
+
+            <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                <span class="badge" style="background:#8b0000; font-size:0.78rem; padding:5px 12px; border-radius:20px;">
+                    <i class="bi bi-translate me-1"></i>{{ $langLabel }}
+                </span>
+
+                @if($hasBoth)
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-danger active" id="btn-lang-id"
+                            onclick="switchLang('id')">ID</button>
+                    <button type="button" class="btn btn-outline-danger" id="btn-lang-en"
+                            onclick="switchLang('en')">EN</button>
+                </div>
+                @endif
+            </div>
+
+            <div class="story-text-body" id="story-content-id" {!! $hasBoth ? '' : ($cerita->content_lang==='en' ? 'style="display:none"' : '') !!}>
+                {!! $cerita->isi_id ?? '' !!}
+            </div>
+            <div class="story-text-body" id="story-content-en" {!! ($cerita->content_lang ?? 'id') !== 'en' && !$hasBoth ? 'style="display:none"' : '' !!}>
+                {!! $cerita->isi_en ?? '' !!}
+            </div>
+
+            {{-- fallback for single-language --}}
+            @if(!$hasBoth)
             <div class="story-text-body">
                 {!! $cerita->cerita !!}
+            </div>
+            @endif
+
+            <!-- Pagination Controls (Inside Box, end of story) -->
+            <div id="story-pagination" class="mt-3" style="display: none;">
+                <nav aria-label="Halaman Cerita">
+                    <ul class="pagination premium-pagination">
+                        <li class="page-item" id="page-prev-li">
+                            <button class="page-link" id="btn-page-prev" aria-label="Sebelumnya">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                        </li>
+                        <!-- Dynamic page list will be rendered by JS -->
+                        <li class="page-item" id="page-next-li">
+                            <button class="page-link" id="btn-page-next" aria-label="Selanjutnya">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+                <span class="text-muted small mt-1 d-block text-center" id="page-indicator">Halaman 1 dari 1</span>
             </div>
 
             <hr class="my-5">
@@ -51,6 +120,29 @@
             </div>
 
         </article>
+
+        <!-- Chapter Navigation (Outside the box) -->
+        <div class="d-flex justify-content-between align-items-center mt-4 px-2">
+            @if(isset($prevCeritaId) && $prevCeritaId)
+                <a href="{{ route('cerita.show', $prevCeritaId) }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
+                    <i class="bi bi-chevron-left"></i> Bab Sebelumnya
+                </a>
+            @else
+                <button class="btn btn-secondary py-2 px-4 opacity-50" style="border-radius: 12px;" disabled>
+                    <i class="bi bi-chevron-left"></i> Bab Sebelumnya
+                </button>
+            @endif
+
+            @if(isset($nextCeritaId) && $nextCeritaId)
+                <a href="{{ route('cerita.show', $nextCeritaId) }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
+                    Bab Selanjutnya <i class="bi bi-chevron-right"></i>
+                </a>
+            @else
+                <button class="btn btn-secondary py-2 px-4 opacity-50" style="border-radius: 12px;" disabled>
+                    Bab Selanjutnya <i class="bi bi-chevron-right"></i>
+                </button>
+            @endif
+        </div>
     </div>
 
     {{-- CERITA LAINNYA DI SUB PARWA INI --}}

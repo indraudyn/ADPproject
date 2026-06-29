@@ -32,6 +32,10 @@
 }
 
 /* SEARCH */
+.admin-user-page .search-box {
+    position: relative;
+}
+
 .admin-user-page .search-box input {
     width: 300px;
     border-radius: 50px;

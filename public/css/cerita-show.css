@@ -248,3 +248,176 @@ body.cerita-show-page {
         font-size: 1.2rem;
     }
 }
+
+/* ===============================
+   PREMIUM PAGINATION & READING MODE
+   =============================== */
+
+/* Reading Mode Switcher */
+.reading-mode-selector {
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    width: fit-content;
+    margin: 0 auto 2.5rem;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.premium-toggle {
+    background: #e2e8f0;
+    padding: 3px;
+    border-radius: 30px;
+    display: inline-flex;
+    border: none;
+}
+
+.premium-toggle .btn-outline-premium {
+    border: none;
+    background: transparent;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1.2rem;
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.premium-toggle .btn-outline-premium.active {
+    background: #8b1a1a;
+    color: white;
+    box-shadow: 0 4px 10px rgba(139, 26, 26, 0.2);
+}
+
+.premium-toggle .btn-outline-premium:hover:not(.active) {
+    color: #8b1a1a;
+    background: rgba(226, 232, 240, 0.5);
+}
+
+/* Pagination container */
+#story-pagination {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Premium Pagination Links */
+.premium-pagination {
+    display: flex;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    gap: 0.4rem;
+}
+
+.premium-pagination .page-item .page-link {
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #475569;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.premium-pagination .page-item.active .page-link {
+    background: #8b1a1a;
+    border-color: #8b1a1a;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(139, 26, 26, 0.2);
+}
+
+.premium-pagination .page-item .page-link:hover:not(.active) {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #8b1a1a;
+}
+
+.premium-pagination .page-item.disabled .page-link {
+    opacity: 0.35;
+    pointer-events: none;
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+}
+
+/* Page Transitions */
+.story-page {
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.story-page.fade-out {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+/* Header Specific Navigation Overrides */
+.story-header .reading-mode-selector {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 1rem auto 0;
+}
+
+.story-header .premium-toggle {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.story-header .premium-toggle .btn-outline-premium {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.story-header .premium-toggle .btn-outline-premium.active {
+    background: white;
+    color: #8b1a1a !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.story-header .premium-toggle .btn-outline-premium:hover:not(.active) {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Pagination in Header */
+.story-header .premium-pagination .page-item .page-link {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.story-header .premium-pagination .page-item.active .page-link {
+    background: white;
+    border-color: white;
+    color: #8b1a1a !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.story-header .premium-pagination .page-item .page-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.story-header .premium-pagination .page-item.disabled .page-link {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+

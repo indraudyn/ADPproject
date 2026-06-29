@@ -14,19 +14,40 @@ class ForumTopic extends Model
         'user_id',
         'title',
         'description',
-        'slug'
+        'slug',
+        'status',   // ← wajib ada agar update(['status'=>...]) bekerja
     ];
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             if (!$model->slug) {
                 $model->slug = Str::slug($model->title) . '-' . Str::random(5);
             }
+            // default status pending saat pertama dibuat
+            if (!$model->status) {
+                $model->status = 'pending';
+            }
         });
     }
+
+    // ── Scopes ──────────────────────────────────────
+
+    /** Hanya topik yang sudah disetujui */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    /** Hanya topik yang masih menunggu */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    // ── Relationships ────────────────────────────────
 
     public function user()
     {

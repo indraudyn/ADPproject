@@ -69,6 +69,27 @@
                             </select>
                         </div>
 
+                        <div class="mb-4" id="sectionWrapper" style="display: none;">
+                            <label class="form-label fw-bold">Pilih Bab / Section</label>
+                            <select name="section" id="sectionSelect" class="form-select" required>
+                                <option value="" selected disabled>-- Pilih Bab / Section --</option>
+                            </select>
+                            <div id="sectionLoading" class="text-muted small mt-1" style="display: none;">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Memuat daftar bab...
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Pilih Versi (Opsional)</label>
+                            <select name="version" class="form-select">
+                                <option value="" selected>-- Tanpa Versi --</option>
+                                @foreach($versions as $ver)
+                                    <option value="{{ $ver }}">{{ $ver }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="mb-4">
                             <label class="form-label fw-bold">Judul Video</label>
                             <input type="text" name="title" class="form-control" placeholder="Masukkan judul video" required>
@@ -118,6 +139,102 @@
 
 {{-- Bootstrap --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const parwaSelect = document.querySelector('select[name="parwa_id"]');
+    const sectionWrapper = document.getElementById('sectionWrapper');
+    const sectionSelect = document.getElementById('sectionSelect');
+    const sectionLoading = document.getElementById('sectionLoading');
+
+    if (parwaSelect) {
+        parwaSelect.addEventListener('change', function() {
+            const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
+            const bookName = selectedOption.text;
+
+            if (!bookName) {
+                sectionWrapper.style.display = 'none';
+                return;
+            }
+
+            // Show loading
+            sectionWrapper.style.display = 'block';
+            sectionSelect.style.display = 'none';
+            sectionLoading.style.display = 'block';
+            sectionSelect.innerHTML = '<option value="" selected disabled>-- Pilih Bab / Section --</option>';
+
+            fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}`)
+                .then(response => response.json())
+                .then(res => {
+                    sectionLoading.style.display = 'none';
+                    sectionSelect.style.display = 'block';
+                    
+                    const sections = res.data || [];
+                    if (sections.length > 0) {
+                        sections.forEach(sec => {
+                            const option = document.createElement('option');
+                            option.value = sec.section;
+                            option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
+                            sectionSelect.appendChild(option);
+                        });
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = 'Bab I';
+                        option.textContent = 'Bab I (Default)';
+                        sectionSelect.appendChild(option);
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching sections:", err);
+                    sectionLoading.style.display = 'none';
+                    sectionSelect.style.display = 'block';
+                    
+                    const option = document.createElement('option');
+                    option.value = 'Bab I';
+                    option.textContent = 'Bab I (Fallback)';
+                    sectionSelect.appendChild(option);
+                });
+        });
+    }
+});
+</script>
+
+{{-- ALERT ERROR --}}
+@if ($errors->any())
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Mengupload',
+            html: `
+                <ul class="text-start mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            `,
+            confirmButtonColor: '#8b0000',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Mengupload',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#8b0000',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        });
+    </script>
+@endif
 
 </body>
 </html>

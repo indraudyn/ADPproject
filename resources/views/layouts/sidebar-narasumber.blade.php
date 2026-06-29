@@ -20,5 +20,11 @@
                     <span>Video</span>
                 </a>
             </li>
+            <li class="{{ request()->routeIs('narasumber.audio.*') ? 'active' : '' }}">
+                <a href="{{ route('narasumber.audio.index') }}">
+                    <i class="bi bi-music-note-beamed"></i>
+                    <span>Audio</span>
+                </a>
+            </li>
         </ul>
     </aside>

@@ -45,12 +45,13 @@
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('settings') ? 'active' : '' }}">
-                <a href="{{ route('settings') }}">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
+            <li class="{{ request()->routeIs('audio.upload') ? 'active' : '' }}">
+                <a href="{{ route('audio.upload') }}">
+                    <i class="bi bi-music-note-beamed"></i>
+                    <span>Upload Audio</span>
                 </a>
             </li>
+
         </ul>
     </aside>
 
@@ -92,6 +93,7 @@
 
         {{-- DASHBOARD --}}
         <div class="container-fluid mt-4">
+            <x-content-loader />
 
             <h3 class="mb-4">Dashboard</h3>
 
@@ -122,28 +124,37 @@
                 </div>
             </div>
 
-            {{-- TABLE CERITA APPROVED --}}
+            {{-- TABLE CERITA SAYA --}}
             <div class="card mt-5">
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
                         <h5 class="mb-0">Cerita</h5>
-                        <input type="text" class="form-control w-auto" placeholder="Search">
                     </div>
 
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>Judul</th>
                                     <th>Sumber</th>
+                                    <th>Status</th>
                                     <th class="text-end"></th>
                                 </tr>
                             </thead>
                            <tbody id="ceritaTable">
                                 @forelse ($ceritas as $cerita)
                                     <tr>
-                                        <td>{{ $cerita->user->name }}</td>
+                                        <td>{{ $cerita->judul }}</td>
                                         <td>{{ $cerita->sumber }}</td>
+                                        <td>
+                                            @if($cerita->status == 'approved')
+                                                <span class="badge bg-success">Approved</span>
+                                            @elseif($cerita->status == 'unapproved' || $cerita->status == 'rejected')
+                                                <span class="badge bg-danger">Unapproved</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            @endif
+                                        </td>
                                         <td class="text-end">
                                             <a href="{{ route('cerita.show', $cerita->id) }}" class="detail-btn">
                                                 <i class="bi bi-arrow-right-circle"></i>
@@ -152,7 +163,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">
+                                        <td colspan="4" class="text-center text-muted py-4">
                                             Belum ada cerita
                                         </td>
                                     </tr>
@@ -199,6 +210,50 @@
                                     <tr>
                                         <td colspan="3" class="text-center text-muted py-4">
                                             Belum ada video
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {{-- TABLE AUDIO SAYA --}}
+            <div class="card mt-5">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+                        <h5 class="mb-0">Audio</h5>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Judul</th>
+                                    <th>Tipe</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                           <tbody id="audioTable">
+                                @forelse ($audios as $audio)
+                                    <tr>
+                                        <td>{{ $audio->title }}</td>
+                                        <td>{{ $audio->type === 'link' ? 'Link/URL' : 'Upload File' }}</td>
+                                        <td>
+                                            @if($audio->status == 'approved')
+                                                <span class="badge bg-success">Approved</span>
+                                            @elseif($audio->status == 'rejected')
+                                                <span class="badge bg-danger">Rejected</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            Belum ada audio
                                         </td>
                                     </tr>
                                 @endforelse

@@ -29,6 +29,7 @@
 
         {{-- DASHBOARD --}}
         <div class="container-fluid mt-4">
+            <x-content-loader />
 
             <h3 class="mb-4">Dashboard Narasumber</h3>
 
@@ -101,8 +102,9 @@
                                     @csrf
                                     @method('PUT')
                                     <select name="status" class="form-select form-select-sm status-select" onchange="this.form.submit()" style="max-width: 140px;">
+                                        <option value="pending" {{ $cerita->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="approved" {{ $cerita->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="unapproved" {{ $cerita->status === 'unapproved' ? 'selected' : '' }}>Unapproved</option>
+                                        <option value="unapproved" {{ $cerita->status === 'unapproved' || $cerita->status === 'rejected' ? 'selected' : '' }}>Unapproved</option>
                                     </select>
                                 </form>
                             </td>

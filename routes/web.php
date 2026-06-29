@@ -22,20 +22,73 @@ Route::get('/', function () {
     return view('welcome', compact('parwas'));
 });
 
+Route::get('/set-locale/{locale}', function ($locale) {
+    if (in_array($locale, ['id', 'en'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+})->name('set-locale');
+
+// Save selected parwa version to session
+Route::post('/set-parwa-version', function (Request $request) {
+    $version = $request->input('version');
+    if ($version && $version !== 'all') {
+        session(['selected_parwa_version' => $version]);
+    } else {
+        session()->forget('selected_parwa_version');
+    }
+    return response()->json(['ok' => true]);
+})->name('set-parwa-version');
+
 Route::controller(App\Http\Controllers\ParwaController::class)->group(function () {
     Route::get('/parwa', 'index')->name('parwa.index');
+    Route::get('/parwa/read/{book}/{section}', 'read')->name('parwa.read');
     Route::get('/parwa/{slug}', 'show')->name('parwa.detail');
     Route::get('/parwa/{slug}/video', 'video')->name('parwa.video');
 });
 
+Route::get('/api/parwa/sections-by-book', function (Request $request, \App\Services\BackendApiService $apiService) {
+    $book = $request->query('book');
+    if (!$book) {
+        return response()->json(['data' => []]);
+    }
+    
+    $bookMap = [
+        'Adi Parwa' => 'Adi Parva',
+        'Sabha Parwa' => 'Sabha Parva',
+        'Vana Parwa' => 'Vana Parva',
+        'Virata Parwa' => 'Virata Parva',
+        'Udyoga Parwa' => 'Udyoga Parva',
+        'Bhishma Parwa' => 'Bhishma Parva',
+        'Drona Parwa' => 'Drona Parva',
+        'Karna Parwa' => 'Karna Parva',
+        'Shalya Parwa' => 'Shalya Parva',
+        'Sauptika Parwa' => 'Sauptika Parva',
+        'Stri Parwa' => 'Stri Parva',
+        'Shanti Parwa' => 'Shanti Parva',
+        'Anushasana Parwa' => 'Anushasana Parva',
+        'Ashvamedhika Parwa' => 'Ashvamedhika Parva',
+        'Ashramavasika Parwa' => 'Ashramavasika Parva',
+        'Mausala Parwa' => 'Mausala Parva',
+        'Mahaprasthanika Parwa' => 'Mahaprasthanika Parva',
+        'Svargarohana Parwa' => 'Swargarohanika Parva',
+    ];
+    $bookName = $bookMap[$book] ?? $book;
+
+    try {
+        $response = $apiService->getSectionsByBook($bookName);
+        if ($response->successful()) {
+            return response()->json($response->json());
+        }
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::warning("Gagal mengambil sections untuk API: " . $e->getMessage());
+    }
+
+    return response()->json(['data' => []]);
+})->name('api.parwa.sections');
+
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 
-/*
-| DASHBOARD (DEFAULT)
-*/
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 /*
 | PROFILE (AUTH)
@@ -59,12 +112,6 @@ Route::middleware(['auth', 'admin'])->get('/admin', function () {
     return view('admin.dashboard');
 });
 
-/*
-| DASHBOARD USER (VIEW)
-*/
-Route::middleware(['auth'])->get('/dashboard', function () {
-    return view('dashboard.user');
-})->name('dashboard');
 
 /*
 | PROFILE (VIEW & CONTROLLER)
@@ -85,20 +132,12 @@ Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
     ->middleware('auth')
     ->name('profile.photo.destroy');
 
-/*
-| DASHBOARD USER (VIEW)
-*/
-Route::get('/dashboard', fn () => view('dashboard.user'))
-    ->name('dashboard');
 
 /*
 | CERITA (VIEW)
 */
 Route::get('/cerita/upload', fn () => view('cerita.upload'))
     ->name('cerita.upload');
-
-Route::get('/cerita', fn () => view('cerita.index'))
-    ->name('cerita.index');
 
 /*
 | MENU UMUM
@@ -143,13 +182,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/cerita/store', [CeritaController::class, 'store'])
         ->name('cerita.store');
 
-    Route::get('/cerita/{cerita}/edit', [CeritaController::class, 'edit'])
+    Route::get('/cerita/{id}/edit', [CeritaController::class, 'edit'])
         ->name('cerita.edit');
 
-    Route::get('/cerita/{cerita}', [CeritaController::class, 'show'])
+    Route::get('/cerita/{id}', [CeritaController::class, 'show'])
         ->name('cerita.show');
 
-    Route::delete('/cerita/{cerita}', [CeritaController::class, 'destroy'])
+    Route::delete('/cerita/{id}', [CeritaController::class, 'destroy'])
         ->name('cerita.destroy');
 });
 
@@ -171,8 +210,7 @@ Route::middleware('auth')->group(function () {
 /*
 | CERITA SHOW
 */
-Route::get('/cerita/{cerita}', [CeritaController::class, 'show'])
-    ->middleware('auth')
+Route::get('/cerita/{id}', [CeritaController::class, 'show'])
     ->name('cerita.show');
 
 /*
@@ -180,19 +218,13 @@ Route::get('/cerita/{cerita}', [CeritaController::class, 'show'])
 */
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/cerita/{cerita}/edit', [CeritaController::class, 'edit'])
+    Route::get('/cerita/{id}/edit', [CeritaController::class, 'edit'])
         ->name('cerita.edit');
 
-    Route::put('/cerita/{cerita}', [CeritaController::class, 'update'])
+    Route::put('/cerita/{id}', [CeritaController::class, 'update'])
         ->name('cerita.update');
 });
 
-/*
-| DASHBOARD CONTROLLER
-*/
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard');
 
 /*
 | DASHBOARD ADMIN
@@ -206,12 +238,43 @@ Route::middleware(['auth', 'admin'])->group(function () {
 /*
 | UPDATE ROLE USER
 */
-Route::put('/admin/user/{user}/role', function ($userId, Request $request) {
+Route::put('/admin/user/{user}/role', function ($userId, Request $request, \App\Services\BackendApiService $apiService) {
+    $request->validate([
+        'role' => 'required|in:admin,user,narasumber'
+    ]);
 
-    \App\Models\User::where('id', $userId)
-        ->update(['role' => $request->role]);
+    // Get the email of the local user
+    $localUser = \App\Models\User::findOrFail($userId);
+    $email = $localUser->email;
 
-    return back();
+    // Find correct backend user ID by email
+    $backendId = $userId;
+    try {
+        $resp = $apiService->getAdminUsers(1, 100);
+        if ($resp->successful()) {
+            $usersList = $resp->json()['users'] ?? [];
+            foreach ($usersList as $u) {
+                if (strtolower($u['email'] ?? '') === strtolower($email)) {
+                    $backendId = $u['id'];
+                    break;
+                }
+            }
+        }
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::warning("Gagal menyinkronkan user ID untuk update role: " . $e->getMessage());
+    }
+
+    // 1. Update on backend API using correct backend ID
+    try {
+        $apiService->updateAdminUser($backendId, ['role' => $request->role]);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::warning("Gagal memperbarui role di backend: " . $e->getMessage());
+    }
+
+    // 2. Update locally
+    $localUser->update(['role' => $request->role]);
+
+    return back()->with('success', 'Role berhasil diperbarui');
 
 })->middleware(['auth', 'admin'])->name('admin.user.role');
 
@@ -240,18 +303,37 @@ Route::middleware(['auth'])->group(function () {
         
     Route::post('/video/store-user', [App\Http\Controllers\VideoController::class, 'storeUser'])
         ->name('video.storeUser');
+
+    Route::get('/video/{video}/edit', [App\Http\Controllers\VideoController::class, 'edit'])
+        ->name('video.edit');
+        
+    Route::put('/video/{video}', [App\Http\Controllers\VideoController::class, 'update'])
+        ->name('video.update');
         
     Route::delete('/video/{video}', [App\Http\Controllers\VideoController::class, 'destroy'])
         ->name('video.destroy');
+
+    // Dashboard Audio (User)
+    Route::get('/audio/upload', [App\Http\Controllers\AudioController::class, 'upload'])
+        ->name('audio.upload');
+        
+    Route::get('/audio/create', [App\Http\Controllers\AudioController::class, 'create'])
+        ->name('audio.create');
+        
+    Route::post('/audio/store-user', [App\Http\Controllers\AudioController::class, 'storeUser'])
+        ->name('audio.storeUser');
+
+    Route::get('/audio/{audio}/edit', [App\Http\Controllers\AudioController::class, 'edit'])
+        ->name('audio.edit');
+        
+    Route::put('/audio/{audio}', [App\Http\Controllers\AudioController::class, 'update'])
+        ->name('audio.update');
+        
+    Route::delete('/audio/{audio}', [App\Http\Controllers\AudioController::class, 'destroy'])
+        ->name('audio.destroy');
 });
 
-Route::middleware(['auth'])->get('/cerita', function () {
-    $ceritas = \App\Models\Cerita::where('status', 'approved')
-        ->latest()
-        ->paginate(8);
-
-    return view('cerita.index', compact('ceritas'));
-})->name('cerita.index');
+Route::get('/cerita', [CeritaController::class, 'index'])->name('cerita.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
@@ -271,6 +353,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // (OPSIONAL) Update role user
     Route::post('/users/{id}/role', [UserController::class, 'updateRole'])
         ->name('admin.users.updateRole');
+
+    // Hapus user
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])
+        ->name('admin.users.destroy');
 
 });
 
@@ -305,13 +391,31 @@ Route::middleware(['auth', 'admin'])
         Route::get('/video', [\App\Http\Controllers\Admin\VideoController::class, 'index'])->name('index');
         Route::get('/video/create', [\App\Http\Controllers\Admin\VideoController::class, 'create'])->name('create');
         Route::post('/video/store', [\App\Http\Controllers\Admin\VideoController::class, 'store'])->name('store');
+        Route::get('/video/{id}/edit', [\App\Http\Controllers\Admin\VideoController::class, 'edit'])->name('edit');
+        Route::put('/video/{id}', [\App\Http\Controllers\Admin\VideoController::class, 'update'])->name('update');
         Route::put('/video/{id}/status', [\App\Http\Controllers\Admin\VideoController::class, 'updateStatus'])->name('updateStatus');
         Route::delete('/video/{id}', [\App\Http\Controllers\Admin\VideoController::class, 'destroy'])->name('destroy');
+    });
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.audio.')
+    ->group(function () {
+        Route::get('/audio', [\App\Http\Controllers\Admin\AudioController::class, 'index'])->name('index');
+        Route::get('/audio/create', [\App\Http\Controllers\Admin\AudioController::class, 'create'])->name('create');
+        Route::post('/audio/store', [\App\Http\Controllers\Admin\AudioController::class, 'store'])->name('store');
+        Route::get('/audio/{id}/edit', [\App\Http\Controllers\Admin\AudioController::class, 'edit'])->name('edit');
+        Route::put('/audio/{id}', [\App\Http\Controllers\Admin\AudioController::class, 'update'])->name('update');
+        Route::put('/audio/{id}/status', [\App\Http\Controllers\Admin\AudioController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/audio/{id}', [\App\Http\Controllers\Admin\AudioController::class, 'destroy'])->name('destroy');
     });
 
     Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/forum', [ForumAdminController::class, 'index'])->name('admin.forum.index');
     Route::post('/forum', [ForumAdminController::class, 'store'])->name('admin.forum.store');
+    Route::patch('/forum/topics/{id}/approve', [ForumAdminController::class, 'approve'])->name('admin.forum.approve');
+    Route::patch('/forum/topics/{id}/reject',  [ForumAdminController::class, 'reject'])->name('admin.forum.reject');
+    Route::delete('/forum/topics/{id}',        [ForumAdminController::class, 'destroy'])->name('admin.forum.destroy');
 });
 
 Route::middleware(['auth','admin'])
@@ -376,8 +480,18 @@ Route::middleware(['auth', 'narasumber'])
         Route::get('/video', [\App\Http\Controllers\Narasumber\VideoController::class, 'index'])->name('video.index');
         Route::get('/video/create', [\App\Http\Controllers\Narasumber\VideoController::class, 'create'])->name('video.create');
         Route::post('/video/store', [\App\Http\Controllers\Narasumber\VideoController::class, 'store'])->name('video.store');
+        Route::get('/video/{id}/edit', [\App\Http\Controllers\Narasumber\VideoController::class, 'edit'])->name('video.edit');
+        Route::put('/video/{id}', [\App\Http\Controllers\Narasumber\VideoController::class, 'update'])->name('video.update');
         Route::put('/video/{id}/status', [\App\Http\Controllers\Narasumber\VideoController::class, 'updateStatus'])->name('video.updateStatus');
         Route::delete('/video/{id}', [\App\Http\Controllers\Narasumber\VideoController::class, 'destroy'])->name('video.destroy');
+
+        Route::get('/audio', [\App\Http\Controllers\Narasumber\AudioController::class, 'index'])->name('audio.index');
+        Route::get('/audio/create', [\App\Http\Controllers\Narasumber\AudioController::class, 'create'])->name('audio.create');
+        Route::post('/audio/store', [\App\Http\Controllers\Narasumber\AudioController::class, 'store'])->name('audio.store');
+        Route::get('/audio/{id}/edit', [\App\Http\Controllers\Narasumber\AudioController::class, 'edit'])->name('audio.edit');
+        Route::put('/audio/{id}', [\App\Http\Controllers\Narasumber\AudioController::class, 'update'])->name('audio.update');
+        Route::put('/audio/{id}/status', [\App\Http\Controllers\Narasumber\AudioController::class, 'updateStatus'])->name('audio.updateStatus');
+        Route::delete('/audio/{id}', [\App\Http\Controllers\Narasumber\AudioController::class, 'destroy'])->name('audio.destroy');
     });
 
 //AUTH ROUTES

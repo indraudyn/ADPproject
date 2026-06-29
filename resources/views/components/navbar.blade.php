@@ -21,7 +21,22 @@
             </ul>
         </div>
         
-        <div class="auth-buttons d-flex gap-2">
+        <div class="auth-buttons d-flex align-items-center gap-3">
+            {{-- Language Switcher --}}
+            <div class="dropdown">
+                <button class="btn btn-outline-light btn-sm dropdown-toggle fw-bold d-flex align-items-center gap-1 rounded-pill px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @if(session('locale', 'id') === 'en')
+                        English
+                    @else
+                        Indonesia
+                    @endif
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item fw-bold" href="{{ route('set-locale', 'id') }}">Bahasa Indonesia</a></li>
+                    <li><a class="dropdown-item fw-bold" href="{{ route('set-locale', 'en') }}">English</a></li>
+                </ul>
+            </div>
+
             @if (Route::has('login'))
                 @auth
                     <div class="dropdown">
@@ -32,8 +47,10 @@
                             <li>
                                 @if(Auth::user()->role === 'admin')
                                     <a class="dropdown-item" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                                @elseif(Auth::user()->role === 'narasumber')
+                                    <a class="dropdown-item" href="{{ route('narasumber.dashboard') }}">Dashboard</a>
                                 @else
-                                    <a class="dropdown-item" href="{{ url('/dashboard') }}">Dashboard</a>
+                                    <a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a>
                                 @endif
                             </li>
                             <li><hr class="dropdown-divider"></li>

@@ -84,11 +84,14 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
+                                    <a href="{{ route('video.edit', $video->id) }}" class="btn btn-sm btn-outline-primary me-1" style="border-radius: 8px;">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
                                     <form action="{{ route('video.destroy', $video->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="icon-btn delete" onclick="return confirm('Yakin hapus video ini?')">
-                                            <i class="bi bi-trash"></i>
+                                        <button class="btn btn-sm btn-outline-danger" style="border-radius: 8px;" onclick="return confirm('Yakin hapus video ini?')">
+                                            <i class="bi bi-trash"></i> Hapus
                                         </button>
                                     </form>
                                 </td>

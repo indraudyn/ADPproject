@@ -62,7 +62,7 @@
                                 <th>Sumber</th>
                                 <th>Tanggal Upload</th>
                                 <th>Status</th>
-                                <th class="text-end"></th>
+                                <th class="text-end">Aksi</th>
                             </tr>
                         </thead>
 
@@ -70,7 +70,7 @@
                         @foreach ($ceritas as $cerita)
                         <tr>
                             <td>{{ $cerita->id }}</td>
-                            <td>{{ $cerita->user->name }}</td>
+                            <td>{{ $cerita->user->name ?? 'User' }}</td>
                             <td>{{ $cerita->sumber }}</td>
                             <td>{{ $cerita->created_at->format('Y-m-d') }}</td>
                             <td>
@@ -78,8 +78,9 @@
                                     @csrf
                                     @method('PUT')
                                     <select name="status" class="form-select status-select" onchange="this.form.submit()">
+                                        <option value="pending" {{ $cerita->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="approved" {{ $cerita->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="unapproved" {{ $cerita->status === 'unapproved' ? 'selected' : '' }}>Unapproved</option>
+                                        <option value="unapproved" {{ $cerita->status === 'unapproved' || $cerita->status === 'rejected' ? 'selected' : '' }}>Unapproved</option>
                                     </select>
                                 </form>
                             </td>
@@ -100,25 +101,26 @@
                             </td>
                         </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
 
-                {{-- PAGINATION (SAMA DENGAN USER) --}}
-                <div class="pagination-wrapper">
-                    <div class="pagination-info">
-                        Showing {{ $ceritas->firstItem() }}
-                        to {{ $ceritas->lastItem() }}
-                        of {{ $ceritas->total() }} entries
-                    </div>
-
-                    <div>
-                        {{ $ceritas->links('pagination::bootstrap-5') }}
+                    {{-- PAGINATION --}}
+                    <div class="pagination-wrapper mt-3 d-flex justify-content-between align-items-center">
+                        <div class="pagination-info text-muted small">
+                            Showing {{ $ceritas->firstItem() ?? 0 }}
+                            to {{ $ceritas->lastItem() ?? 0 }}
+                            of {{ $ceritas->total() }} entries
+                        </div>
+                        <div>
+                            {{ $ceritas->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
 
                 </div>
             </div>
 
         </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

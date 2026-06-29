@@ -31,6 +31,7 @@
 
     <!-- CHAT CONTAINER -->
     <div class="chat-container-show">
+        <x-content-loader />
         <div class="chat-card-v2">
             
             <div class="chat-body-v2">
@@ -39,7 +40,17 @@
                     
                     <div class="bubble-v2 {{ $isMe ? 'bubble-me-v2' : 'bubble-other-v2' }}">
                         <span class="bubble-name-v2">{{ $isMe ? 'Anda' : $message->user->name }}</span>
-                        <div class="bubble-content-v2">{{ $message->message }}</div>
+                        <div class="bubble-content-v2">
+                            @php
+                                $escapedMessage = e($message->message);
+                                $linkedMessage = preg_replace(
+                                    '/(https?:\/\/[^\s]+)/',
+                                    '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>',
+                                    $escapedMessage
+                                );
+                            @endphp
+                            {!! $linkedMessage !!}
+                        </div>
                         
                         <div class="bubble-footer-v2">
                             <span class="bubble-time-v2">{{ $message->created_at->format('H:i') }}</span>
@@ -69,11 +80,6 @@
                 <input type="hidden" name="topic_id" value="{{ $topic->id }}">
                 <div class="chat-footer-v2">
                     <input type="text" name="message" class="chat-input-v2" placeholder="Write message" required>
-                    
-                    <div class="chat-footer-icons">
-                        <i class="bi bi-paperclip"></i>
-                        <i class="bi bi-file-earmark-text"></i>
-                    </div>
 
                     <button type="submit" class="btn-send-v2">
                         Send <i class="bi bi-send-fill"></i>

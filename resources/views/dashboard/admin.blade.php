@@ -29,6 +29,7 @@
 
         {{-- DASHBOARD --}}
         <div class="container-fluid mt-4">
+            <x-content-loader />
 
             <h3 class="mb-4">Dashboard Admin</h3>
 

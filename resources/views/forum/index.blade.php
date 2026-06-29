@@ -31,33 +31,88 @@
     <!-- MAIN CONTENT -->
     <main class="forum-main-content">
         <div class="forum-container">
+            <x-content-loader />
 
-
+            {{-- INLINE ALERT: Topik menunggu approve --}}
+            @if(session('pending'))
+            <div class="forum-alert-pending" id="alertPending">
+                <div class="forum-alert-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+                <div class="forum-alert-body">
+                    <strong>Topik terkirim!</strong>
+                    <span>Topik kamu sedang menunggu persetujuan admin sebelum bisa dilihat publik.</span>
+                </div>
+                <button class="forum-alert-close" onclick="this.closest('#alertPending').remove()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            @endif
 
             {{-- TOPICS LIST --}}
             <div class="topic-list">
                 @forelse($topics as $topic)
                     <div class="landing-topic-wrapper">
-                        <div class="landing-topic-card">
+                        <div class="landing-topic-card {{ $topic->status === 'pending' ? 'topic-card-pending' : '' }}">
                             <div class="landing-topic-content">
-                                <h3><a href="{{ route('forum.show', $topic->slug) }}" class="text-decoration-none text-dark">{{ $topic->title }}</a></h3>
+                                <h3>
+                                    @if(auth()->check() && ($topic->user_id === auth()->id() || $topic->user_participated))
+                                        <span class="dot-participated me-2" title="Pernah Berdiskusi"></span>
+                                    @endif
+
+                                    {{-- Badge PENDING hanya terlihat admin --}}
+                                    @if(auth()->check() && auth()->user()->role === 'admin' && $topic->status === 'pending')
+                                        <span class="badge-pending-inline me-2">
+                                            <i class="bi bi-hourglass-split"></i> Menunggu
+                                        </span>
+                                    @endif
+
+                                    @if($topic->status === 'approved')
+                                        <a href="{{ route('forum.show', $topic->slug) }}" class="text-decoration-none text-dark">{{ $topic->title }}</a>
+                                    @else
+                                        {{-- Topik pending: admin bisa lihat teks, bukan link --}}
+                                        @if(auth()->check() && auth()->user()->role === 'admin')
+                                            <span class="text-dark">{{ $topic->title }}</span>
+                                        @else
+                                            <a href="{{ route('forum.show', $topic->slug) }}" class="text-decoration-none text-dark">{{ $topic->title }}</a>
+                                        @endif
+                                    @endif
+                                </h3>
                                 <p>{{ Illuminate\Support\Str::limit($topic->description, 200) }}</p>
+                                @if(auth()->check() && auth()->user()->role === 'admin')
+                                    <small class="text-muted">
+                                        <i class="bi bi-person me-1"></i>{{ $topic->user->name ?? '-' }}
+                                    </small>
+                                @endif
                             </div>
                             
                             <div class="landing-topic-actions">
                                 @if(auth()->check() && auth()->user()->role === 'admin')
-                                <form action="{{ route('forum.destroy-topic', $topic->id) }}" method="POST" class="form-delete-topic-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn-delete-topic-inline" title="Hapus Topik (Admin)">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </button>
-                                </form>
+
+                                    {{-- Tombol APPROVE (hanya muncul jika pending) --}}
+                                    @if($topic->status === 'pending')
+                                    <form action="{{ route('admin.forum.approve', $topic->id) }}" method="POST" style="display:inline;">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="btn-approve-topic-inline" title="Setujui Topik">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    @endif
+
+                                    {{-- Tombol DELETE --}}
+                                    <form action="{{ route('admin.forum.destroy', $topic->id) }}" method="POST" class="form-delete-topic-inline">
+                                        @csrf @method('DELETE')
+                                        <button type="button" class="btn-delete-topic-inline" title="Hapus Topik (Admin)">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
                                 @endif
 
+                                @if($topic->status === 'approved')
                                 <a href="{{ route('forum.show', $topic->slug) }}" class="landing-topic-icon">
                                     <i class="bi bi-arrow-right-circle"></i>
                                 </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -65,10 +120,11 @@
                     <div class="text-center py-5">
                         <i class="bi bi-chat-dots text-muted opacity-25" style="font-size: 4rem;"></i>
                         <h5 class="mt-3 font-weight-bold text-muted">Belum ada topik diskusi</h5>
-                        <p class="text-muted">Jadilah yang pertama memulai diskusi!</p>
+                        <p class="text-muted">Jadilah yang pertama memulai diskusi! Topik akan tampil setelah disetujui admin.</p>
                     </div>
                 @endforelse
             </div>
+
 
             {{-- PAGINATION --}}
             <div class="mt-5 d-flex justify-content-center">
@@ -151,7 +207,7 @@
         });
     </script>
 
-    {{-- SweetAlert Success Message --}}
+    {{-- SweetAlert Success (untuk hapus topik dll) --}}
     @if(session('success'))
     <script>
         Swal.fire({
@@ -160,9 +216,7 @@
             text: '{{ session('success') }}',
             timer: 2000,
             showConfirmButton: false,
-            customClass: {
-                popup: 'rounded-4'
-            }
+            customClass: { popup: 'rounded-4' }
         });
     </script>
     @endif

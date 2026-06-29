@@ -42,35 +42,99 @@
                 <h3>Edit Cerita</h3>
             </div>
 
+            {{-- ERROR ALERTS --}}
+            @if ($errors->any())
+                <div class="alert alert-danger rounded-3 mb-4 shadow-sm">
+                    <h6 class="fw-bold mb-2">Gagal Menyimpan Cerita:</h6>
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             {{-- CARD --}}
             <div class="card create-card">
                 <div class="card-body">
 
-                    <form method="POST" action="{{ route('cerita.update', $cerita->id) }}">
+                    @php
+                        $contentLang = old('content_lang', $cerita->content_lang ?? 'id');
+                        $langLabel   = $contentLang === 'en' ? 'English' : 'Bahasa Indonesia';
+                        $langIcon    = $contentLang === 'en' ? '🇬🇧' : '🇮🇩';
+                    @endphp
+
+                    <form method="POST" action="{{ route('cerita.update', $cerita->id) }}" id="editForm">
                         @csrf
                         @method('PUT')
 
-                        <div class="mb-3">
-                            <label class="form-label">Sumber</label>
-                            <input type="text"
-                                   name="sumber"
-                                   class="form-control"
-                                   value="{{ $cerita->sumber }}"
-                                   required>
+                        {{-- Hidden: preserve upload language --}}
+                        <input type="hidden" name="content_lang" value="{{ $contentLang }}">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Parwa / Buku</label>
+                                <input type="text"
+                                       name="book"
+                                       class="form-control"
+                                       value="{{ old('book', $cerita->book ?? $cerita->sumber) }}"
+                                       placeholder="Contoh: Adi Parva"
+                                       readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bab (Section)</label>
+                                <input type="text"
+                                       name="section"
+                                       class="form-control"
+                                       value="{{ old('section', $cerita->section ?? '') }}"
+                                       placeholder="Contoh: Bab I">
+                            </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Sumber URL</label>
+                                <input type="text"
+                                       name="sumber"
+                                       class="form-control"
+                                       value="{{ old('sumber', $cerita->sumber ?? $cerita->url ?? '') }}"
+                                       placeholder="Contoh: https://sacred-texts.com/...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Judul Cerita</label>
+                                <input type="text"
+                                       name="judul"
+                                       class="form-control"
+                                       value="{{ old('judul', $cerita->judul ?? '') }}"
+                                       placeholder="Judul detail cerita">
+                            </div>
+                        </div>
+
+                        {{-- CONTENT EDITOR with language label --}}
                         <div class="mb-3">
-                            <label class="form-label">Cerita</label>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <label class="form-label mb-0">Isi Cerita</label>
+                                <span class="badge rounded-pill"
+                                      style="background: {{ $contentLang === 'en' ? '#0d6efd' : '#198754' }}; font-size: 0.75rem; padding: 4px 10px;">
+                                    {{ $langIcon }} {{ $langLabel }}
+                                </span>
+                                <small class="text-muted">
+                                    — Mengedit konten dalam bahasa ini (sesuai saat upload)
+                                </small>
+                            </div>
 
                             <div id="editor" class="quill-editor">
-                                {!! $cerita->cerita !!}
+                                {!! old('cerita', $cerita->cerita ?? $cerita->isi ?? '') !!}
                             </div>
 
                             <input type="hidden" name="cerita" id="ceritaInput">
                         </div>
 
                         <div class="text-end">
-                            <button class="btn btn-upload">
+                            <a href="{{ route('cerita.upload') }}" class="btn btn-outline-secondary me-2">
+                                Batal <i class="bi bi-x ms-1"></i>
+                            </a>
+                            <button type="submit" class="btn btn-upload">
                                 Simpan Perubahan
                                 <i class="bi bi-save ms-1"></i>
                             </button>
@@ -88,6 +152,43 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script src="{{ asset('js/cerita-edit.js') }}"></script>
+
+{{-- ALERT ERROR --}}
+@if ($errors->any())
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Mengupload',
+            html: `
+                <ul class="text-start mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            `,
+            confirmButtonColor: '#8b0000',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Mengupload',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#8b0000',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        });
+    </script>
+@endif
 
 </body>
 </html>

@@ -86,6 +86,9 @@
                                 </form>
                             </td>
                             <td class="text-end">
+                                <a href="{{ route('admin.video.edit', $video->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
                                 <form id="delete-form-{{ $video->id }}" action="{{ route('admin.video.destroy', $video->id) }}" method="POST" style="display:none;">
                                     @csrf
                                     @method('DELETE')

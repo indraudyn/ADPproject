@@ -45,6 +45,20 @@
                 </form>
             </div>
 
+            {{-- ALERT MESSAGES --}}
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mx-3 mb-0" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mx-3 mb-0" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>{{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             {{-- CARD --}}
             <div class="user-card">
 
@@ -55,7 +69,8 @@
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>Email</th>
-                                <th class="text-end">Role Status</th>
+                                <th>Role Status</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,8 +79,8 @@
                                 <td class="text-muted fw-medium">#{{ $user->id }}</td>
                                 <td class="fw-bold">{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td class="text-end">
-                                    <div class="d-flex justify-content-end">
+                                <td>
+                                    <div class="d-flex">
                                         @php
                                             $roleClasses = [
                                                 'admin' => 'role-select-admin',
@@ -87,10 +102,24 @@
                                         </form>
                                     </div>
                                 </td>
+                                <td class="text-center">
+                                    @if(auth()->id() != $user->id)
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-user-id="{{ $user->id }}"
+                                                data-user-name="{{ $user->name }}">
+                                            <i class="bi bi-trash3-fill"></i> Hapus
+                                        </button>
+                                    @else
+                                        <span class="badge bg-secondary">Akun Anda</span>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-5">
+                                <td colspan="5" class="text-center text-muted py-5">
                                     <i class="bi bi-people d-block mb-2 fs-2"></i>
                                     Tidak ada data user ditemukan
                                 </td>
@@ -118,7 +147,57 @@
     </div>
 </div>
 
+{{-- MODAL KONFIRMASI HAPUS --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+                        <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold mb-0" id="deleteModalLabel">Hapus User</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <p class="text-muted mb-0">
+                    Apakah Anda yakin ingin menghapus user <strong id="deleteUserName"></strong>?
+                    <br>
+                    <small class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>Tindakan ini tidak dapat dibatalkan.</small>
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Batal
+                </button>
+                <form id="deleteForm" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash3-fill me-1"></i>Ya, Hapus
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/admin-user.js') }}"></script>
+<script>
+    // Modal hapus user: set nama & action form
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+
+            document.getElementById('deleteUserName').textContent = userName;
+            document.getElementById('deleteForm').action = '/admin/users/' + userId;
+        });
+    }
+</script>
 </body>
 </html>

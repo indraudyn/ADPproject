@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BackendApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -9,12 +10,33 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(BackendApiService $apiService)
     {
+        /** @var User $user */
+        $user = Auth::user();
+
+        try {
+            $apiResponse = $apiService->getProfile();
+            if ($apiResponse->successful()) {
+                $apiData = $apiResponse->json();
+                $apiUser = $apiData['data'] ?? $apiData['user'] ?? null;
+                
+                if ($apiUser) {
+                    $user->update([
+                        'name' => $apiUser['name'],
+                        'email' => $apiUser['email'],
+                        'role' => $apiUser['role'] ?? $user->role, // sync role if present
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Backend API profile fetch failed, using local session: " . $e->getMessage());
+        }
+
         return view('profile');
     }
 
-    public function update(Request $request)
+    public function update(Request $request, BackendApiService $apiService)
     {
         /** @var User $user */
         $user = Auth::user();
@@ -24,6 +46,20 @@ class ProfileController extends Controller
             'email' => 'required|email|max:255',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        try {
+            $apiResponse = $apiService->updateProfile([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+
+            if (!$apiResponse->successful()) {
+                $msg = $apiResponse->json('message') ?? 'Gagal memperbarui profil di server backend.';
+                return back()->withErrors(['email' => $msg])->withInput();
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Backend API profile update failed, syncing locally only: " . $e->getMessage());
+        }
 
         $user->name  = $request->name;
         $user->email = $request->email;

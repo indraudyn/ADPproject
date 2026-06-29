@@ -26,16 +26,16 @@
                     <span>Video</span>
                 </a>
             </li>
+            <li class="{{ request()->routeIs('admin.audio.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.audio.index') }}">
+                    <i class="bi bi-music-note-beamed"></i>
+                    <span>Audio</span>
+                </a>
+            </li>
             <li class="{{ request()->routeIs('admin.quiz.index') ? 'active' : '' }}">
                 <a href="{{ route('admin.quiz.index') }}">
                     <i class="bi bi-question-circle"></i>
                     <span>Kuis</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
                 </a>
             </li>
         </ul>

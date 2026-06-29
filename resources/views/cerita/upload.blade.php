@@ -94,16 +94,16 @@
                                         <i class="bi bi-eye"></i>
                                     </a>
 
-                                    <form action="{{ route('cerita.destroy', $cerita->id) }}"
+                                    <form id="delete-form-{{ $cerita->id }}"
+                                          action="{{ route('cerita.destroy', $cerita->id) }}"
                                           method="POST"
-                                          class="d-inline">
+                                          style="display: none;">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="icon-btn delete"
-                                                onclick="return confirm('Yakin hapus cerita ini?')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
                                     </form>
+                                    <button class="icon-btn delete btn-delete" data-id="{{ $cerita->id }}" title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
@@ -124,5 +124,63 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{{-- SWEETALERT DELETE --}}
+<script>
+document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', function () {
+        let id = this.dataset.id;
+        Swal.fire({
+            title: 'Hapus Cerita?',
+            text: 'Cerita yang dihapus tidak bisa dikembalikan!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8b1e1e', // Dark Red matching theme
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            customClass: {
+                popup: 'rounded-4'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    });
+});
+</script>
+
+{{-- ALERT SUKSES --}}
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    timer: 1500,
+    showConfirmButton: false,
+    customClass: {
+        popup: 'rounded-4'
+    }
+});
+</script>
+@endif
+
+{{-- ALERT ERROR --}}
+@if(session('error'))
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Gagal',
+    text: '{{ session('error') }}',
+    confirmButtonColor: '#8b1e1e',
+    customClass: {
+        popup: 'rounded-4'
+    }
+});
+</script>
+@endif
 </body>
 </html>
