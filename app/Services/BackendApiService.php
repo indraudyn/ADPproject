@@ -14,8 +14,8 @@ class BackendApiService
     public function __construct()
     {
         // Get API configurations from .env, with defaults if not set
-        $this->baseUrl = rtrim(env('BACKEND_API_URL', 'https://astadasaparwa-backend-production.up.railway.app'), '/');
-        $this->prefix = trim(env('BACKEND_API_PREFIX', 'api'), '/');
+        $this->baseUrl = rtrim(config('services.backend_api.url', 'http://127.0.0.1:3000'), '/');
+        $this->prefix = trim(config('services.backend_api.prefix', 'api'), '/');
     }
 
     /**
@@ -58,7 +58,7 @@ class BackendApiService
         }
 
         // Check if there is a configured static token in env
-        $envToken = env('BACKEND_ADMIN_JWT_TOKEN');
+        $envToken = config('services.backend_api.admin_token');
         // Ignore the known expired token from the template
         $expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoiYWRtaW4uYWRwMThAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzgwMzE3MzIxLCJleHAiOjE3ODA0MDM3MjF9.9Ij-wuz1Dw6i0Ujti7ey2A5OE6bnqMdBAIGNJbrKFas';
         if ($envToken && $envToken !== $expiredToken) {
@@ -66,8 +66,8 @@ class BackendApiService
         }
 
         // Fallback: Dynamically login as Admin to get a fresh token
-        $adminEmail = env('BACKEND_ADMIN_EMAIL', 'admin.adp18@gmail.com');
-        $adminPassword = env('BACKEND_ADMIN_PASSWORD', 'admin123_');
+        $adminEmail = config('services.backend_api.admin_email', 'admin.adp18@gmail.com');
+        $adminPassword = config('services.backend_api.admin_password', 'admin123_');
 
         if ($adminEmail && $adminPassword) {
             try {

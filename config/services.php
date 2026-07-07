@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'backend_api' => [
+        'url' => env('BACKEND_API_URL', 'http://127.0.0.1:3000'),
+        'prefix' => env('BACKEND_API_PREFIX', 'api'),
+        'admin_token' => env('BACKEND_ADMIN_JWT_TOKEN'),
+        'admin_email' => env('BACKEND_ADMIN_EMAIL', 'admin.adp18@gmail.com'),
+        'admin_password' => env('BACKEND_ADMIN_PASSWORD', 'admin123_'),
+    ],
+
 ];
