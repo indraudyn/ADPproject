@@ -22,7 +22,7 @@
             background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/bgparwa.png');
         }
         .hero-parwa .hero-title-img {
-            max-width: 400px; /* Smaller title */
+            max-width: 250px; /* Smaller title */
         }
     </style>
 </head>

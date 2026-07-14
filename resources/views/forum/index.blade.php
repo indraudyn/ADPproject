@@ -15,7 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     {{-- Custom CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/forum.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forum.css') }}?v={{ time() }}">
 </head>
 <body class="forum-landing-page">
     <x-loading-screen />

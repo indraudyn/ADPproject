@@ -20,7 +20,7 @@ body {
 }
 
 .hero-title-img {
-    max-width: 800px;
+    max-width: 600px;
     width: 100%;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
 }

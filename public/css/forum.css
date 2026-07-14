@@ -91,6 +91,7 @@ body.forum-landing-page {
     background-attachment: fixed;
     min-height: 100vh;
     margin: 0;
+    overflow-x: hidden;
 }
 
 
@@ -106,7 +107,7 @@ body.forum-landing-page {
 }
 
 .forum-hero-title {
-    font-size: 8.5rem;
+    font-size: 5rem;
     font-weight: 700;
     font-family: 'Oleo Script', cursive;
     color: var(--forum-red);
@@ -120,6 +121,8 @@ body.forum-landing-page {
     max-width: 90%;
     margin: 0 auto;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+    line-height: 1.2;
+    word-wrap: break-word;
 }
 
 /* MAIN CONTENT CONTAINER */
@@ -127,7 +130,7 @@ body.forum-landing-page {
     background: white;
     min-height: 40vh;
     padding: 4rem 0;
-    border-top-left-radius: 40px; /* Optional slight curve? Screenshot shows flat top but I'll add a clean transition */
+    border-radius: 40px 40px 0 0;
 }
 
 .forum-container {
@@ -521,11 +524,24 @@ body.forum-show-page {
 }
 
 @media (max-width: 768px) {
+    .forum-hero-title { font-size: 3rem; }
     .show-hero-title { font-size: 3rem; }
     .show-hero-subtitle { font-size: 1.75rem; }
     .bubble-v2 { max-width: 85%; }
     .chat-body-v2 { padding: 1.5rem; }
     .chat-footer-v2 { padding: 1rem 1.5rem; }
+    
+    .landing-topic-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+    }
+    
+    .landing-topic-actions {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: flex-end;
+    }
 }
 
 /* DOT USER PARTICIPATED IN TOPIC */
