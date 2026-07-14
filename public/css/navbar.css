@@ -5,8 +5,8 @@
     padding: 0; /* Moved padding to internal elements so border touches bottom */
 }
 
-.navbar.scrolled {
-    background: #8B0000; /* Dark red background when scrolled */
+.navbar.scrolled, .navbar.menu-open {
+    background: #8B0000; /* Dark red background when scrolled or menu open */
     padding: 0; 
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
@@ -22,7 +22,8 @@
     transition: all 0.3s ease;
 }
 
-.navbar.scrolled .navbar-nav .nav-link {
+.navbar.scrolled .navbar-nav .nav-link, 
+.navbar.menu-open .navbar-nav .nav-link {
     padding: 1.1rem 1.5rem !important; /* Shrink vertically when scrolled */
 }
 
@@ -33,7 +34,9 @@
 
 /* Gold underline only appears when scrolled */
 .navbar.scrolled .navbar-nav .nav-link:hover,
-.navbar.scrolled .navbar-nav .nav-link.active {
+.navbar.scrolled .navbar-nav .nav-link.active,
+.navbar.menu-open .navbar-nav .nav-link:hover,
+.navbar.menu-open .navbar-nav .nav-link.active {
     border-bottom-color: #ffd700 !important;
 }
 
@@ -45,7 +48,9 @@
 }
 
 .navbar.scrolled .auth-buttons,
-.navbar.scrolled .navbar-toggler {
+.navbar.scrolled .navbar-toggler,
+.navbar.menu-open .auth-buttons,
+.navbar.menu-open .navbar-toggler {
     margin-top: 0.8rem;
     margin-bottom: 0.8rem;
 }
@@ -64,4 +69,67 @@
     background-color: #a50000;
     border-color: #a50000;
     color: white;
+}
+
+/* Toggler Button Styling */
+.navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* RESPONSIVE NAVBAR (MOBILE) */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background: rgba(139, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin-top: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 1rem !important;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-size: 1.1rem;
+    }
+    
+    .navbar-nav .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1.5rem !important;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .auth-buttons .btn,
+    .auth-buttons .dropdown {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .auth-buttons .dropdown-toggle {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem;
+    }
+    
+    .auth-buttons .dropdown-menu {
+        text-align: center;
+        background: rgba(255,255,255,0.95);
+        border: none;
+        margin-top: 0.5rem;
+    }
 }

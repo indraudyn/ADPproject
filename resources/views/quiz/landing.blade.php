@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Custom CSS (Navbar styles) -->
-    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}?v={{ time() }}">
     
     <style>
         body {
@@ -49,10 +49,7 @@
             background-size: cover;
             background-position: center;
             z-index: -1;
-            /* filter: brightness(0.6); Removed brightness filter to let the red show through */
         }
-
-
 
         /* Content */
         .quiz-content {
@@ -114,6 +111,44 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 991px) {
+            .quiz-title {
+                font-size: 7rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quiz-title {
+                font-size: 5rem;
+                margin-bottom: 40px;
+                -webkit-text-stroke: 1.5px white;
+            }
+            .quiz-subtitle {
+                font-size: 1.5rem;
+                letter-spacing: 4px;
+            }
+            .btn-start {
+                font-size: 1.5rem;
+                padding: 10px 50px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .quiz-title {
+                font-size: 4rem;
+                margin-bottom: 30px;
+                -webkit-text-stroke: 1px white;
+            }
+            .quiz-subtitle {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+            .btn-start {
+                font-size: 1.2rem;
+                padding: 10px 40px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,11 +161,7 @@
         <!-- Navbar -->
         <x-navbar />
 
-
-        <div class="quiz-content">
-            <!-- Optional: Ornament image if available -->
-            <!-- <img src="{{ asset('images/ornament.png') }}" class="ornament" alt="Ornament"> -->
-
+        <div class="quiz-content mt-5">
             <div class="quiz-subtitle">Quiz</div>
             <h1 class="quiz-title">Asta Dasa Parwa</h1>
             
@@ -140,7 +171,5 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-
 </body>
 </html>

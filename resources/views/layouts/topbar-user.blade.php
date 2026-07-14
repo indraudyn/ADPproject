@@ -53,17 +53,37 @@
         </div>
 
         {{-- Sembunyikan dan Munculkan Sidebar Function Global --}}
+        <!-- Overlay untuk mobile -->
+        <div class="sidebar-overlay"></div>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const toggleBtn = document.getElementById('menu-toggle');
                 const sidebar = document.querySelector('.sidebar');
+                const overlay = document.querySelector('.sidebar-overlay');
                 
                 // Pastikan tidak melakukan set listener dua kali
                 if (toggleBtn && sidebar && typeof window.sidebarToggleBound === 'undefined') {
                     window.sidebarToggleBound = true;
+                    
                     toggleBtn.addEventListener('click', function() {
-                        sidebar.classList.toggle('collapsed');
+                        if (window.innerWidth <= 768) {
+                            // Mobile behavior: off-canvas
+                            sidebar.classList.toggle('active');
+                            if (overlay) overlay.classList.toggle('active');
+                        } else {
+                            // Desktop behavior: collapse to icons
+                            sidebar.classList.toggle('collapsed');
+                        }
                     });
+
+                    // Close sidebar when clicking overlay on mobile
+                    if (overlay) {
+                        overlay.addEventListener('click', function() {
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                        });
+                    }
                 }
             });
         </script>

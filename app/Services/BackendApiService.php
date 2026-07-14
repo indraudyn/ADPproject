@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class BackendApiService
 {
+    public static array $apiLogs = [];
     protected string $baseUrl;
     protected string $prefix;
 
@@ -34,7 +35,16 @@ class BackendApiService
      */
     protected function request(?string $token = null)
     {
-        $request = Http::acceptJson()->timeout(15);
+        $request = Http::acceptJson()->timeout(15)->withOptions([
+            'on_stats' => function (\GuzzleHttp\TransferStats $stats) {
+                $time = $stats->getTransferTime() * 1000;
+                $url = $stats->getRequest()->getUri();
+                self::$apiLogs[] = [
+                    'url' => (string) $url,
+                    'time' => $time,
+                ];
+            }
+        ]);
 
         if (!$token) {
             $token = session('jwt_token');

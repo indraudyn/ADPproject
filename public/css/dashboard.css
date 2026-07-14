@@ -128,30 +128,57 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        width: 80px;
-        padding: 20px 10px;
+        width: 240px;
         position: fixed;
+        left: -240px; /* Hidden by default */
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: left 0.3s ease;
+    }
+    
+    /* When active (not collapsed) on mobile */
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar .logo {
+        display: block; /* Show logo in offcanvas */
+    }
+    
+    .sidebar .menu li a span {
+        display: inline; /* Show text */
+    }
+    
+    .sidebar .menu li a {
+        justify-content: flex-start;
+        padding: 12px;
+    }
+    
+    .content {
+        margin-left: 0; /* Content takes full width */
+        width: 100%;
+        max-width: 100vw;
+    }
+    
+    /* Fix topbar toggle position */
+    .topbar {
+        position: relative;
+        z-index: 998;
+    }
+    
+    /* Adding an overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
         z-index: 999;
     }
-    .sidebar .logo {
-        display: none;
-    }
-    .sidebar .menu li a span {
-        display: none;
-    }
-    .sidebar .menu li a {
-        justify-content: center;
-        padding: 12px 0;
-    }
-    .sidebar .menu li a i {
-        font-size: 22px;
-        margin: 0;
-    }
-    .content {
-        margin-left: 80px; 
-    }
-    .sidebar.collapsed {
-        left: -80px;
+    .sidebar-overlay.active {
+        display: block;
     }
 }
 

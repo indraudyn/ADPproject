@@ -84,7 +84,9 @@ class AuthenticatedSessionController extends Controller
                 }
             } else {
                 $msg = $apiResponse->json('message') ?? 'Email atau password salah pada server backend.';
-                return back()->withErrors(['email' => $msg])->withInput();
+                // Determine which field to attach the error to based on the message string
+                $errorField = (stripos($msg, 'password') !== false) ? 'password' : 'email';
+                return back()->withErrors([$errorField => $msg])->withInput();
             }
         } catch (\Exception $e) {
             return back()->withErrors(['email' => 'Gagal terhubung ke server backend: ' . $e->getMessage()])->withInput();
