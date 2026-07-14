@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-adp.png') }}">
     <meta charset="UTF-8">
     <title>Register | Asta Dasa Parwa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">

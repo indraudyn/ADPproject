@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-adp.png') }}">
     <meta charset="UTF-8">
     <title>Manajemen Cerita</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
