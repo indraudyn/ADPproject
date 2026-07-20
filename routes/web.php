@@ -125,9 +125,6 @@ Route::get('/settings', fn () => view('settings'))
 /*
 | CERITA
 */
-Route::get('/cerita/{id}', [CeritaController::class, 'show'])
-    ->name('cerita.show');
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/cerita/upload', [CeritaController::class, 'upload'])
@@ -148,6 +145,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cerita/{id}', [CeritaController::class, 'destroy'])
         ->name('cerita.destroy');
 });
+
+Route::get('/cerita/{id}', [CeritaController::class, 'show'])
+    ->name('cerita.show');
+
 
 
 
