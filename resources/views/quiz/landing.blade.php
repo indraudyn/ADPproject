@@ -46,7 +46,7 @@
             height: 100%;
             background-image: 
                 linear-gradient(rgba(50, 0, 0, 0.6), rgba(50, 0, 0, 0.6)), /* Dark Red Overlay */
-                url("{{ asset('images/BGkuis.png') }}");
+                url("{{ asset('images/bgkuis.jpeg') }}");
             background-size: cover;
             background-position: center;
             z-index: -1;
