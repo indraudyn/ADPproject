@@ -46,7 +46,7 @@
             height: 100%;
             background-image: 
                 linear-gradient(rgba(50, 0, 0, 0.6), rgba(50, 0, 0, 0.6)), /* Dark Red Overlay */
-                url("{{ asset('images/bghome.png') }}");
+                url("{{ asset('images/BGkuis.png') }}");
             background-size: cover;
             background-position: center;
             z-index: -1;
@@ -166,7 +166,11 @@
             <div class="quiz-subtitle">Quiz</div>
             <h1 class="quiz-title">Asta Dasa Parwa</h1>
             
-            <a href="{{ route('quiz.play') }}" class="btn-start">Start</a>
+            @auth
+                <a href="{{ route('quiz.play') }}" class="btn-start">Start</a>
+            @else
+                <a href="{{ route('login') }}" class="btn-start">Login untuk Mulai</a>
+            @endauth
         </div>
     </div>
 

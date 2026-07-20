@@ -442,24 +442,22 @@ Route::middleware(['auth','admin'])
 
 });
 
+Route::get('/quiz', [QuizPlayController::class, 'index'])->name('quiz.index');
+
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/quiz/start', [App\Http\Controllers\QuizPlayController::class,'start'])
+    Route::get('/quiz/play', [QuizPlayController::class, 'start'])->name('quiz.play');
+
+    Route::get('/quiz/start', [QuizPlayController::class, 'start'])
         ->name('quiz.start');
 
-    Route::post('/quiz/submit', [App\Http\Controllers\QuizPlayController::class,'submit'])
+    Route::post('/quiz/submit', [QuizPlayController::class, 'submit'])
         ->name('quiz.submit');
 
+    Route::get('/quiz/result', [QuizPlayController::class, 'result'])
+        ->name('quiz.result');
+
 });
-
-Route::get('/quiz', [QuizPlayController::class, 'index'])->name('quiz.index');
-Route::get('/quiz/play', [QuizPlayController::class, 'start'])->name('quiz.play');
-
-Route::post('/quiz/submit', [QuizPlayController::class,'submit'])
-    ->name('quiz.submit');
-
-Route::get('/quiz/result', [QuizPlayController::class,'result'])
-    ->name('quiz.result');
 
 /*
 | DASHBOARD NARASUMBER & CERITA
