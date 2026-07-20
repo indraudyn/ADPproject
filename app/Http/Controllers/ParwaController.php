@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\Log;
 
 class ParwaController extends Controller
 {
+    /**
+     * Convert any string to a URL-friendly slug.
+     * e.g. "Adi Parva" => "adi-parva", "Bab I" => "bab-i"
+     */
+    public static function toSlug(string $text): string
+    {
+        return \Illuminate\Support\Str::slug($text);
+    }
+
+    /**
+     * Convert a slug back to its original title case form.
+     * e.g. "adi-parva" => "Adi Parva", "bab-i" => "Bab I"
+     */
+    public static function fromSlug(string $slug): string
+    {
+        return ucwords(str_replace('-', ' ', $slug));
+    }
+
     public static function getBookNameBySlug(string $slug): string
     {
         $map = [
@@ -110,8 +128,12 @@ class ParwaController extends Controller
         return view('parwa.detail', compact('parwa', 'sections', 'bookName', 'ceritas', 'versions', 'videos', 'audios'));
     }
 
-    public function read($book, $section, BackendApiService $apiService)
+    public function read($bookSlug, $sectionSlug, BackendApiService $apiService)
     {
+        // Convert slugs back to real names for API calls
+        $book = self::fromSlug($bookSlug);
+        $section = self::fromSlug($sectionSlug);
+        
         // Get version from URL param first, then from session as fallback
         $version = request()->query('version') ?: session('selected_parwa_version');
         
@@ -245,10 +267,10 @@ class ParwaController extends Controller
             
             if ($currentIdx !== -1) {
                 if (isset($sectionsList[$currentIdx - 1])) {
-                    $prevSection = $sectionsList[$currentIdx - 1]['section'];
+                    $prevSection = self::toSlug($sectionsList[$currentIdx - 1]['section']);
                 }
                 if (isset($sectionsList[$currentIdx + 1])) {
-                    $nextSection = $sectionsList[$currentIdx + 1]['section'];
+                    $nextSection = self::toSlug($sectionsList[$currentIdx + 1]['section']);
                 }
             }
         }
@@ -284,7 +306,9 @@ class ParwaController extends Controller
             ]);
         }
 
-        return view('parwa.read', compact('content', 'book', 'section', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
+        $bookSlug = self::toSlug($book);
+        $sectionSlug = self::toSlug($section);
+        return view('parwa.read', compact('content', 'book', 'section', 'bookSlug', 'sectionSlug', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
     }
 
     public function video($slug)

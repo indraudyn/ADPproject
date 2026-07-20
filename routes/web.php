@@ -90,20 +90,7 @@ Route::get('/api/parwa/sections-by-book', function (Request $request, \App\Servi
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 
 
-/*
-| PROFILE (AUTH)
-*/
-Route::middleware('auth')->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
-});
 
 /*
 | ADMIN VIEW
@@ -116,10 +103,6 @@ Route::middleware(['auth', 'admin'])->get('/admin', function () {
 /*
 | PROFILE (VIEW & CONTROLLER)
 */
-Route::get('/profile', function () {
-    return view('profile');
-})->middleware('auth')->name('profile');
-
 Route::get('/profile', [ProfileController::class, 'index'])
     ->middleware('auth')
     ->name('profile');
@@ -134,106 +117,39 @@ Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
 
 
 /*
-| CERITA (VIEW)
-*/
-Route::get('/cerita/upload', fn () => view('cerita.upload'))
-    ->name('cerita.upload');
-
-/*
 | MENU UMUM
 */
-Route::get('/forum', fn () => view('forum.index'))
-    ->name('forum.index');
-
 Route::get('/settings', fn () => view('settings'))
     ->name('settings');
 
 /*
-| CERITA (VIEW DUPLIKAT)
-*/
-Route::get('/cerita/upload', function () {
-    return view('cerita.upload');
-})->name('cerita.upload');
-
-/*
-| CERITA (CONTROLLER)
-*/
-Route::get('/cerita/create', [CeritaController::class, 'create'])
-    ->name('cerita.create');
-
-Route::get('/cerita/create', [CeritaController::class, 'create'])
-    ->name('cerita.create');
-
-Route::post('/cerita/store', [CeritaController::class, 'store'])
-    ->name('cerita.store');
-
-/*
-| CERITA (AUTH GROUP)
-*/
-Route::middleware('auth')->group(function () {
-
-    Route::get('/cerita/upload', [CeritaController::class, 'upload'])
-        ->middleware('auth')
-        ->name('cerita.upload');
-
-    Route::get('/cerita/create', [CeritaController::class, 'create'])
-        ->name('cerita.create');
-
-    Route::post('/cerita/store', [CeritaController::class, 'store'])
-        ->name('cerita.store');
-
-    Route::get('/cerita/{id}/edit', [CeritaController::class, 'edit'])
-        ->name('cerita.edit');
-
-    Route::get('/cerita/{id}', [CeritaController::class, 'show'])
-        ->name('cerita.show');
-
-    Route::delete('/cerita/{id}', [CeritaController::class, 'destroy'])
-        ->name('cerita.destroy');
-});
-
-/*
-| CERITA (AUTH DUPLIKAT)
-*/
-Route::middleware('auth')->group(function () {
-
-    Route::get('/cerita/create', [CeritaController::class, 'create'])
-        ->name('cerita.create');
-
-    Route::post('/cerita/store', [CeritaController::class, 'store'])
-        ->name('cerita.store');
-
-    Route::get('/cerita/upload', [CeritaController::class, 'upload'])
-        ->name('cerita.upload');
-});
-
-/*
-| CERITA SHOW
+| CERITA
 */
 Route::get('/cerita/{id}', [CeritaController::class, 'show'])
     ->name('cerita.show');
 
-/*
-| CERITA EDIT & UPDATE
-*/
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
+
+    Route::get('/cerita/upload', [CeritaController::class, 'upload'])
+        ->name('cerita.upload');
+
+    Route::get('/cerita/create', [CeritaController::class, 'create'])
+        ->name('cerita.create');
+
+    Route::post('/cerita/store', [CeritaController::class, 'store'])
+        ->name('cerita.store');
 
     Route::get('/cerita/{id}/edit', [CeritaController::class, 'edit'])
         ->name('cerita.edit');
 
     Route::put('/cerita/{id}', [CeritaController::class, 'update'])
         ->name('cerita.update');
+
+    Route::delete('/cerita/{id}', [CeritaController::class, 'destroy'])
+        ->name('cerita.destroy');
 });
 
 
-/*
-| DASHBOARD ADMIN
-*/
-Route::middleware(['auth', 'admin'])->group(function () {
-
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-        ->name('admin.dashboard');
-});
 
 /*
 | UPDATE ROLE USER

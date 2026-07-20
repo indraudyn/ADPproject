@@ -812,7 +812,7 @@
                             @foreach($items as $sec)
                             <div class="section-card section-item" data-section-name="{{ $sec['section'] }}" data-sub-parwa="{{ $subParwa }}">
                                 <h3 class="section-card-title">{{ $sec['section'] }}</h3>
-                                <a href="{{ route('parwa.read', ['book' => $bookName, 'section' => $sec['section']]) }}" class="btn-baca section-read-link" data-base-url="{{ route('parwa.read', ['book' => $bookName, 'section' => $sec['section']]) }}">
+                                <a href="{{ route('parwa.read', ['book' => \Illuminate\Support\Str::slug($bookName), 'section' => \Illuminate\Support\Str::slug($sec['section'])]) }}" class="btn-baca section-read-link" data-base-url="{{ route('parwa.read', ['book' => \Illuminate\Support\Str::slug($bookName), 'section' => \Illuminate\Support\Str::slug($sec['section'])]) }}">
                                     Baca Selengkapanya <i class="bi bi-arrow-right-short"></i>
                                 </a>
                             </div>
