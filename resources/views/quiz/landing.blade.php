@@ -169,7 +169,7 @@
             @auth
                 <a href="{{ route('quiz.play') }}" class="btn-start">Start</a>
             @else
-                <a href="{{ route('login') }}" class="btn-start">Login untuk Mulai</a>
+                <a href="{{ route('login') }}" class="btn-start">Start</a>
             @endauth
         </div>
     </div>
