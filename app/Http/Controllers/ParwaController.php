@@ -191,7 +191,9 @@ class ParwaController extends Controller
                 if ($versionModel) {
                     $query->where(function($q) use ($versionModel) {
                         $q->where('versionId', $versionModel->id)
-                          ->orWhereNull('versionId');
+                          ->orWhereNull('versionId')
+                          ->orWhere('versionId', 0)
+                          ->orWhere('versionId', '');
                     });
                 } else {
                     return response()->json(['data' => []]);
