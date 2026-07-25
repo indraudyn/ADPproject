@@ -26,7 +26,7 @@ class CeritaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'parwa_id' => 'required',
+            'parwa_id' => 'required|exists:parwas,name',
             'judul' => 'required|string|max:255',
             'sub_parwa' => 'nullable|string|max:255',
             'sumber' => 'required|string|max:255',

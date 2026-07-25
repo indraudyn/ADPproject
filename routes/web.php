@@ -47,6 +47,10 @@ Route::post('/set-parwa-version', function (Illuminate\Http\Request $request) {
 
 Route::get('/ajax/parwa/sections-by-book', [App\Http\Controllers\ParwaController::class, 'sectionsByBook']);
 
+Route::get('/ajax/debug-db', function() {
+    return \App\Models\Cerita::select('id', 'judul', 'book', 'section', 'versionId', 'status')->get();
+});
+
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 
 
