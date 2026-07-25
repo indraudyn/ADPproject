@@ -189,7 +189,10 @@ class ParwaController extends Controller
             if ($version) {
                 $versionModel = \App\Models\Version::where('name', $version)->first();
                 if ($versionModel) {
-                    $query->where('versionId', $versionModel->id);
+                    $query->where(function($q) use ($versionModel) {
+                        $q->where('versionId', $versionModel->id)
+                          ->orWhereNull('versionId');
+                    });
                 } else {
                     return response()->json(['data' => []]);
                 }
