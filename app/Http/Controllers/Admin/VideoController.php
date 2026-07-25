@@ -14,19 +14,10 @@ class VideoController extends Controller
         return view('admin.video.index', compact('videos'));
     }
 
-    public function create(\App\Services\BackendApiService $apiService)
+    public function create()
     {
         $parwas = \App\Models\Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk admin video create: " . $e->getMessage());
-        }
         return view('admin.video.create', compact('parwas', 'versions'));
     }
 
@@ -37,6 +28,7 @@ class VideoController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
             'url' => 'required_if:type,youtube|nullable|url',
             'video_file' => 'required_if:type,upload|nullable|file|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
@@ -52,7 +44,7 @@ class VideoController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
-            'source' => auth()->user()->name,
+            'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'url' => $url,
             'type' => $request->type,
             'user_id' => auth()->id(),
@@ -62,20 +54,11 @@ class VideoController extends Controller
         return redirect()->route('admin.video.index')->with('success', 'Video berhasil ditambahkan!');
     }
 
-    public function edit($id, \App\Services\BackendApiService $apiService)
+    public function edit($id)
     {
         $video = Video::findOrFail($id);
         $parwas = \App\Models\Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk admin video edit: " . $e->getMessage());
-        }
         return view('admin.video.edit', compact('video', 'parwas', 'versions'));
     }
 
@@ -88,6 +71,7 @@ class VideoController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
             'url' => 'required_if:type,youtube|nullable|url',
             'video_file' => 'nullable|file|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
@@ -105,6 +89,7 @@ class VideoController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
+            'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'type' => $request->type,
             'url' => $url,
         ]);

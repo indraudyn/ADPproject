@@ -14,19 +14,10 @@ class VideoController extends Controller
         return view('narasumber.video.index', compact('videos'));
     }
 
-    public function create(\App\Services\BackendApiService $apiService)
+    public function create()
     {
         $parwas = \App\Models\Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk narasumber video create: " . $e->getMessage());
-        }
         return view('narasumber.video.create', compact('parwas', 'versions'));
     }
 
@@ -62,20 +53,11 @@ class VideoController extends Controller
         return redirect()->route('narasumber.video.index')->with('success', 'Video berhasil ditambahkan!');
     }
 
-    public function edit($id, \App\Services\BackendApiService $apiService)
+    public function edit($id)
     {
         $video = Video::findOrFail($id);
         $parwas = \App\Models\Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk narasumber video edit: " . $e->getMessage());
-        }
         return view('narasumber.video.edit', compact('video', 'parwas', 'versions'));
     }
 

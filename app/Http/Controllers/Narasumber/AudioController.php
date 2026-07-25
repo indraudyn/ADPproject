@@ -15,19 +15,10 @@ class AudioController extends Controller
         return view('narasumber.audio.index', compact('audios'));
     }
 
-    public function create(\App\Services\BackendApiService $apiService)
+    public function create()
     {
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk narasumber audio create: " . $e->getMessage());
-        }
         return view('narasumber.audio.create', compact('parwas', 'versions'));
     }
 
@@ -63,20 +54,11 @@ class AudioController extends Controller
         return redirect()->route('narasumber.audio.index')->with('success', 'Audio berhasil ditambahkan!');
     }
 
-    public function edit($id, \App\Services\BackendApiService $apiService)
+    public function edit($id)
     {
         $audio = Audio::findOrFail($id);
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk narasumber audio edit: " . $e->getMessage());
-        }
         return view('narasumber.audio.edit', compact('audio', 'parwas', 'versions'));
     }
 

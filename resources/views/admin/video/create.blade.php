@@ -120,6 +120,10 @@
                                         <input type="file" name="video_file" class="form-control" id="videoFile" accept="video/*">
                                         <small class="text-muted">Maksimum 50MB</small>
                                      </div>
+                                     <div class="mb-3">
+                                        <label for="videoSource" class="form-label">Sumber Video (Opsional)</label>
+                                        <input type="text" name="source" class="form-control" id="videoSource" placeholder="Kosongkan jika sumber dari Anda sendiri ({{ auth()->user()->name }})">
+                                     </div>
                                 </div>
                             </div>
                         </div>

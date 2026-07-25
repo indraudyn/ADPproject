@@ -16,7 +16,7 @@ return new class extends Migration
 
             // Relasi ke user
             $table->foreignId('user_id')
-                  ->constrained('users')
+                  ->constrained('User')
                   ->onDelete('cascade');
 
             // Isi pesan forum

@@ -29,16 +29,7 @@ Route::get('/set-locale/{locale}', function ($locale) {
     return back();
 })->name('set-locale');
 
-// Save selected parwa version to session
-Route::post('/set-parwa-version', function (Request $request) {
-    $version = $request->input('version');
-    if ($version && $version !== 'all') {
-        session(['selected_parwa_version' => $version]);
-    } else {
-        session()->forget('selected_parwa_version');
-    }
-    return response()->json(['ok' => true]);
-})->name('set-parwa-version');
+
 
 Route::controller(App\Http\Controllers\ParwaController::class)->group(function () {
     Route::get('/parwa', 'index')->name('parwa.index');
@@ -47,45 +38,7 @@ Route::controller(App\Http\Controllers\ParwaController::class)->group(function (
     Route::get('/parwa/{slug}/video', 'video')->name('parwa.video');
 });
 
-Route::get('/api/parwa/sections-by-book', function (Request $request, \App\Services\BackendApiService $apiService) {
-    $book = $request->query('book');
-    if (!$book) {
-        return response()->json(['data' => []]);
-    }
-    
-    $bookMap = [
-        'Adi Parwa' => 'Adi Parva',
-        'Sabha Parwa' => 'Sabha Parva',
-        'Vana Parwa' => 'Vana Parva',
-        'Virata Parwa' => 'Virata Parva',
-        'Udyoga Parwa' => 'Udyoga Parva',
-        'Bhishma Parwa' => 'Bhishma Parva',
-        'Drona Parwa' => 'Drona Parva',
-        'Karna Parwa' => 'Karna Parva',
-        'Shalya Parwa' => 'Shalya Parva',
-        'Sauptika Parwa' => 'Sauptika Parva',
-        'Stri Parwa' => 'Stri Parva',
-        'Shanti Parwa' => 'Shanti Parva',
-        'Anushasana Parwa' => 'Anushasana Parva',
-        'Ashvamedhika Parwa' => 'Ashvamedhika Parva',
-        'Ashramavasika Parwa' => 'Ashramavasika Parva',
-        'Mausala Parwa' => 'Mausala Parva',
-        'Mahaprasthanika Parwa' => 'Mahaprasthanika Parva',
-        'Svargarohana Parwa' => 'Swargarohanika Parva',
-    ];
-    $bookName = $bookMap[$book] ?? $book;
 
-    try {
-        $response = $apiService->getSectionsByBook($bookName);
-        if ($response->successful()) {
-            return response()->json($response->json());
-        }
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::warning("Gagal mengambil sections untuk API: " . $e->getMessage());
-    }
-
-    return response()->json(['data' => []]);
-})->name('api.parwa.sections');
 
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 
@@ -155,45 +108,9 @@ Route::get('/cerita/{id}', [CeritaController::class, 'show'])
 /*
 | UPDATE ROLE USER
 */
-Route::put('/admin/user/{user}/role', function ($userId, Request $request, \App\Services\BackendApiService $apiService) {
-    $request->validate([
-        'role' => 'required|in:admin,user,narasumber'
-    ]);
-
-    // Get the email of the local user
-    $localUser = \App\Models\User::findOrFail($userId);
-    $email = $localUser->email;
-
-    // Find correct backend user ID by email
-    $backendId = $userId;
-    try {
-        $resp = $apiService->getAdminUsers(1, 100);
-        if ($resp->successful()) {
-            $usersList = $resp->json()['users'] ?? [];
-            foreach ($usersList as $u) {
-                if (strtolower($u['email'] ?? '') === strtolower($email)) {
-                    $backendId = $u['id'];
-                    break;
-                }
-            }
-        }
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::warning("Gagal menyinkronkan user ID untuk update role: " . $e->getMessage());
-    }
-
-    // 1. Update on backend API using correct backend ID
-    try {
-        $apiService->updateAdminUser($backendId, ['role' => $request->role]);
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::warning("Gagal memperbarui role di backend: " . $e->getMessage());
-    }
-
-    // 2. Update locally
-    $localUser->update(['role' => $request->role]);
-
-    return back()->with('success', 'Role berhasil diperbarui');
-
-})->middleware(['auth', 'admin'])->name('admin.user.role');
+Route::put('/admin/user/{id}/role', [UserController::class, 'updateRole'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.user.role');
 
 /*
 | DASHBOARD GROUP

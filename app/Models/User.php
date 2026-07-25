@@ -13,6 +13,26 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Gunakan tabel 'User' (kapital) dari Prisma backend.
+     */
+    protected $table = 'User';
+
+    /**
+     * Prisma menggunakan 'createdAt' (camelCase).
+     */
+    const CREATED_AT = 'createdAt';
+
+    /**
+     * Tabel User dari Prisma tidak memiliki kolom updated_at.
+     */
+    const UPDATED_AT = null;
+
+    /**
+     * Nonaktifkan remember_token karena tabel Prisma tidak memiliki kolom ini.
+     */
+    protected $rememberTokenName = '';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -31,7 +51,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -42,7 +61,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

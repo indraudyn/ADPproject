@@ -15,19 +15,10 @@ class AudioController extends Controller
         return view('admin.audio.index', compact('audios'));
     }
 
-    public function create(\App\Services\BackendApiService $apiService)
+    public function create()
     {
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk admin audio create: " . $e->getMessage());
-        }
         return view('admin.audio.create', compact('parwas', 'versions'));
     }
 
@@ -38,6 +29,7 @@ class AudioController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:link,upload',
             'url' => 'required_if:type,link|nullable|url',
             'audio_file' => 'required_if:type,upload|nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/aac,audio/x-m4a,audio/m4a,audio/mpga,audio/x-mpeg|max:20000',
@@ -53,7 +45,9 @@ class AudioController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
-            'source' => $request->type === 'link' ? 'Audio Link' : auth()->user()->name,
+            'source' => $request->type === 'link'
+                ? (parse_url($request->url, PHP_URL_HOST) ?: 'Audio Link')
+                : ($request->source ?: auth()->user()->name),
             'url' => $url,
             'type' => $request->type,
             'user_id' => auth()->id(),
@@ -63,20 +57,11 @@ class AudioController extends Controller
         return redirect()->route('admin.audio.index')->with('success', 'Audio berhasil ditambahkan!');
     }
 
-    public function edit($id, \App\Services\BackendApiService $apiService)
+    public function edit($id)
     {
         $audio = Audio::findOrFail($id);
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk admin audio edit: " . $e->getMessage());
-        }
         return view('admin.audio.edit', compact('audio', 'parwas', 'versions'));
     }
 
@@ -89,6 +74,7 @@ class AudioController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:link,upload',
             'url' => 'required_if:type,link|nullable|url',
             'audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/aac,audio/x-m4a,audio/m4a,audio/mpga,audio/x-mpeg|max:20000',
@@ -106,6 +92,9 @@ class AudioController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
+            'source' => $request->type === 'link'
+                ? (parse_url($request->url ?: $audio->url, PHP_URL_HOST) ?: 'Audio Link')
+                : ($request->source ?: auth()->user()->name),
             'type' => $request->type,
             'url' => $url,
         ]);

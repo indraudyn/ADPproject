@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Parwa;
 use App\Models\Video;
-use App\Services\BackendApiService;
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -16,6 +15,7 @@ class VideoController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
             'url' => 'required_if:type,youtube|nullable|url',
             'video_file' => 'required_if:type,upload|nullable|file|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000', // 50MB max
@@ -31,7 +31,7 @@ class VideoController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
-            'source' => $request->type == 'youtube' ? 'YouTube' : 'User Upload',
+            'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'url' => $url,
             'type' => $request->type,
         ]);
@@ -45,19 +45,10 @@ class VideoController extends Controller
         return view('video.upload', compact('videos'));
     }
 
-    public function create(BackendApiService $apiService)
+    public function create()
     {
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk video create: " . $e->getMessage());
-        }
         return view('video.create', compact('parwas', 'versions'));
     }
 
@@ -68,6 +59,7 @@ class VideoController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
             'url' => 'required_if:type,youtube|nullable|url',
             'video_file' => 'required_if:type,upload|nullable|file|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
@@ -83,33 +75,23 @@ class VideoController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
-            'source' => $request->type == 'youtube' ? 'YouTube' : auth()->user()->name,
+            'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'url' => $url,
             'type' => $request->type,
             'user_id' => auth()->id(),
             'status' => in_array(auth()->user()->role, ['admin', 'narasumber']) ? 'approved' : 'pending', 
         ]);
 
-        // Redirect without flash message as requested
         return redirect()->route('video.upload');
     }
 
-    public function edit(Video $video, BackendApiService $apiService)
+    public function edit(Video $video)
     {
         if ($video->user_id !== auth()->id() && auth()->user()->role !== 'admin' && auth()->user()->role !== 'narasumber') {
             abort(403);
         }
         $parwas = Parwa::all();
         $versions = [];
-        try {
-            $versionsResponse = $apiService->getVersions();
-            if ($versionsResponse->successful()) {
-                $versionsData = $versionsResponse->json();
-                $versions = $versionsData['data'] ?? [];
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal mengambil versions untuk video edit: " . $e->getMessage());
-        }
         return view('video.edit', compact('video', 'parwas', 'versions'));
     }
 
@@ -124,6 +106,7 @@ class VideoController extends Controller
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
             'url' => 'required_if:type,youtube|nullable|url',
             'video_file' => 'nullable|file|mimetypes:video/mp4,video/mpeg,video/quicktime|max:50000',
@@ -141,6 +124,7 @@ class VideoController extends Controller
             'section' => $request->section,
             'version' => $request->version,
             'title' => $request->title,
+            'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'type' => $request->type,
             'url' => $url,
             'status' => 'pending', // Reset status to pending to require admin re-approval
