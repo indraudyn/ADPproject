@@ -81,6 +81,32 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Pilih Tipe Versi</label>
+                                <select name="versi_tipe" id="versiTipeSelect" class="form-select" required>
+                                    <option value="existing" {{ old('versi_tipe', 'existing') == 'existing' ? 'selected' : '' }}>Gunakan Versi Terjemahan yang Ada</option>
+                                    <option value="new" {{ old('versi_tipe') == 'new' ? 'selected' : '' }}>Buat Versi Terjemahan Baru</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3" id="versiExistingGroup" style="{{ old('versi_tipe', 'existing') == 'existing' ? '' : 'display: none;' }}">
+                                <label class="form-label">Pilih Versi Terjemahan</label>
+                                <select name="versi_existing" id="versiExistingSelect" class="form-select">
+                                    <option value="" selected disabled>-- Pilih Versi --</option>
+                                    @foreach($versions as $ver)
+                                        <option value="{{ $ver }}" {{ old('versi_existing') == $ver ? 'selected' : '' }}>
+                                            {{ $ver }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3" id="versiBaruGroup" style="{{ old('versi_tipe') == 'new' ? '' : 'display: none;' }}">
+                                <label class="form-label">Nama Versi Baru</label>
+                                <input type="text" name="versi_baru" class="form-control" placeholder="Contoh: Terjemahan Kadek, Versi Balinese, dll." value="{{ old('versi_baru') }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Pilih Bab (Section)</label>
                                 <select name="section" id="sectionSelect" class="form-select" required>
                                     <option value="" selected disabled>-- Pilih Bab --</option>
@@ -113,31 +139,6 @@
                                     <option value="id" {{ old('bahasa') == 'id' ? 'selected' : '' }}>Bahasa Indonesia</option>
                                     <option value="en" {{ old('bahasa') == 'en' ? 'selected' : '' }}>Bahasa Inggris (English)</option>
                                 </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Pilih Tipe Versi</label>
-                                <select name="versi_tipe" id="versiTipeSelect" class="form-select" required>
-                                    <option value="existing" {{ old('versi_tipe', 'existing') == 'existing' ? 'selected' : '' }}>Gunakan Versi Terjemahan yang Ada</option>
-                                    <option value="new" {{ old('versi_tipe') == 'new' ? 'selected' : '' }}>Buat Versi Terjemahan Baru</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3" id="versiExistingGroup" style="{{ old('versi_tipe', 'existing') == 'existing' ? '' : 'display: none;' }}">
-                                <label class="form-label">Pilih Versi Terjemahan</label>
-                                <select name="versi_existing" class="form-select">
-                                    <option value="" selected disabled>-- Pilih Versi --</option>
-                                    @foreach($versions as $ver)
-                                        <option value="{{ $ver }}" {{ old('versi_existing') == $ver ? 'selected' : '' }}>
-                                            {{ $ver }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3" id="versiBaruGroup" style="{{ old('versi_tipe') == 'new' ? '' : 'display: none;' }}">
-                                <label class="form-label">Nama Versi Baru</label>
-                                <input type="text" name="versi_baru" class="form-control" placeholder="Contoh: Terjemahan Kadek, Versi Balinese, dll." value="{{ old('versi_baru') }}">
                             </div>
                         </div>
 
@@ -202,9 +203,14 @@
         document.getElementById('ceritaInput').value = quill.root.innerHTML;
     });
 
-    // Dynamic Section (Bab) Fetching
-    document.getElementById('parwaSelect').addEventListener('change', function() {
-        const bookName = this.value;
+    // Dynamic Section (Bab) Fetching based on Parwa and Versi
+    function fetchChapters() {
+        const parwaSelect = document.getElementById('parwaSelect');
+        const bookName = parwaSelect ? parwaSelect.value : null;
+        
+        const versiTipe = document.getElementById('versiTipeSelect').value;
+        const versiExisting = document.querySelector('select[name="versi_existing"]').value;
+        
         const sectionSelect = document.getElementById('sectionSelect');
         const subParwaInput = document.getElementById('subParwaInput');
         
@@ -212,7 +218,17 @@
         sectionSelect.innerHTML = '<option value="" selected disabled>Loading Bab...</option>';
         subParwaInput.value = '';
 
-        fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}`)
+        if (!bookName) {
+            sectionSelect.innerHTML = '<option value="" selected disabled>-- Pilih Bab --</option><option value="custom_input">+ Masukkan Bab Baru (Manual) ...</option>';
+            return;
+        }
+
+        if (versiTipe === 'new') {
+            sectionSelect.innerHTML = '<option value="" selected disabled>-- Pilih Bab --</option><option value="custom_input">+ Masukkan Bab Baru (Manual) ...</option>';
+            return;
+        }
+
+        fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versiExisting)}`)
             .then(res => res.json())
             .then(json => {
                 const sectionsList = json.data || [];
@@ -236,9 +252,13 @@
             })
             .catch(err => {
                 console.error('Error fetching sections:', err);
-                sectionSelect.innerHTML = '<option value="" selected disabled>Gagal memuat Bab</option>';
+                sectionSelect.innerHTML = '<option value="" selected disabled>Gagal memuat Bab</option><option value="custom_input">+ Masukkan Bab Baru (Manual) ...</option>';
             });
-    });
+    }
+
+    document.getElementById('parwaSelect').addEventListener('change', fetchChapters);
+    document.getElementById('versiTipeSelect').addEventListener('change', fetchChapters);
+    document.querySelector('select[name="versi_existing"]').addEventListener('change', fetchChapters);
 
     // Update Sub-Parwa automatically when Bab is selected, and handle custom bab input toggle
     document.getElementById('sectionSelect').addEventListener('change', function() {

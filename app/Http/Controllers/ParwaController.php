@@ -177,12 +177,24 @@ class ParwaController extends Controller
     public function sectionsByBook(Request $request)
     {
         $book = $request->query('book');
+        $version = $request->query('version');
+        
         if (!$book) {
             return response()->json(['data' => []]);
         }
 
-        $sections = Cerita::where('book', $book)
-            ->orderBy('id', 'asc')
+        $query = Cerita::where('book', $book);
+        
+        if ($version) {
+            $versionModel = \App\Models\Version::where('name', $version)->first();
+            if ($versionModel) {
+                $query->where('versionId', $versionModel->id);
+            } else {
+                return response()->json(['data' => []]);
+            }
+        }
+
+        $sections = $query->orderBy('id', 'asc')
             ->get()
             ->map(function ($c) {
                 return [

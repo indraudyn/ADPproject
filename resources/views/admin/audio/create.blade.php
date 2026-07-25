@@ -70,6 +70,16 @@
                             </select>
                         </div>
 
+                                                <div class="mb-4">
+                            <label class="form-label fw-bold">Pilih Versi (Opsional)</label>
+                            <select name="version" id="versionSelect" class="form-select">
+                                <option value="" selected>-- Tanpa Versi --</option>
+                                @foreach($versions as $ver)
+                                    <option value="{{ $ver }}">{{ $ver }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="mb-4" id="sectionWrapper" style="display: none;">
                             <label class="form-label fw-bold">Pilih Bab / Section</label>
                             <select name="section" id="sectionSelect" class="form-select">
@@ -79,16 +89,6 @@
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 Memuat daftar bab...
                             </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Pilih Versi (Opsional)</label>
-                            <select name="version" class="form-select">
-                                <option value="" selected>-- Tanpa Versi --</option>
-                                @foreach($versions as $ver)
-                                    <option value="{{ $ver }}">{{ $ver }}</option>
-                                @endforeach
-                            </select>
                         </div>
 
                         <div class="mb-4">
