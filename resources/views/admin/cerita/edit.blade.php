@@ -89,9 +89,8 @@
                                         required>
                                     <option value="" disabled>-- Pilih Parwa --</option>
                                     @foreach($parwas as $parwa)
-                                        @php $bookVal = $parwa->book ?? $parwa->name ?? '' @endphp
-                                        <option value="{{ $bookVal }}"
-                                            {{ (old('parwa_book', $cerita->book ?? '') == $bookVal) ? 'selected' : '' }}>
+                                        @php $bookVal = $parwa->name @endphp
+                                        <option value="{{ $bookVal }}" {{ (old('parwa_book', $cerita->book ?? '') == $bookVal) ? 'selected' : '' }}>
                                             {{ $bookVal }}
                                         </option>
                                     @endforeach

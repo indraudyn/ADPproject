@@ -33,7 +33,7 @@ class Cerita extends Model
 
     public function parwa(): BelongsTo
     {
-        return $this->belongsTo(Parwa::class);
+        return $this->belongsTo(Parwa::class, 'book', 'name');
     }
 
     // Accessors for Legacy Columns

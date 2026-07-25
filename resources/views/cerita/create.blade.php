@@ -74,8 +74,8 @@
                                 <select name="parwa_id" id="parwaSelect" class="form-select" required>
                                     <option value="" selected disabled>-- Pilih Parwa --</option>
                                     @foreach($parwas as $parwa)
-                                        <option value="{{ $parwa->book }}" {{ old('parwa_id') == $parwa->book ? 'selected' : '' }}>
-                                            {{ $parwa->book }}
+                                        <option value="{{ $parwa->name }}" {{ old('parwa_id') == $parwa->name ? 'selected' : '' }}>
+                                            {{ $parwa->name }}
                                         </option>
                                     @endforeach
                                 </select>
