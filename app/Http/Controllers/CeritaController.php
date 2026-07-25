@@ -133,6 +133,7 @@ class CeritaController extends Controller
                 'slug' => $parwaSlug,
                 'nama' => $parwaNama,
             ],
+            'content_lang' => 'id',
         ];
 
         // Fetch related stories

@@ -38,6 +38,11 @@ Route::controller(App\Http\Controllers\ParwaController::class)->group(function (
     Route::get('/parwa/{slug}/video', 'video')->name('parwa.video');
 });
 
+Route::post('/set-parwa-version', function (Illuminate\Http\Request $request) {
+    session(['selected_parwa_version' => $request->version]);
+    return response()->json(['success' => true]);
+})->name('set-parwa-version');
+
 
 
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
