@@ -143,8 +143,18 @@ class ParwaController extends Controller
         $nextSection = ($currentIndex !== false && $currentIndex < count($allSections) - 1) ? \Illuminate\Support\Str::slug($allSections[$currentIndex + 1]) : null;
 
         $parwa = Parwa::where('slug', $bookSlug)->first();
-        $videos = Video::where('parwa_id', $parwa->id)->where('section', $section)->where('status', 'approved')->get();
-        $audios = Audio::where('parwa_id', $parwa->id)->where('section', $section)->where('status', 'approved')->get();
+        if (!$parwa) {
+            // Fallback: try to find by name generated from slug
+            $possibleName = self::fromSlug($bookSlug);
+            $parwa = Parwa::where('name', 'LIKE', '%' . str_replace('va', 'wa', strtolower($possibleName)) . '%')
+                ->orWhere('name', 'LIKE', '%' . str_replace('wa', 'va', strtolower($possibleName)) . '%')
+                ->first();
+        }
+        
+        $parwaId = $parwa ? $parwa->id : 0;
+
+        $videos = Video::where('parwa_id', $parwaId)->where('section', $section)->where('status', 'approved')->get();
+        $audios = Audio::where('parwa_id', $parwaId)->where('section', $section)->where('status', 'approved')->get();
 
         return view('parwa.read', compact('content', 'book', 'section', 'bookSlug', 'sectionSlug', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
     }
