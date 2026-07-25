@@ -167,59 +167,59 @@ function setAudioType(type) {
 document.addEventListener("DOMContentLoaded", function() {
     setAudioType('upload');
 
+    
     const parwaSelect = document.querySelector('select[name="parwa_id"]');
+    const versionSelect = document.querySelector('select[name="version"]');
     const sectionWrapper = document.getElementById('sectionWrapper');
     const sectionSelect = document.getElementById('sectionSelect');
     const sectionLoading = document.getElementById('sectionLoading');
 
+    function fetchSections() {
+        if (!parwaSelect) return;
+        const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
+        const bookName = selectedOption ? selectedOption.text : '';
+        const versionName = versionSelect ? versionSelect.value : '';
+
+        if (!bookName || parwaSelect.value === '') {
+            if (sectionWrapper) sectionWrapper.style.display = 'none';
+            return;
+        }
+
+        if (sectionWrapper) sectionWrapper.style.display = 'block';
+        if (sectionSelect) sectionSelect.style.display = 'none';
+        if (sectionLoading) sectionLoading.style.display = 'block';
+        if (sectionSelect) sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
+
+        fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versionName)}`)
+            .then(response => response.json())
+            .then(res => {
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
+                
+                const sections = res.data || [];
+                if (sections.length > 0) {
+                    sections.forEach(sec => {
+                        const option = document.createElement('option');
+                        option.value = sec.section;
+                        option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
+                        if (sectionSelect) sectionSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching sections:", err);
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
+            });
+    }
+
     if (parwaSelect) {
-        parwaSelect.addEventListener('change', function() {
-            const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
-            const bookName = selectedOption.text;
-
-            if (!bookName) {
-                sectionWrapper.style.display = 'none';
-                return;
-            }
-
-            // Show loading
-            sectionWrapper.style.display = 'block';
-            sectionSelect.style.display = 'none';
-            sectionLoading.style.display = 'block';
-            sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
-
-            fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}`)
-                .then(response => response.json())
-                                .then(res => {
-                    sectionLoading.style.display = 'none';
-                    sectionSelect.style.display = 'block';
-                    
-                    const sections = res.data || [];
-                    if (sections.length > 0) {
-                        sections.forEach(sec => {
-                            const option = document.createElement('option');
-                            option.value = sec.section;
-                            option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
-                            sectionSelect.appendChild(option);
-                        });
-                    }
-                    
-                    const customOption = document.createElement('option');
-                    customOption.value = 'custom_input';
-                    customOption.textContent = '+ Masukkan Bab Baru (Manual) ...';
-                    sectionSelect.appendChild(customOption);
-                })
-                .catch(err => {
-                    console.error("Error fetching sections:", err);
-                    sectionLoading.style.display = 'none';
-                    sectionSelect.style.display = 'block';
-                    
-                    const customOption = document.createElement('option');
-                    customOption.value = 'custom_input';
-                    customOption.textContent = '+ Masukkan Bab Baru (Manual) ...';
-                    sectionSelect.appendChild(customOption);
-                });
-        });
+        parwaSelect.removeEventListener('change', fetchSections);
+        parwaSelect.addEventListener('change', fetchSections);
+    }
+    if (versionSelect) {
+        versionSelect.removeEventListener('change', fetchSections);
+        versionSelect.addEventListener('change', fetchSections);
     }
 
     if (sectionSelect) {

@@ -147,8 +147,9 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    
     const parwaSelect = document.querySelector('select[name="parwa_id"]');
-    const versionSelect = document.getElementById('versionSelect');
+    const versionSelect = document.querySelector('select[name="version"]');
     const sectionWrapper = document.getElementById('sectionWrapper');
     const sectionSelect = document.getElementById('sectionSelect');
     const sectionLoading = document.getElementById('sectionLoading');
@@ -160,20 +161,20 @@ document.addEventListener("DOMContentLoaded", function() {
         const versionName = versionSelect ? versionSelect.value : '';
 
         if (!bookName || parwaSelect.value === '') {
-            sectionWrapper.style.display = 'none';
+            if (sectionWrapper) sectionWrapper.style.display = 'none';
             return;
         }
 
-        sectionWrapper.style.display = 'block';
-        sectionSelect.style.display = 'none';
-        sectionLoading.style.display = 'block';
-        sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
+        if (sectionWrapper) sectionWrapper.style.display = 'block';
+        if (sectionSelect) sectionSelect.style.display = 'none';
+        if (sectionLoading) sectionLoading.style.display = 'block';
+        if (sectionSelect) sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
 
         fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versionName)}`)
             .then(response => response.json())
             .then(res => {
-                sectionLoading.style.display = 'none';
-                sectionSelect.style.display = 'block';
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
                 
                 const sections = res.data || [];
                 if (sections.length > 0) {
@@ -181,21 +182,27 @@ document.addEventListener("DOMContentLoaded", function() {
                         const option = document.createElement('option');
                         option.value = sec.section;
                         option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
-                        sectionSelect.appendChild(option);
+                        if (sectionSelect) sectionSelect.appendChild(option);
                     });
                 }
             })
             .catch(err => {
                 console.error("Error fetching sections:", err);
-                sectionLoading.style.display = 'none';
-                sectionSelect.style.display = 'block';
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
             });
     }
 
-    if (parwaSelect) parwaSelect.addEventListener('change', fetchSections);
-    if (versionSelect) versionSelect.addEventListener('change', fetchSections);
-});
-</script>
+    if (parwaSelect) {
+        parwaSelect.removeEventListener('change', fetchSections);
+        parwaSelect.addEventListener('change', fetchSections);
+    }
+    if (versionSelect) {
+        versionSelect.removeEventListener('change', fetchSections);
+        versionSelect.addEventListener('change', fetchSections);
+    }
+
+    </script>
 
 {{-- ALERT ERROR --}}
 @if ($errors->any())

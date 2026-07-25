@@ -150,29 +150,34 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    
     const parwaSelect = document.querySelector('select[name="parwa_id"]');
+    const versionSelect = document.querySelector('select[name="version"]');
     const sectionWrapper = document.getElementById('sectionWrapper');
     const sectionSelect = document.getElementById('sectionSelect');
     const sectionLoading = document.getElementById('sectionLoading');
-    const currentSection = "{{ $video->section }}";
 
-    function loadSections(bookName, selectVal = null) {
-        if (!bookName) {
-            sectionWrapper.style.display = 'none';
+    function fetchSections() {
+        if (!parwaSelect) return;
+        const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
+        const bookName = selectedOption ? selectedOption.text : '';
+        const versionName = versionSelect ? versionSelect.value : '';
+
+        if (!bookName || parwaSelect.value === '') {
+            if (sectionWrapper) sectionWrapper.style.display = 'none';
             return;
         }
 
-        // Show loading
-        sectionWrapper.style.display = 'block';
-        sectionSelect.style.display = 'none';
-        sectionLoading.style.display = 'block';
-        sectionSelect.innerHTML = '<option value="" disabled>-- Pilih Bab / Section --</option>';
+        if (sectionWrapper) sectionWrapper.style.display = 'block';
+        if (sectionSelect) sectionSelect.style.display = 'none';
+        if (sectionLoading) sectionLoading.style.display = 'block';
+        if (sectionSelect) sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
 
-        fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}`)
+        fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versionName)}`)
             .then(response => response.json())
             .then(res => {
-                sectionLoading.style.display = 'none';
-                sectionSelect.style.display = 'block';
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
                 
                 const sections = res.data || [];
                 if (sections.length > 0) {
@@ -180,46 +185,27 @@ document.addEventListener("DOMContentLoaded", function() {
                         const option = document.createElement('option');
                         option.value = sec.section;
                         option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
-                        if (selectVal && sec.section === selectVal) {
-                            option.selected = true;
-                        }
-                        sectionSelect.appendChild(option);
+                        if (sectionSelect) sectionSelect.appendChild(option);
                     });
-                } else {
-                    const option = document.createElement('option');
-                    option.value = 'Bab I';
-                    option.textContent = 'Bab I (Default)';
-                    if (selectVal && selectVal === 'Bab I') option.selected = true;
-                    sectionSelect.appendChild(option);
                 }
             })
             .catch(err => {
                 console.error("Error fetching sections:", err);
-                sectionLoading.style.display = 'none';
-                sectionSelect.style.display = 'block';
-                
-                const option = document.createElement('option');
-                option.value = 'Bab I';
-                option.textContent = 'Bab I (Fallback)';
-                if (selectVal && selectVal === 'Bab I') option.selected = true;
-                sectionSelect.appendChild(option);
+                if (sectionLoading) sectionLoading.style.display = 'none';
+                if (sectionSelect) sectionSelect.style.display = 'block';
             });
     }
 
     if (parwaSelect) {
-        // Load initial sections
-        if (parwaSelect.value) {
-            const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
-            loadSections(selectedOption.text, currentSection);
-        }
-
-        parwaSelect.addEventListener('change', function() {
-            const selectedOption = parwaSelect.options[parwaSelect.selectedIndex];
-            loadSections(selectedOption.text);
-        });
+        parwaSelect.removeEventListener('change', fetchSections);
+        parwaSelect.addEventListener('change', fetchSections);
     }
-});
-</script>
+    if (versionSelect) {
+        versionSelect.removeEventListener('change', fetchSections);
+        versionSelect.addEventListener('change', fetchSections);
+    }
+
+    </script>
 
 {{-- ALERT ERROR --}}
 @if ($errors->any())
