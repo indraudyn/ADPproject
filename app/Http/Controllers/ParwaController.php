@@ -173,4 +173,27 @@ class ParwaController extends Controller
         
         return view('parwa.video', compact('parwa', 'videos'));
     }
+
+    public function sectionsByBook(Request $request)
+    {
+        $book = $request->query('book');
+        if (!$book) {
+            return response()->json(['data' => []]);
+        }
+
+        $sections = Cerita::where('book', $book)
+            ->where('status', 'approved')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function ($c) {
+                return [
+                    'section' => $c->section ?? 'Bab 1',
+                    'sub_parva' => $c->sub_parwa ?? '-',
+                ];
+            })
+            ->unique('section')
+            ->values();
+
+        return response()->json(['data' => $sections]);
+    }
 }

@@ -17,7 +17,7 @@ class AudioController extends Controller
     public function create()
     {
         $parwas = Parwa::all();
-        $versions = [];
+        $versions = \App\Models\Version::pluck('name');
         return view('audio.create', compact('parwas', 'versions'));
     }
 
@@ -62,7 +62,7 @@ class AudioController extends Controller
             abort(403);
         }
         $parwas = Parwa::all();
-        $versions = [];
+        $versions = \App\Models\Version::pluck('name');
         return view('audio.edit', compact('audio', 'parwas', 'versions'));
     }
 
