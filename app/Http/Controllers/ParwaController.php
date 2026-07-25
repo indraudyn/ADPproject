@@ -56,11 +56,18 @@ class ParwaController extends Controller
     {
         $parwa = Parwa::where('slug', $slug)->firstOrFail();
         $bookName = self::getBookNameBySlug($slug);
+        $versionName = request()->query('version') ?: session('selected_parwa_version');
         
-        $ceritas = Cerita::where('book', $bookName)
-            ->where('status', 'approved')
-            ->orderBy('id', 'asc')
-            ->get();
+        $query = Cerita::where('book', $bookName)->where('status', 'approved');
+        
+        if ($versionName && $versionName !== 'all') {
+            $version = \App\Models\Version::where('name', $versionName)->first();
+            if ($version) {
+                $query->where('versionId', $version->id);
+            }
+        }
+        
+        $ceritas = $query->orderBy('id', 'asc')->get();
 
         $sections = $ceritas->map(function ($c) {
             return [
