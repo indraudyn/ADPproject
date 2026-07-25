@@ -45,7 +45,7 @@ Route::post('/set-parwa-version', function (Illuminate\Http\Request $request) {
 
 
 
-Route::get('/api/parwa/sections-by-book', [App\Http\Controllers\ParwaController::class, 'sectionsByBook']);
+Route::get('/ajax/parwa/sections-by-book', [App\Http\Controllers\ParwaController::class, 'sectionsByBook']);
 
 Route::post('/video', [App\Http\Controllers\VideoController::class, 'store'])->name('video.store');
 

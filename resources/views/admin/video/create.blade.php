@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
         sectionLoading.style.display = 'block';
         sectionSelect.innerHTML = '<option value="" selected>-- Tanpa Bab (Tampil di Detail Parwa) --</option>';
 
-        fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versionName)}`)
+        fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versionName)}`)
             .then(response => response.json())
             .then(res => {
                 sectionLoading.style.display = 'none';

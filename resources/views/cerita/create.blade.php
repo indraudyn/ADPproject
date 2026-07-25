@@ -228,7 +228,7 @@
             return;
         }
 
-        fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versiExisting)}`)
+        fetch(`/ajax/parwa/sections-by-book?book=${encodeURIComponent(bookName)}&version=${encodeURIComponent(versiExisting)}`)
             .then(res => res.json())
             .then(json => {
                 const sectionsList = json.data || [];
