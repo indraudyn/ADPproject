@@ -73,7 +73,7 @@ class CeritaController extends Controller
     public function upload()
     {
         $user = auth()->user();
-        $ceritas = Cerita::where('user_id', $user->id)->latest()->get()->map(function($c) {
+        $ceritas = Cerita::where('userId', $user->id)->latest()->get()->map(function($c) {
             return (object)[
                 'id'         => $c->id,
                 'judul'      => $c->judul,

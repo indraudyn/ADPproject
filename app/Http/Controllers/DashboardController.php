@@ -21,11 +21,11 @@ class DashboardController extends Controller
         }
 
         // 1. Dapatkan data Cerita dari database lokal
-        $ceritaApproved = Cerita::where('user_id', $userId)->where('status', 'approved')->count();
-        $ceritaPending = Cerita::where('user_id', $userId)->where('status', 'pending')->count();
-        $ceritaUnapproved = Cerita::where('user_id', $userId)->whereIn('status', ['unapproved', 'rejected'])->count();
+        $ceritaApproved = Cerita::where('userId', $userId)->where('status', 'approved')->count();
+        $ceritaPending = Cerita::where('userId', $userId)->where('status', 'pending')->count();
+        $ceritaUnapproved = Cerita::where('userId', $userId)->whereIn('status', ['unapproved', 'rejected'])->count();
 
-        $ceritas = Cerita::where('user_id', $userId)
+        $ceritas = Cerita::where('userId', $userId)
             ->latest()
             ->get()
             ->map(function($c) {
