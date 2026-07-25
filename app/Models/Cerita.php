@@ -66,6 +66,7 @@ class Cerita extends Model
     }
 
     public function getCreatedAtAttribute() {
-        return $this->attributes['createdAt'] ?? null;
+        $val = $this->attributes['createdAt'] ?? null;
+        return $val ? \Carbon\Carbon::parse($val) : null;
     }
 }
