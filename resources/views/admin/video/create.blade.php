@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             fetch(`/api/parwa/sections-by-book?book=${encodeURIComponent(bookName)}`)
                 .then(response => response.json())
-                .then(res => {
+                                .then(res => {
                     sectionLoading.style.display = 'none';
                     sectionSelect.style.display = 'block';
                     
@@ -182,23 +182,53 @@ document.addEventListener("DOMContentLoaded", function() {
                             option.textContent = sec.section + (sec.sub_parva && sec.sub_parva !== '-' ? ` (${sec.sub_parva})` : '');
                             sectionSelect.appendChild(option);
                         });
-                    } else {
-                        const option = document.createElement('option');
-                        option.value = 'Bab I';
-                        option.textContent = 'Bab I (Default)';
-                        sectionSelect.appendChild(option);
                     }
+                    
+                    const customOption = document.createElement('option');
+                    customOption.value = 'custom_input';
+                    customOption.textContent = '+ Masukkan Bab Baru (Manual) ...';
+                    sectionSelect.appendChild(customOption);
                 })
                 .catch(err => {
                     console.error("Error fetching sections:", err);
                     sectionLoading.style.display = 'none';
                     sectionSelect.style.display = 'block';
                     
-                    const option = document.createElement('option');
-                    option.value = 'Bab I';
-                    option.textContent = 'Bab I (Fallback)';
-                    sectionSelect.appendChild(option);
+                    const customOption = document.createElement('option');
+                    customOption.value = 'custom_input';
+                    customOption.textContent = '+ Masukkan Bab Baru (Manual) ...';
+                    sectionSelect.appendChild(customOption);
                 });
+        });
+    }
+
+    if (sectionSelect) {
+        sectionSelect.addEventListener('change', function() {
+            const selectedSection = this.value;
+            let sectionCustomGroup = document.getElementById('sectionCustomGroup');
+            
+            if (!sectionCustomGroup) {
+                sectionCustomGroup = document.createElement('div');
+                sectionCustomGroup.id = 'sectionCustomGroup';
+                sectionCustomGroup.className = 'mt-2';
+                sectionCustomGroup.style.display = 'none';
+                sectionCustomGroup.innerHTML = '<input type="text" id="sectionCustomInput" class="form-control" placeholder="Masukkan nama bab baru...">';
+                sectionSelect.parentNode.insertBefore(sectionCustomGroup, sectionSelect.nextSibling);
+            }
+            
+            const sectionCustomInput = document.getElementById('sectionCustomInput');
+
+            if (selectedSection === 'custom_input') {
+                sectionCustomGroup.style.display = 'block';
+                sectionCustomInput.setAttribute('required', 'required');
+                sectionSelect.removeAttribute('name');
+                sectionCustomInput.setAttribute('name', 'section');
+            } else {
+                sectionCustomGroup.style.display = 'none';
+                sectionCustomInput.removeAttribute('required');
+                sectionSelect.setAttribute('name', 'section');
+                sectionCustomInput.removeAttribute('name');
+            }
         });
     }
 });

@@ -182,7 +182,6 @@ class ParwaController extends Controller
         }
 
         $sections = Cerita::where('book', $book)
-            ->where('status', 'approved')
             ->orderBy('id', 'asc')
             ->get()
             ->map(function ($c) {
