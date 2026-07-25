@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
         versionSelect.removeEventListener('change', fetchSections);
         versionSelect.addEventListener('change', fetchSections);
     }
-
+});
     </script>
 
 {{-- ALERT ERROR --}}
