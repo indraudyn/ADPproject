@@ -184,7 +184,11 @@ class ParwaController extends Controller
                 return response()->json(['data' => []]);
             }
 
-            $query = Cerita::where('book', $book);
+            $query = Cerita::where(function($q) use ($book) {
+                $q->where('book', $book)
+                  ->orWhere('book', str_ireplace('wa', 'va', $book))
+                  ->orWhere('book', str_ireplace('va', 'wa', $book));
+            });
             
             if ($version) {
                 $versionModel = \App\Models\Version::where('name', $version)->first();
