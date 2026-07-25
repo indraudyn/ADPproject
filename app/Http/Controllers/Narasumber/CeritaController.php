@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Narasumber;
 use App\Http\Controllers\Controller;
 use App\Models\Cerita;
 use App\Models\Parwa;
+use App\Services\TranslationService;
 use Illuminate\Http\Request;
 
 class CeritaController extends Controller
@@ -125,14 +126,18 @@ class CeritaController extends Controller
         if ($request->has('content_lang')) {
             if ($request->content_lang === 'en') {
                 $updateData['isi'] = $request->cerita;
+                $updateData['isi_id'] = TranslationService::translateText($request->cerita, 'en', 'id');
             } else {
                 $updateData['isi_id'] = $request->cerita;
+                $updateData['isi'] = TranslationService::translateText($request->cerita, 'id', 'en');
             }
         } else {
             if (!empty($c->isi)) {
                 $updateData['isi'] = $request->cerita;
+                $updateData['isi_id'] = TranslationService::translateText($request->cerita, 'en', 'id');
             } else {
                 $updateData['isi_id'] = $request->cerita;
+                $updateData['isi'] = TranslationService::translateText($request->cerita, 'id', 'en');
             }
         }
 

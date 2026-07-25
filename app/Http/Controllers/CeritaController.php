@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cerita;
 use App\Models\Parwa;
+use App\Services\TranslationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,8 +37,13 @@ class CeritaController extends Controller
         $user = Auth::user();
         $status = in_array($user->role, ['admin', 'narasumber']) ? 'approved' : 'pending';
 
-        $isi = $request->bahasa === 'en' ? $request->cerita : null;
-        $isiId = $request->bahasa === 'id' ? $request->cerita : null;
+        if ($request->bahasa === 'en') {
+            $isi = $request->cerita;
+            $isiId = TranslationService::translateText($request->cerita, 'en', 'id');
+        } else {
+            $isiId = $request->cerita;
+            $isi = TranslationService::translateText($request->cerita, 'id', 'en');
+        }
 
         Cerita::create([
             'user_id' => $user->id,
@@ -191,15 +197,19 @@ class CeritaController extends Controller
         if ($request->has('bahasa')) {
             if ($request->bahasa === 'en') {
                 $updateData['isi'] = $request->cerita;
+                $updateData['isi_id'] = TranslationService::translateText($request->cerita, 'en', 'id');
             } else {
                 $updateData['isi_id'] = $request->cerita;
+                $updateData['isi'] = TranslationService::translateText($request->cerita, 'id', 'en');
             }
         } else {
             // Default behavior if bahasa is missing: update whatever is not null
             if (!empty($c->isi)) {
                 $updateData['isi'] = $request->cerita;
+                $updateData['isi_id'] = TranslationService::translateText($request->cerita, 'en', 'id');
             } else {
                 $updateData['isi_id'] = $request->cerita;
+                $updateData['isi'] = TranslationService::translateText($request->cerita, 'id', 'en');
             }
         }
 
