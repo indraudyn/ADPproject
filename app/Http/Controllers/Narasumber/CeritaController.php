@@ -22,7 +22,7 @@ class CeritaController extends Controller
             });
         }
 
-        $ceritasList = $ceritaQuery->latest()->get()->map(function($c) {
+        $ceritasList = $ceritaQuery->orderBy('createdAt', 'desc')->get()->map(function($c) {
             return (object)[
                 'id'         => $c->id,
                 'judul'      => $c->judul,

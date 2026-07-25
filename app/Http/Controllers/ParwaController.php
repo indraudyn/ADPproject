@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Parwa;
+use App\Models\Cerita;
 use App\Models\Video;
 use App\Models\Audio;
 use Illuminate\Http\Request;
@@ -60,9 +61,9 @@ class ParwaController extends Controller
         $versions = []; // No API versions anymore
 
         // Local ceritas fallback
-        $ceritas = $parwa->ceritas()
+        $ceritas = Cerita::where('book', $bookName)
             ->where('status', 'approved')
-            ->oldest()
+            ->orderBy('createdAt', 'asc')
             ->get();
 
         // Parwa-level media (section is null)

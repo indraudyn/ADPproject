@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $ceritaUnapproved = Cerita::where('userId', $userId)->whereIn('status', ['unapproved', 'rejected'])->count();
 
         $ceritas = Cerita::where('userId', $userId)
-            ->latest()
+            ->orderBy('createdAt', 'desc')
             ->get()
             ->map(function($c) {
                 return (object)[

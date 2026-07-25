@@ -12,7 +12,7 @@ class CeritaController extends Controller
 {
     public function index()
     {
-        $ceritas = Cerita::with('user')->latest()->get()->map(function($c) {
+        $ceritas = Cerita::with('user')->orderBy('createdAt', 'desc')->get()->map(function($c) {
             return (object)[
                 'id'         => $c->id,
                 'judul'      => $c->judul,

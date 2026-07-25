@@ -73,7 +73,7 @@ class CeritaController extends Controller
     public function upload()
     {
         $user = auth()->user();
-        $ceritas = Cerita::where('userId', $user->id)->latest()->get()->map(function($c) {
+        $ceritas = Cerita::where('userId', $user->id)->orderBy('createdAt', 'desc')->get()->map(function($c) {
             return (object)[
                 'id'         => $c->id,
                 'judul'      => $c->judul,
@@ -220,7 +220,7 @@ class CeritaController extends Controller
 
     public function index()
     {
-        $ceritas = Cerita::with('user')->where('status', 'approved')->latest()->get()->map(function($c) {
+        $ceritas = Cerita::with('user')->where('status', 'approved')->orderBy('createdAt', 'desc')->get()->map(function($c) {
             return (object)[
                 'id' => $c->id,
                 'judul' => $c->judul,
