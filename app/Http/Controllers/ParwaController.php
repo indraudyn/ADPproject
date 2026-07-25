@@ -176,35 +176,43 @@ class ParwaController extends Controller
 
     public function sectionsByBook(Request $request)
     {
-        $book = $request->query('book');
-        $version = $request->query('version');
-        
-        if (!$book) {
-            return response()->json(['data' => []]);
-        }
-
-        $query = Cerita::where('book', $book);
-        
-        if ($version) {
-            $versionModel = \App\Models\Version::where('name', $version)->first();
-            if ($versionModel) {
-                $query->where('versionId', $versionModel->id);
-            } else {
+        try {
+            $book = $request->query('book');
+            $version = $request->query('version');
+            
+            if (!$book) {
                 return response()->json(['data' => []]);
             }
+
+            $query = Cerita::where('book', $book);
+            
+            if ($version) {
+                $versionModel = \App\Models\Version::where('name', $version)->first();
+                if ($versionModel) {
+                    $query->where('versionId', $versionModel->id);
+                } else {
+                    return response()->json(['data' => []]);
+                }
+            }
+
+            $sections = $query->orderBy('id', 'asc')
+                ->get()
+                ->map(function ($c) {
+                    return [
+                        'section' => $c->section ?? 'Bab 1',
+                        'sub_parva' => $c->sub_parwa ?? '-',
+                    ];
+                })
+                ->unique('section')
+                ->values();
+
+            return response()->json(['data' => $sections]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'sql' => method_exists($e, 'getSql') ? $e->getSql() : null
+            ], 500);
         }
-
-        $sections = $query->orderBy('id', 'asc')
-            ->get()
-            ->map(function ($c) {
-                return [
-                    'section' => $c->section ?? 'Bab 1',
-                    'sub_parva' => $c->sub_parwa ?? '-',
-                ];
-            })
-            ->unique('section')
-            ->values();
-
-        return response()->json(['data' => $sections]);
     }
 }
