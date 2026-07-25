@@ -57,14 +57,19 @@ class ParwaController extends Controller
         $parwa = Parwa::where('slug', $slug)->firstOrFail();
         $bookName = self::getBookNameBySlug($slug);
         
-        $sections = []; // No API sections anymore
-        $versions = []; // No API versions anymore
-
-        // Local ceritas fallback
         $ceritas = Cerita::where('book', $bookName)
             ->where('status', 'approved')
-            ->orderBy('createdAt', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
+
+        $sections = $ceritas->map(function ($c) {
+            return [
+                'section' => $c->section ?? 'Bab 1',
+                'sub_parva' => $c->sub_parwa ?? '-',
+            ];
+        })->unique('section')->values()->toArray();
+        
+        $versions = \App\Models\Version::pluck('name')->toArray();
 
         // Parwa-level media (section is null)
         $videos = Video::where('parwa_id', $parwa->id)
@@ -80,6 +85,68 @@ class ParwaController extends Controller
             ->get();
 
         return view('parwa.detail', compact('parwa', 'sections', 'bookName', 'ceritas', 'versions', 'videos', 'audios'));
+    }
+
+    public function read($bookSlug, $sectionSlug)
+    {
+        $book = self::fromSlug($bookSlug);
+        // Special case handling for 'bab-1' -> 'Bab 1'
+        $section = ucwords(str_replace('-', ' ', $sectionSlug));
+        
+        $versionName = request()->query('version') ?: session('selected_parwa_version');
+        $version = \App\Models\Version::where('name', $versionName)->first();
+        $versionId = $version ? $version->id : 1;
+
+        $contentQuery = Cerita::where('book', $book)->where('section', $section)->where('status', 'approved');
+        
+        // Try specific version first
+        $content = (clone $contentQuery)->where('versionId', $versionId)->get();
+        if ($content->isEmpty()) {
+            // Fallback to any version
+            $content = $contentQuery->get();
+        }
+
+        if ($content->isEmpty()) {
+            abort(404, 'Konten bab tidak ditemukan.');
+        }
+
+        $locale = session('locale', 'id');
+        $content = $content->map(function ($item) use ($locale) {
+            $displayedContent = $item->isi ?? '';
+
+            if ($locale === 'id') {
+                if (!empty($item->isi_id) && strlen($item->isi_id) > 15) {
+                    $displayedContent = $item->isi_id;
+                }
+            } else {
+                if (!empty($item->isi) && $item->isi !== '-' && strlen($item->isi) > 1) {
+                    $displayedContent = $item->isi;
+                } elseif (!empty($item->isi_id)) {
+                    $displayedContent = $item->isi_id;
+                }
+            }
+            $item->isi = $displayedContent;
+            
+            $title = trim($item->judul ?? 'Terjemahan Resmi');
+            $titleParts = explode(' - ', $title);
+            if (count($titleParts) >= 2 && (stripos($titleParts[0], 'parva') !== false || stripos($titleParts[0], 'parwa') !== false)) {
+                array_shift($titleParts);
+                $title = implode(' - ', $titleParts);
+                $item->judul = $title;
+            }
+            return $item;
+        });
+
+        $allSections = Cerita::where('book', $book)->where('status', 'approved')->orderBy('id', 'asc')->pluck('section')->unique()->values()->toArray();
+        $currentIndex = array_search($section, $allSections);
+        $prevSection = ($currentIndex > 0) ? \Illuminate\Support\Str::slug($allSections[$currentIndex - 1]) : null;
+        $nextSection = ($currentIndex !== false && $currentIndex < count($allSections) - 1) ? \Illuminate\Support\Str::slug($allSections[$currentIndex + 1]) : null;
+
+        $parwa = Parwa::where('slug', $bookSlug)->first();
+        $videos = Video::where('parwa_id', $parwa->id)->where('section', $section)->where('status', 'approved')->get();
+        $audios = Audio::where('parwa_id', $parwa->id)->where('section', $section)->where('status', 'approved')->get();
+
+        return view('parwa.read', compact('content', 'book', 'section', 'bookSlug', 'sectionSlug', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
     }
 
     public function video($slug)

@@ -24,6 +24,8 @@ class Cerita extends Model
         'isi',
         'isi_id',
         'status',
+        'versionId',
+        'section',
     ];
 
     public function user(): BelongsTo

@@ -16,7 +16,7 @@ class CeritaController extends Controller
     public function create()
     {
         $parwas = Parwa::all();
-        $versions = []; // Versions API no longer available
+        $versions = \App\Models\Version::pluck('name');
         return view('cerita.create', compact('parwas', 'versions'));
     }
 
@@ -45,15 +45,32 @@ class CeritaController extends Controller
             $isi = TranslationService::translateText($request->cerita, 'id', 'en');
         }
 
+        $section = $request->section === 'custom_input' ? $request->section_custom : $request->section;
+
+        $versionId = 1;
+        if ($request->has('versi_tipe')) {
+            if ($request->versi_tipe === 'new' && $request->versi_baru) {
+                $version = \App\Models\Version::firstOrCreate(['name' => $request->versi_baru]);
+                $versionId = $version->id;
+            } elseif ($request->versi_tipe === 'existing' && $request->versi_existing) {
+                $version = \App\Models\Version::where('name', $request->versi_existing)->first();
+                if ($version) {
+                    $versionId = $version->id;
+                }
+            }
+        }
+
         Cerita::create([
             'user_id' => $user->id,
             'parwa_id' => $request->parwa_id,
             'judul' => $request->judul,
+            'section' => $section,
             'sub_parwa' => $request->sub_parwa ?? '-',
             'sumber' => $request->sumber,
             'isi' => $isi,
             'isi_id' => $isiId,
             'status' => $status,
+            'versionId' => $versionId,
         ]);
 
         $successMsg = 'Cerita berhasil ditambahkan';
