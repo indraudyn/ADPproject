@@ -17,7 +17,7 @@ class VideoController extends Controller
     public function create()
     {
         $parwas = \App\Models\Parwa::all();
-        $versions = [];
+        $versions = \App\Models\Version::pluck('name');
         return view('narasumber.video.create', compact('parwas', 'versions'));
     }
 
@@ -57,7 +57,7 @@ class VideoController extends Controller
     {
         $video = Video::findOrFail($id);
         $parwas = \App\Models\Parwa::all();
-        $versions = [];
+        $versions = \App\Models\Version::pluck('name');
         return view('narasumber.video.edit', compact('video', 'parwas', 'versions'));
     }
 
