@@ -28,7 +28,7 @@ class CeritaController extends Controller
                 'book'       => $c->sumber,
                 'sub_parva'  => $c->sub_parwa ?? '-',
                 'section'    => '-',
-                'isi'        => $c->cerita,
+                'isi'        => $c->isi ?? $c->isi_id,
                 'sumber'     => $c->sumber,
                 'status'     => $c->status,
                 'user'       => (object)['name' => $c->user ? $c->user->name : 'User'],
@@ -67,8 +67,8 @@ class CeritaController extends Controller
             'sumber' => $c->sumber,
             'sub_parva' => $c->sub_parwa ?? '-',
             'section' => '-',
-            'isi' => $c->cerita,
-            'cerita' => $c->cerita,
+            'isi' => $c->isi ?? $c->isi_id,
+            'cerita' => $c->isi ?? $c->isi_id,
             'url' => '',
             'status' => $c->status,
             'user' => (object)['name' => $c->user ? $c->user->name : 'User'],
@@ -93,8 +93,8 @@ class CeritaController extends Controller
             'sumber' => $c->sumber,
             'sub_parva' => $c->sub_parwa ?? '',
             'section' => 'Bab 1',
-            'isi' => $c->cerita,
-            'cerita' => $c->cerita,
+            'isi' => $c->isi ?? $c->isi_id,
+            'cerita' => $c->isi ?? $c->isi_id,
             'url' => '',
         ];
         $parwas = Parwa::all();
@@ -116,12 +116,27 @@ class CeritaController extends Controller
         $localId = str_replace('local-', '', $id);
         
         $c = Cerita::findOrFail($localId);
-        $c->update([
+        $updateData = [
             'judul'    => $request->judul,
             'sumber'   => $bookName,
-            'cerita'   => $request->cerita,
             'sub_parwa'=> $request->sub_parwa ?? '-',
-        ]);
+        ];
+
+        if ($request->has('content_lang')) {
+            if ($request->content_lang === 'en') {
+                $updateData['isi'] = $request->cerita;
+            } else {
+                $updateData['isi_id'] = $request->cerita;
+            }
+        } else {
+            if (!empty($c->isi)) {
+                $updateData['isi'] = $request->cerita;
+            } else {
+                $updateData['isi_id'] = $request->cerita;
+            }
+        }
+
+        $c->update($updateData);
         
         return redirect()->route('narasumber.cerita.index')->with('success', 'Cerita berhasil diperbarui');
     }

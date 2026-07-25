@@ -30,10 +30,14 @@ class CeritaController extends Controller
             'sub_parwa' => 'nullable|string|max:255',
             'sumber' => 'required|string|max:255',
             'cerita' => 'required',
+            'bahasa' => 'required|in:id,en',
         ]);
 
         $user = Auth::user();
         $status = in_array($user->role, ['admin', 'narasumber']) ? 'approved' : 'pending';
+
+        $isi = $request->bahasa === 'en' ? $request->cerita : null;
+        $isiId = $request->bahasa === 'id' ? $request->cerita : null;
 
         Cerita::create([
             'user_id' => $user->id,
@@ -41,7 +45,8 @@ class CeritaController extends Controller
             'judul' => $request->judul,
             'sub_parwa' => $request->sub_parwa ?? '-',
             'sumber' => $request->sumber,
-            'cerita' => $request->cerita,
+            'isi' => $isi,
+            'isi_id' => $isiId,
             'status' => $status,
         ]);
 
@@ -95,8 +100,8 @@ class CeritaController extends Controller
             'sumber' => $c->sumber,
             'sub_parva' => $c->sub_parwa ?? '-',
             'section' => 'Bab 1',
-            'isi' => $c->cerita,
-            'cerita' => $c->cerita,
+            'isi' => $c->isi ?? $c->isi_id,
+            'cerita' => $c->isi ?? $c->isi_id,
             'url' => '',
             'status' => $c->status,
             'user' => (object)['name' => $c->user ? $c->user->name : 'User'],
@@ -148,8 +153,8 @@ class CeritaController extends Controller
             'sumber' => $c->sumber,
             'sub_parva' => $c->sub_parwa ?? '',
             'section' => 'Bab 1',
-            'isi' => $c->cerita,
-            'cerita' => $c->cerita,
+            'isi' => $c->isi ?? $c->isi_id,
+            'cerita' => $c->isi ?? $c->isi_id,
             'url' => '',
         ];
         $parwas = Parwa::all();
@@ -166,6 +171,7 @@ class CeritaController extends Controller
             'sumber' => 'nullable|string|max:500',
             'cerita' => 'required',
             'sub_parwa' => 'nullable|string|max:255',
+            'bahasa' => 'nullable|in:id,en',
         ]);
 
         $localId = str_replace('local-', '', $id);
@@ -175,12 +181,29 @@ class CeritaController extends Controller
             abort(403);
         }
 
-        $c->update([
+        $updateData = [
             'judul' => $request->judul,
             'sumber' => $request->sumber,
-            'cerita' => $request->cerita,
             'sub_parwa' => $request->sub_parwa ?? '-',
-        ]);
+        ];
+
+        // Edit form might not pass bahasa, if it does, update accordingly
+        if ($request->has('bahasa')) {
+            if ($request->bahasa === 'en') {
+                $updateData['isi'] = $request->cerita;
+            } else {
+                $updateData['isi_id'] = $request->cerita;
+            }
+        } else {
+            // Default behavior if bahasa is missing: update whatever is not null
+            if (!empty($c->isi)) {
+                $updateData['isi'] = $request->cerita;
+            } else {
+                $updateData['isi_id'] = $request->cerita;
+            }
+        }
+
+        $c->update($updateData);
 
         return redirect()->route('cerita.upload')->with('success', 'Cerita berhasil diperbarui');
     }

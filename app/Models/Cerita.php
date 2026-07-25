@@ -18,7 +18,8 @@ class Cerita extends Model
         'parwa_id',
         'sub_parwa',
         'sumber',
-        'cerita',
+        'isi',
+        'isi_id',
         'status',
     ];
 
