@@ -11,9 +11,6 @@ class Cerita extends Model
     use HasFactory;
 
     protected $table = 'cerita';
-    
-    const CREATED_AT = 'createdAt';
-    const UPDATED_AT = null;
 
     protected $fillable = [
         'user_id',
