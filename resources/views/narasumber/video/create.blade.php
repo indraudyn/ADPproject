@@ -100,10 +100,10 @@
                             <label class="form-label fw-bold">Sumber Video</label>
                             <ul class="nav nav-tabs mb-3" id="videoTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="link-tab" data-bs-toggle="tab" data-bs-target="#link-content" type="button" role="tab" onclick="document.getElementById('videoType').value='youtube'">Link YouTube</button>
+                                    <button class="nav-link active" id="link-tab" data-bs-toggle="tab" data-bs-target="#link-content" type="button" role="tab" onclick="setVideoType('youtube')">Link YouTube</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" onclick="document.getElementById('videoType').value='upload'">Upload Video</button>
+                                    <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" onclick="setVideoType('upload')">Upload Video</button>
                                 </li>
                             </ul>
                             
@@ -117,7 +117,7 @@
                                 <div class="tab-pane fade" id="upload-content" role="tabpanel">
                                     <div class="mb-3">
                                         <label for="videoFile" class="form-label">File Video (.mp4, .mpeg, .mov)</label>
-                                        <input type="file" name="video_file" class="form-control" id="videoFile" accept="video/*">
+                                        <input type="file" name="video_file" class="form-control" id="videoFile" accept="video/*" disabled>
                                         <small class="text-muted">Maksimum 50MB</small>
                                      </div>
                                 </div>
@@ -142,7 +142,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+function setVideoType(type) {
+    document.getElementById('videoType').value = type;
+    
+    const videoFileInput = document.getElementById('videoFile');
+    const youtubeInput = document.getElementById('youtubeLink');
+    
+    if (videoFileInput) videoFileInput.disabled = (type !== 'upload');
+    if (youtubeInput) {
+        youtubeInput.disabled = (type !== 'youtube');
+        if (type === 'youtube') {
+            youtubeInput.setAttribute('name', 'url');
+        } else {
+            youtubeInput.removeAttribute('name');
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
+    setVideoType('youtube');
     
     const parwaSelect = document.querySelector('select[name="parwa_id"]');
     const versionSelect = document.querySelector('select[name="version"]');

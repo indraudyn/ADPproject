@@ -33,8 +33,8 @@ Route::get('/set-locale/{locale}', function ($locale) {
 
 Route::controller(App\Http\Controllers\ParwaController::class)->group(function () {
     Route::get('/parwa', 'index')->name('parwa.index');
-    Route::get('/parwa/read/{book}/{section}', 'read')->name('parwa.read');
-    Route::get('/parwa/{slug}', 'show')->name('parwa.detail');
+    Route::get('/parwa/read/{book}/{section}/{version?}', 'read')->name('parwa.read');
+    Route::get('/parwa/{slug}/{version?}', 'show')->name('parwa.detail');
     Route::get('/parwa/{slug}/video', 'video')->name('parwa.video');
 });
 

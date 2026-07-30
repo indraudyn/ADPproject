@@ -52,11 +52,16 @@ class ParwaController extends Controller
         return view('parwa', compact('parwas'));
     }
 
-    public function show($slug)
+    public function show($slug, $versionSlug = null)
     {
         $parwa = Parwa::where('slug', $slug)->firstOrFail();
         $bookName = self::getBookNameBySlug($slug);
-        $versionName = request()->query('version') ?: session('selected_parwa_version');
+        
+        if ($versionSlug) {
+            $versionName = self::fromSlug($versionSlug);
+        } else {
+            $versionName = request()->query('version') ?: session('selected_parwa_version');
+        }
         
         $query = Cerita::where('book', $bookName)->where('status', 'approved');
         
@@ -91,16 +96,21 @@ class ParwaController extends Controller
             ->latest()
             ->get();
 
-        return view('parwa.detail', compact('parwa', 'sections', 'bookName', 'ceritas', 'versions', 'videos', 'audios'));
+        return view('parwa.detail', compact('parwa', 'sections', 'bookName', 'ceritas', 'versions', 'videos', 'audios', 'versionSlug'));
     }
 
-    public function read($bookSlug, $sectionSlug)
+    public function read($bookSlug, $sectionSlug, $versionSlug = null)
     {
         $book = self::fromSlug($bookSlug);
         // Special case handling for 'bab-1' -> 'Bab 1'
         $section = ucwords(str_replace('-', ' ', $sectionSlug));
         
-        $versionName = request()->query('version') ?: session('selected_parwa_version');
+        if ($versionSlug) {
+            $versionName = self::fromSlug($versionSlug);
+        } else {
+            $versionName = request()->query('version') ?: session('selected_parwa_version');
+        }
+        
         $version = \App\Models\Version::where('name', $versionName)->first();
         $versionId = $version ? $version->id : 1;
 
@@ -163,7 +173,7 @@ class ParwaController extends Controller
         $videos = Video::where('parwa_id', $parwaId)->where('section', $section)->where('status', 'approved')->get();
         $audios = Audio::where('parwa_id', $parwaId)->where('section', $section)->where('status', 'approved')->get();
 
-        return view('parwa.read', compact('content', 'book', 'section', 'bookSlug', 'sectionSlug', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
+        return view('parwa.read', compact('content', 'book', 'section', 'bookSlug', 'sectionSlug', 'versionSlug', 'parwa', 'prevSection', 'nextSection', 'videos', 'audios'));
     }
 
     public function video($slug)

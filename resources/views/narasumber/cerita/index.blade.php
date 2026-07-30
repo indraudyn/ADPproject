@@ -79,9 +79,10 @@
                                 <form action="{{ route('narasumber.cerita.updateStatus', $cerita->id) }}" method="POST" class="status-form">
                                     @csrf
                                     @method('PUT')
-                                    <select name="status" class="form-select status-select" onchange="this.form.submit()">
+                                    <select name="status" class="form-select form-select-sm status-select" onchange="this.form.submit()" style="max-width: 140px;">
+                                        <option value="pending" {{ $cerita->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="approved" {{ $cerita->status === 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="unapproved" {{ $cerita->status === 'unapproved' ? 'selected' : '' }}>Unapproved</option>
+                                        <option value="unapproved" {{ $cerita->status === 'unapproved' || $cerita->status === 'rejected' ? 'selected' : '' }}>Unapproved</option>
                                     </select>
                                 </form>
                             </td>

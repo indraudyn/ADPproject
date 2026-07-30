@@ -27,13 +27,12 @@
             <span>SCORE</span>
             <div id="scoreBox">{{ $score }}</div>
         </div>
-
         <div class="result-item">
             <span>CORRECT</span>
             <div id="correctBox">{{ $correct }} / {{ $total }}</div>
         </div>
 
-        <a href="/" class="btn-back">
+        <a href="{{ route('quiz.index') }}" class="btn-back">
             BACK
         </a>
 

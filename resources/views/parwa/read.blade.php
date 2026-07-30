@@ -458,12 +458,12 @@
                                         <small class="text-danger">Link tidak valid</small>
                                     @endif
                                 @elseif($audio->type === 'video' || $audio->type === 'upload')
-                                    <audio controls>
+                                    <audio controls class="w-100">
                                         <source src="{{ asset('storage/' . $audio->url) }}">
                                         Browser tidak mendukung tag audio.
                                     </audio>
                                 @else
-                                    <audio controls>
+                                    <audio controls class="w-100">
                                         <source src="{{ $audio->url }}">
                                         Browser tidak mendukung tag audio.
                                     </audio>
@@ -554,7 +554,7 @@
             <!-- Chapter Navigation (Outside the box) -->
             <div class="d-flex justify-content-between align-items-center mt-4 px-2">
                 @if(isset($prevSection) && $prevSection)
-                    <a href="{{ route('parwa.read', ['book' => $bookSlug, 'section' => $prevSection]) }}{{ request()->query('version') ? '?version=' . urlencode(request()->query('version')) : '' }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
+                    <a href="{{ route('parwa.read', ['book' => $bookSlug, 'section' => $prevSection, 'version' => $versionSlug ?? (request()->query('version') ? \Illuminate\Support\Str::slug(request()->query('version')) : null)]) }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
                         <i class="bi bi-chevron-left"></i> Bab Sebelumnya
                     </a>
                 @else
@@ -564,7 +564,7 @@
                 @endif
 
                 @if(isset($nextSection) && $nextSection)
-                    <a href="{{ route('parwa.read', ['book' => $bookSlug, 'section' => $nextSection]) }}{{ request()->query('version') ? '?version=' . urlencode(request()->query('version')) : '' }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
+                    <a href="{{ route('parwa.read', ['book' => $bookSlug, 'section' => $nextSection, 'version' => $versionSlug ?? (request()->query('version') ? \Illuminate\Support\Str::slug(request()->query('version')) : null)]) }}" class="btn btn-premium-red py-2 px-4 shadow-sm" style="border-radius: 12px; font-weight: 700;">
                         Bab Selanjutnya <i class="bi bi-chevron-right"></i>
                     </a>
                 @else

@@ -735,13 +735,13 @@
                                         <a href="{{ $audio->url }}" target="_blank" class="btn btn-sm btn-outline-danger mt-1">Buka YouTube</a>
                                     @endif
                                 @elseif($audio->type === 'link')
-                                    <audio controls preload="none">
-                                        <source src="{{ $audio->url }}" type="audio/mpeg">
+                                    <audio controls preload="none" class="w-100">
+                                        <source src="{{ $audio->url }}">
                                         Browser Anda tidak mendukung elemen audio.
                                     </audio>
                                 @else
-                                    <audio controls preload="none">
-                                        <source src="{{ asset('storage/' . $audio->url) }}" type="audio/mpeg">
+                                    <audio controls preload="none" class="w-100">
+                                        <source src="{{ asset('storage/' . $audio->url) }}">
                                         Browser Anda tidak mendukung elemen audio.
                                     </audio>
                                 @endif
@@ -1005,20 +1005,24 @@
                     },
                     body: JSON.stringify({ version: selectedVersion })
                 }).then(() => {
+                    const detailBaseUrl = "{{ route('parwa.detail', $parwa->slug) }}";
                     if (selectedVersion === 'all') {
                         localStorage.removeItem('selected_version_judul');
-                        window.location.href = window.location.pathname;
+                        window.location.href = detailBaseUrl;
                     } else {
                         localStorage.setItem('selected_version_judul', selectedVersion);
-                        window.location.href = window.location.pathname + '?version=' + encodeURIComponent(selectedVersion);
+                        const slug = selectedVersion.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                        window.location.href = detailBaseUrl + '/' + slug;
                     }
                 }).catch(() => {
+                    const detailBaseUrl = "{{ route('parwa.detail', $parwa->slug) }}";
                     if (selectedVersion === 'all') {
                         localStorage.removeItem('selected_version_judul');
-                        window.location.href = window.location.pathname;
+                        window.location.href = detailBaseUrl;
                     } else {
                         localStorage.setItem('selected_version_judul', selectedVersion);
-                        window.location.href = window.location.pathname + '?version=' + encodeURIComponent(selectedVersion);
+                        const slug = selectedVersion.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                        window.location.href = detailBaseUrl + '/' + slug;
                     }
                 });
             });
@@ -1030,14 +1034,21 @@
         const urlParams = new URLSearchParams(window.location.search);
         const queryVersion = urlParams.get('version');
         const savedVersion = localStorage.getItem('selected_version_judul');
+        const serverVersionSlug = '{{ $versionSlug ?? "" }}';
         
         if (queryVersion) {
             localStorage.setItem('selected_version_judul', queryVersion);
-        } else if (savedVersion && savedVersion !== 'all') {
-            window.location.href = window.location.pathname + '?version=' + encodeURIComponent(savedVersion);
+            // We should remove the ?version= from URL if it exists by redirecting
+            const detailBaseUrl = "{{ route('parwa.detail', $parwa->slug) }}";
+            const slug = queryVersion.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            window.location.href = detailBaseUrl + '/' + slug;
+        } else if (savedVersion && savedVersion !== 'all' && !serverVersionSlug) {
+            const detailBaseUrl = "{{ route('parwa.detail', $parwa->slug) }}";
+            const slug = savedVersion.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            window.location.href = detailBaseUrl + '/' + slug;
         }
 
-        const currentActive = queryVersion || savedVersion || 'all';
+        const currentActive = serverVersionSlug || queryVersion || savedVersion || 'all';
         document.querySelectorAll('.btn-outline-premium-version').forEach(btn => {
             const btnVersion = btn.getAttribute('data-version');
             if (btnVersion === currentActive || (btnVersion !== 'all' && currentActive !== 'all' && isVersionMatch(btnVersion, currentActive))) {
@@ -1051,11 +1062,13 @@
         // UPDATE READ LINKS WITH VERSION
         // ════════════════════════════════════════
         function updateReadLinks() {
-            const activeVersion = new URLSearchParams(window.location.search).get('version') || localStorage.getItem('selected_version_judul');
+            const activeVersion = serverVersionSlug || new URLSearchParams(window.location.search).get('version') || localStorage.getItem('selected_version_judul');
             document.querySelectorAll('.section-read-link').forEach(link => {
                 const baseUrl = link.getAttribute('data-base-url');
                 if (baseUrl && activeVersion && activeVersion !== 'all') {
-                    link.href = baseUrl + '?version=' + encodeURIComponent(activeVersion);
+                    // Since activeVersion is e.g. "Kisari Mohan Ganguli", we slugify it
+                    const slug = activeVersion.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                    link.href = baseUrl + '/' + slug;
                 } else if (baseUrl) {
                     link.href = baseUrl;
                 }

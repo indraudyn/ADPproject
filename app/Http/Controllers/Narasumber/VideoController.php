@@ -25,7 +25,7 @@ class VideoController extends Controller
     {
         $request->validate([
             'parwa_id' => 'required|exists:parwas,id',
-            'section' => 'required|string|max:255',
+            'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
             'type' => 'required|in:youtube,upload',
@@ -67,7 +67,7 @@ class VideoController extends Controller
 
         $request->validate([
             'parwa_id' => 'required|exists:parwas,id',
-            'section' => 'required|string|max:255',
+            'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
             'title' => 'required|string|max:255',
             'type' => 'required|in:youtube,upload',
