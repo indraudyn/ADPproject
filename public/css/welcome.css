@@ -10,7 +10,7 @@ body {
 .hero {
     height: 100vh;
     /* Reduced opacity to 0.4 for a lighter overlay */
-    background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/BGhome.png');
+    background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/BGhome.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

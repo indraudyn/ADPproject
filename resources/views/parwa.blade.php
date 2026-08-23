@@ -20,7 +20,7 @@
         .hero-parwa {
             height: 50vh !important; /* Half height */
             min-height: 400px; /* Ensure content fits */
-            background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/bgparwa.png');
+            background-image: linear-gradient(rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.4)), url('/images/bgparwa.webp');
         }
         .hero-parwa .hero-title-img {
             max-width: 250px; /* Smaller title */
