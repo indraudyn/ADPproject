@@ -27,6 +27,7 @@ class VideoController extends Controller
             'parwa_id' => 'required|exists:parwas,id',
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
+            'category' => 'nullable|string|in:film,animasi,wayang,sendra_tari',
             'title' => 'required|string|max:255',
             'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
@@ -39,10 +40,11 @@ class VideoController extends Controller
             $url = $request->file('video_file')->store('videos', 'public');
         }
 
-        Video::create([
+        $video = Video::create([
             'parwa_id' => $request->parwa_id,
             'section' => $request->section,
             'version' => $request->version,
+            'category' => $request->category,
             'title' => $request->title,
             'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'url' => $url,
@@ -50,6 +52,11 @@ class VideoController extends Controller
             'user_id' => auth()->id(),
             'status' => 'approved', 
         ]);
+
+        if ($request->type == 'upload' && $request->hasFile('video_file')) {
+            \App\Jobs\OptimizeVideo::dispatch($video);
+            return redirect()->route('admin.video.index')->with('success', 'Video berhasil ditambahkan dan sedang diproses untuk optimasi (faststart)!');
+        }
 
         return redirect()->route('admin.video.index')->with('success', 'Video berhasil ditambahkan!');
     }
@@ -70,6 +77,7 @@ class VideoController extends Controller
             'parwa_id' => 'required|exists:parwas,id',
             'section' => 'nullable|string|max:255',
             'version' => 'nullable|string|max:255',
+            'category' => 'nullable|string|in:film,animasi,wayang,sendra_tari',
             'title' => 'required|string|max:255',
             'source' => 'nullable|string|max:255',
             'type' => 'required|in:youtube,upload',
@@ -88,11 +96,17 @@ class VideoController extends Controller
             'parwa_id' => $request->parwa_id,
             'section' => $request->section,
             'version' => $request->version,
+            'category' => $request->category,
             'title' => $request->title,
             'source' => $request->type == 'youtube' ? 'YouTube' : ($request->source ?: auth()->user()->name),
             'type' => $request->type,
             'url' => $url,
         ]);
+
+        if ($request->type == 'upload' && $request->hasFile('video_file')) {
+            \App\Jobs\OptimizeVideo::dispatch($video);
+            return redirect()->route('admin.video.index')->with('success', 'Video berhasil diperbarui dan sedang diproses untuk optimasi!');
+        }
 
         return redirect()->route('admin.video.index')->with('success', 'Video berhasil diperbarui!');
     }

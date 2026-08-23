@@ -97,6 +97,17 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="form-label fw-bold">Kategori Video (Opsional)</label>
+                            <select name="category" class="form-select">
+                                <option value="" selected>-- Tanpa Kategori --</option>
+                                <option value="film">Film</option>
+                                <option value="animasi">Animasi</option>
+                                <option value="wayang">Wayang</option>
+                                <option value="sendra_tari">Sendra Tari</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="form-label fw-bold">Sumber Video</label>
                             <ul class="nav nav-tabs mb-3" id="videoTab" role="tablist">
                                 <li class="nav-item" role="presentation">

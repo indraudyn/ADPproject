@@ -611,6 +611,81 @@
             transition: all 0.2s; cursor: pointer; z-index: 10;
         }
         .scroll-btn:hover { background: #8b1e1e; color: white; }
+
+        /* ═══════════════════════════════════════
+           CATEGORY BADGE & FILTER
+           ═══════════════════════════════════════ */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: capitalize;
+            width: fit-content;
+        }
+
+        .category-badge-hero {
+            background: rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(6px);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-badge-card {
+            background: #fef3f3;
+            color: #8b1e1e;
+            border: 1px solid #f0d0d0;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.55rem;
+        }
+
+        .category-filter-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+        }
+
+        .category-filter-btn {
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.85);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-filter-btn.active {
+            background: rgba(255,255,255,0.9);
+            color: #8b1e1e;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .category-filter-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .category-label-map {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -629,7 +704,7 @@
         </a>
 
         @if(isset($videos) && $videos->count() > 0)
-            <div id="videoCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel">
+            <div id="videoCarousel" class="carousel slide hero-carousel" {{ $videos->count() > 1 ? 'data-bs-ride=carousel' : '' }}>
                 <div class="carousel-inner">
                     @foreach($videos as $index => $video)
                         @php
@@ -643,7 +718,7 @@
                                 }
                             }
                         @endphp
-                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" data-category="{{ $video->category ?? '' }}">
                             @if($video->type === 'youtube')
                                 <div class="hero-bg" style="background-image: url('{{ $thumbnail }}');"></div>
                             @else
@@ -652,6 +727,12 @@
                             <div class="hero-content">
                                 <h1 class="parwa-main-title">{{ $parwa->name }}</h1>
                                 <p class="sub-parwa-subtitle"></p>
+                                @if($video->category)
+                                    <span class="category-badge category-badge-hero">
+                                        <i class="bi bi-tag-fill"></i>
+                                        {{ $video->category === 'sendra_tari' ? 'Sendra Tari' : ucfirst($video->category) }}
+                                    </span>
+                                @endif
                                 <h2 class="video-title">{{ $video->title }}</h2>
                                 <p class="video-uploader">Sumber: {{ $video->source }}</p>
                                 <button class="btn-watch" onclick="openVideoModal('{{ $video->type }}', '{{ $video->type === 'youtube' ? $youtubeId : asset('storage/' . $video->url) }}')">
@@ -680,6 +761,29 @@
                 <h1 class="parwa-main-title" style="font-size: clamp(3rem, 6vw, 5rem);">{{ $parwa->name }}</h1>
             </div>
         @endif
+
+        <!-- Category Filter (inside hero, overlaid at bottom) -->
+        @if(isset($videos) && $videos->count() > 0)
+            @php
+                $videoCategories = $videos->pluck('category')->filter()->unique()->values();
+                $categoryLabels = [
+                    'film' => 'Film',
+                    'animasi' => 'Animasi',
+                    'wayang' => 'Wayang',
+                    'sendra_tari' => 'Sendra Tari',
+                ];
+            @endphp
+            @if($videoCategories->count() > 0)
+                <div class="category-filter-overlay" id="categoryFilterBar">
+                    <button class="category-filter-btn active" data-category="all">Semua</button>
+                    @foreach($videoCategories as $cat)
+                        <button class="category-filter-btn" data-category="{{ $cat }}">
+                            {{ $categoryLabels[$cat] ?? ucfirst($cat) }}
+                        </button>
+                    @endforeach
+                </div>
+            @endif
+        @endif
     </section>
 
     <!-- Video Modal -->
@@ -695,6 +799,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Audio Section -->
     @if(isset($audios) && $audios->count() > 0)
@@ -1102,6 +1208,88 @@
         document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
             document.getElementById('videoModalBody').innerHTML = ''; // Clear video to stop playing
         });
+
+        // ════════════════════════════════════════
+        // CATEGORY FILTER FOR VIDEO CAROUSEL
+        // ════════════════════════════════════════
+        (function() {
+            const filterBar = document.getElementById('categoryFilterBar');
+            if (!filterBar) return;
+
+            const filterBtns = filterBar.querySelectorAll('.category-filter-btn');
+            const carousel = document.getElementById('videoCarousel');
+            if (!carousel) return;
+
+            const allItems = carousel.querySelectorAll('.carousel-item');
+            const prevBtn = carousel.querySelector('.carousel-control-prev');
+            const nextBtn = carousel.querySelector('.carousel-control-next');
+            let bsCarousel = bootstrap.Carousel.getInstance(carousel);
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Toggle active class
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const selectedCategory = this.getAttribute('data-category');
+
+                    // Dispose existing carousel instance completely
+                    if (bsCarousel) {
+                        bsCarousel.pause();
+                        bsCarousel.dispose();
+                        bsCarousel = null;
+                    }
+
+                    // Show/hide carousel items based on category
+                    let firstVisible = null;
+                    let visibleCount = 0;
+                    allItems.forEach(item => {
+                        item.classList.remove('active');
+                        const itemCategory = item.getAttribute('data-category') || '';
+
+                        if (selectedCategory === 'all' || itemCategory === selectedCategory) {
+                            item.style.display = '';
+                            item.classList.add('carousel-item'); // Add class back so Bootstrap recognizes it
+                            visibleCount++;
+                            if (!firstVisible) {
+                                firstVisible = item;
+                            }
+                        } else {
+                            item.style.display = 'none';
+                            item.classList.remove('carousel-item'); // Remove class so Bootstrap completely ignores it
+                        }
+                    });
+
+                    // Set the first visible item as active
+                    if (firstVisible) {
+                        firstVisible.classList.add('active');
+                    }
+
+                    // Show/hide arrows based on visible count
+                    if (prevBtn) prevBtn.style.display = visibleCount <= 1 ? 'none' : '';
+                    if (nextBtn) nextBtn.style.display = visibleCount <= 1 ? 'none' : '';
+
+                    // Control data-bs-ride attribute to fully stop/start auto-cycling
+                    if (visibleCount <= 1) {
+                        carousel.removeAttribute('data-bs-ride');
+                        carousel.removeAttribute('data-bs-interval');
+                    } else {
+                        carousel.setAttribute('data-bs-ride', 'carousel');
+                        carousel.removeAttribute('data-bs-interval');
+                    }
+
+                    // Re-initialize carousel
+                    bsCarousel = new bootstrap.Carousel(carousel, {
+                        ride: visibleCount > 1 ? 'carousel' : false,
+                        interval: visibleCount > 1 ? 5000 : false
+                    });
+
+                    if (visibleCount <= 1) {
+                        bsCarousel.pause();
+                    }
+                });
+            });
+        })();
     </script>
 </body>
 </html>

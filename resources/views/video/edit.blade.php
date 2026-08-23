@@ -98,6 +98,17 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="form-label fw-bold">Kategori Video (Opsional)</label>
+                            <select name="category" class="form-select">
+                                <option value="" {{ !$video->category ? 'selected' : '' }}>-- Tanpa Kategori --</option>
+                                <option value="film" {{ $video->category === 'film' ? 'selected' : '' }}>Film</option>
+                                <option value="animasi" {{ $video->category === 'animasi' ? 'selected' : '' }}>Animasi</option>
+                                <option value="wayang" {{ $video->category === 'wayang' ? 'selected' : '' }}>Wayang</option>
+                                <option value="sendra_tari" {{ $video->category === 'sendra_tari' ? 'selected' : '' }}>Sendra Tari</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="form-label fw-bold">Sumber Video</label>
                             <ul class="nav nav-tabs mb-3" id="videoTab" role="tablist">
                                 <li class="nav-item" role="presentation">

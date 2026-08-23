@@ -160,7 +160,51 @@
             color: #666;
         }
 
+        /* Category Badge & Filter */
+        .category-badge-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #fef3f3;
+            color: #8b1e1e;
+            border: 1px solid #f0d0d0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            text-transform: capitalize;
+            margin-top: 0.5rem;
+        }
 
+        .category-filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .category-filter-btn {
+            border: none;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-filter-btn.active {
+            background: #8b1e1e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 30, 30, 0.25);
+        }
+
+        .category-filter-btn:hover:not(.active) {
+            color: #8b1e1e;
+            background: rgba(139, 30, 30, 0.08);
+        }
     </style>
 </head>
 <body>
@@ -193,10 +237,31 @@
             </div>
         </div>
 
+        <!-- Category Filter -->
+        @php
+            $videoCategories = $videos->pluck('category')->filter()->unique()->values();
+            $categoryLabels = [
+                'film' => 'Film',
+                'animasi' => 'Animasi',
+                'wayang' => 'Wayang',
+                'sendra_tari' => 'Sendra Tari',
+            ];
+        @endphp
+        @if($videoCategories->count() > 0)
+        <div class="category-filter-bar" id="categoryFilterBar">
+            <button class="category-filter-btn active" data-category="all">Semua</button>
+            @foreach($videoCategories as $cat)
+                <button class="category-filter-btn" data-category="{{ $cat }}">
+                    {{ $categoryLabels[$cat] ?? ucfirst($cat) }}
+                </button>
+            @endforeach
+        </div>
+        @endif
+
         <!-- Video Grid -->
         <div class="row g-4" id="videoGrid">
             @forelse($videos as $video)
-            <div class="col-md-4 video-item">
+            <div class="col-md-4 video-item" data-category="{{ $video->category ?? '' }}">
                 <div class="video-card">
                     <div class="video-thumbnail" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#videoPlayerModal" data-video-url="{{ $video->type === 'youtube' ? 'https://www.youtube.com/embed/'.$video->youtube_id.'?autoplay=1' : asset('storage/' . $video->url) }}" data-video-type="{{ $video->type }}">
                         @if($video->type == 'youtube' && $video->youtube_id)
@@ -211,6 +276,12 @@
                     <div class="video-info">
                         <h3 class="video-title">{{ $video->title }}</h3>
                         <p class="video-source">Sumber: {{ $video->source ?? 'Uploaded' }}</p>
+                        @if($video->category)
+                            <span class="category-badge-card">
+                                <i class="bi bi-tag-fill"></i>
+                                {{ $categoryLabels[$video->category] ?? ucfirst($video->category) }}
+                            </span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -282,6 +353,31 @@
                 }
             }
         });
+
+        // Category Filter
+        const catFilterBar = document.getElementById('categoryFilterBar');
+        if (catFilterBar) {
+            const catBtns = catFilterBar.querySelectorAll('.category-filter-btn');
+            catBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    catBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const selectedCat = this.getAttribute('data-category');
+                    const grid = document.getElementById('videoGrid');
+                    const items = grid.getElementsByClassName('video-item');
+
+                    for (let i = 0; i < items.length; i++) {
+                        const itemCat = items[i].getAttribute('data-category') || '';
+                        if (selectedCat === 'all' || itemCat === selectedCat) {
+                            items[i].style.display = '';
+                        } else {
+                            items[i].style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>
