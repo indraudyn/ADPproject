@@ -63,7 +63,9 @@ class ParwaController extends Controller
             $versionName = request()->query('version') ?: session('selected_parwa_version');
         }
         
-        $query = Cerita::where('book', $bookName)->where('status', 'approved');
+        $bookNameParva = str_replace('Parwa', 'Parva', $bookName);
+        
+        $query = Cerita::whereIn('book', [$bookName, $bookNameParva])->where('status', 'approved');
         
         if ($versionName && $versionName !== 'all') {
             $version = \App\Models\Version::where('name', $versionName)->first();
@@ -114,7 +116,8 @@ class ParwaController extends Controller
         $version = \App\Models\Version::where('name', $versionName)->first();
         $versionId = $version ? $version->id : 1;
 
-        $contentQuery = Cerita::where('book', $book)->where('section', $section)->where('status', 'approved');
+        $bookParva = str_replace('Parwa', 'Parva', $book);
+        $contentQuery = Cerita::whereIn('book', [$book, $bookParva])->where('section', $section)->where('status', 'approved');
         
         // Try specific version first
         $content = (clone $contentQuery)->where('versionId', $versionId)->get();
