@@ -23,24 +23,24 @@ class ParwaController extends Controller
     public static function getBookNameBySlug(string $slug): string
     {
         $map = [
-            'adi-parwa' => 'Adi Parva',
-            'sabha-parwa' => 'Sabha Parva',
-            'vana-parwa' => 'Vana Parva',
-            'virata-parwa' => 'Virata Parva',
-            'udyoga-parwa' => 'Udyoga Parva',
-            'bhishma-parwa' => 'Bhishma Parva',
-            'drona-parwa' => 'Drona Parva',
-            'karna-parwa' => 'Karna Parva',
-            'shalya-parwa' => 'Shalya Parva',
-            'sauptika-parwa' => 'Sauptika Parva',
-            'stri-parwa' => 'Stri Parva',
-            'shanti-parwa' => 'Shanti Parva',
-            'anushasana-parwa' => 'Anushasana Parva',
-            'ashvamedhika-parwa' => 'Ashvamedhika Parva',
-            'ashramavasika-parwa' => 'Ashramavasika Parva',
-            'mausala-parwa' => 'Mausala Parva',
-            'mahaprasthanika-parwa' => 'Mahaprasthanika Parva',
-            'svargarohana-parwa' => 'Swargarohanika Parva',
+            'adi-parwa' => 'Adi Parwa',
+            'sabha-parwa' => 'Sabha Parwa',
+            'vana-parwa' => 'Vana Parwa',
+            'virata-parwa' => 'Virata Parwa',
+            'udyoga-parwa' => 'Udyoga Parwa',
+            'bhishma-parwa' => 'Bhishma Parwa',
+            'drona-parwa' => 'Drona Parwa',
+            'karna-parwa' => 'Karna Parwa',
+            'shalya-parwa' => 'Shalya Parwa',
+            'sauptika-parwa' => 'Sauptika Parwa',
+            'stri-parwa' => 'Stri Parwa',
+            'shanti-parwa' => 'Shanti Parwa',
+            'anushasana-parwa' => 'Anushasana Parwa',
+            'ashvamedhika-parwa' => 'Ashvamedhika Parwa',
+            'ashramavasika-parwa' => 'Ashramavasika Parwa',
+            'mausala-parwa' => 'Mausala Parwa',
+            'mahaprasthanika-parwa' => 'Mahaprasthanika Parwa',
+            'svargarohana-parwa' => 'Swargarohanika Parwa',
         ];
 
         return $map[$slug] ?? ucwords(str_replace('-', ' ', $slug));
@@ -126,6 +126,11 @@ class ParwaController extends Controller
         if ($content->isEmpty()) {
             abort(404, 'Konten bab tidak ditemukan.');
         }
+
+        // Increment view count for all stories in this section
+        $content->each(function ($item) {
+            $item->increment('view_count');
+        });
 
         $locale = session('locale', 'id');
         $content = $content->map(function ($item) use ($locale) {

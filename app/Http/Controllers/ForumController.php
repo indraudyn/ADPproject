@@ -52,7 +52,7 @@ class ForumController extends Controller
         $topic = $query->firstOrFail();
 
         $messages = ForumMessage::where('topic_id', $topic->id)
-            ->with('user')
+            ->with(['user', 'replyTo.user'])
             ->oldest()
             ->get();
 
@@ -86,14 +86,16 @@ class ForumController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'message'  => 'required|string',
-            'topic_id' => 'required|exists:forum_topics,id'
+            'message'     => 'required|string',
+            'topic_id'    => 'required|exists:forum_topics,id',
+            'reply_to_id' => 'nullable|exists:forum_messages,id'
         ]);
 
         ForumMessage::create([
-            'user_id'  => Auth::id(),
-            'topic_id' => $request->topic_id,
-            'message'  => $request->message,
+            'user_id'     => Auth::id(),
+            'topic_id'    => $request->topic_id,
+            'message'     => $request->message,
+            'reply_to_id' => $request->reply_to_id,
         ]);
 
         return redirect()->back();

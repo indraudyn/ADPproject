@@ -12,7 +12,8 @@ class ForumMessage extends Model
     protected $fillable = [
         'user_id',
         'topic_id',
-        'message'
+        'message',
+        'reply_to_id'
     ];
 
     public function user()
@@ -23,5 +24,15 @@ class ForumMessage extends Model
     public function topic()
     {
         return $this->belongsTo(ForumTopic::class);
+    }
+
+    public function replyTo()
+    {
+        return $this->belongsTo(ForumMessage::class, 'reply_to_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(ForumMessage::class, 'reply_to_id');
     }
 }

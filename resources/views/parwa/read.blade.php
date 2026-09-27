@@ -489,21 +489,31 @@
             <x-content-loader />
 
             <!-- Reading Mode Selector -->
-            <div class="reading-mode-selector shadow-sm" style="display: none;">
-                <span class="mode-label text-secondary opacity-75 small"><i class="bi bi-book-half"></i> Mode Baca:</span>
-                <div class="btn-group premium-toggle" role="group" aria-label="Mode Membaca">
-                    <button type="button" class="btn btn-outline-premium btn-mode-split">
-                        <i class="bi bi-file-earmark-text"></i> Pisah
-                    </button>
-                    <button type="button" class="btn btn-outline-premium btn-mode-full">
-                        <i class="bi bi-file-earmark-richtext"></i> Langsung
-                    </button>
+            <div class="reading-mode-selector shadow-sm" id="reading-mode-wrapper" style="display: flex;">
+                <div id="pagination-mode-toggles" style="display: none; align-items: center; gap: 1rem;">
+                    <span class="mode-label text-secondary opacity-75 small"><i class="bi bi-book-half"></i> Mode Baca:</span>
+                    <div class="btn-group premium-toggle" role="group" aria-label="Mode Membaca">
+                        <button type="button" class="btn btn-outline-premium btn-mode-split">
+                            <i class="bi bi-file-earmark-text"></i> Pisah
+                        </button>
+                        <button type="button" class="btn btn-outline-premium btn-mode-full">
+                            <i class="bi bi-file-earmark-richtext"></i> Langsung
+                        </button>
+                    </div>
                 </div>
+                <button type="button" class="btn btn-sm ms-3" id="btn-fullscreen-toggle" title="Layar Penuh" style="background: rgba(139, 30, 30, 0.1); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(139, 30, 30, 0.2); color: #8b1e1e;">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
             </div>
 
             <!-- Main Story Area -->
             <div class="mb-4">
-                <article class="story-content-card">
+                <article class="story-content-card" id="story-reader-container">
+                    
+                    <!-- Floating Exit Fullscreen Button (Hidden by default) -->
+                    <button class="btn btn-danger rounded-circle position-fixed shadow-lg d-none" id="btn-exit-fullscreen" style="top: 20px; right: 20px; z-index: 1050; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-fullscreen-exit" style="font-size: 1.2rem;"></i>
+                    </button>
                     @if(!empty($content))
                         @php $item = $content[0]; @endphp
                         <div class="version-content" id="version-0">
@@ -724,7 +734,30 @@
                         }
                     });
 
-                    pages.forEach((_, idx) => {
+                    const totalPages = pages.length;
+                    const maxVisibleButtons = window.innerWidth <= 576 ? 3 : 5;
+                    let startPage = Math.max(0, currentPageIndex - Math.floor(maxVisibleButtons / 2));
+                    let endPage = Math.min(totalPages - 1, startPage + maxVisibleButtons - 1);
+
+                    if (endPage - startPage + 1 < maxVisibleButtons) {
+                        startPage = Math.max(0, endPage - maxVisibleButtons + 1);
+                    }
+
+                    if (startPage > 0) {
+                        addPageButton(0);
+                        if (startPage > 1) addEllipsis();
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        addPageButton(i);
+                    }
+
+                    if (endPage < totalPages - 1) {
+                        if (endPage < totalPages - 2) addEllipsis();
+                        addPageButton(totalPages - 1);
+                    }
+
+                    function addPageButton(idx) {
                         const li = document.createElement("li");
                         li.className = `page-item ${idx === currentPageIndex ? 'active' : ''}`;
                         
@@ -735,7 +768,18 @@
                         
                         li.appendChild(btn);
                         pageNextLi.parentNode.insertBefore(li, pageNextLi);
-                    });
+                    }
+
+                    function addEllipsis() {
+                        const li = document.createElement("li");
+                        li.className = "page-item disabled";
+                        const span = document.createElement("span");
+                        span.className = "page-link border-0 text-muted";
+                        span.innerText = "...";
+                        span.style.background = "transparent";
+                        li.appendChild(span);
+                        pageNextLi.parentNode.insertBefore(li, pageNextLi);
+                    }
 
                     if (currentPageIndex === 0) {
                         pagePrevLi.classList.add("disabled");
@@ -824,9 +868,34 @@
             }
 
             parwaHasPaginator = hasPaginator;
-            if (globalModeSelector) {
-                globalModeSelector.style.display = hasPaginator ? 'flex' : 'none';
+            const toggleWrapper = document.getElementById('pagination-mode-toggles');
+            if (toggleWrapper) {
+                toggleWrapper.style.display = hasPaginator ? 'flex' : 'none';
             }
+
+            // FULLSCREEN LOGIC
+            const btnFullscreenToggle = document.getElementById("btn-fullscreen-toggle");
+            const btnExitFullscreen = document.getElementById("btn-exit-fullscreen");
+            const readerContainer = document.getElementById("story-reader-container");
+
+            function toggleFullscreen() {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    if (readerContainer.requestFullscreen) {
+                        readerContainer.requestFullscreen();
+                    } else if (readerContainer.webkitRequestFullscreen) {
+                        readerContainer.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            }
+
+            if (btnFullscreenToggle) btnFullscreenToggle.addEventListener("click", toggleFullscreen);
+            if (btnExitFullscreen) btnExitFullscreen.addEventListener("click", toggleFullscreen);
 
             function globalSetReadingMode(mode) {
                 localStorage.setItem("reading_mode", mode);
@@ -851,6 +920,39 @@
             // Initialize global mode on load
             const initialMode = localStorage.getItem("reading_mode") || "split";
             globalSetReadingMode(initialMode);
+
+            // SWIPE TO CHANGE PAGE (Mobile Fullscreen)
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            if (readerContainer) {
+                readerContainer.addEventListener('touchstart', e => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, {passive: true});
+
+                readerContainer.addEventListener('touchend', e => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, {passive: true});
+            }
+
+            function handleSwipe() {
+                const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+                if (!isFullscreen) return;
+                
+                const currentMode = localStorage.getItem("reading_mode") || "split";
+                if (currentMode !== "split") return;
+
+                const swipeThreshold = 50;
+                
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Swipe Left (Next)
+                    versionPaginators.forEach(p => p.nextPage());
+                } else if (touchEndX > touchStartX + swipeThreshold) {
+                    // Swipe Right (Prev)
+                    versionPaginators.forEach(p => p.prevPage());
+                }
+            }
         });
     </script>
 </body>

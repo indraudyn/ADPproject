@@ -41,14 +41,22 @@
                 <i class="bi bi-file-earmark-richtext"></i> Langsung
             </button>
         </div>
+        <button type="button" class="btn btn-sm text-white ms-2" id="btn-fullscreen-toggle" title="Layar Penuh" style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.3);">
+            <i class="bi bi-arrows-fullscreen"></i>
+        </button>
     </div>
 </header>
 
 {{-- CONTENT WRAPPER --}}
 <main class="story-detail-container">
     <div class="container">
-        <article class="story-content-card">
+        <article class="story-content-card" id="story-reader-container">
             
+            <!-- Floating Exit Fullscreen Button (Hidden by default) -->
+            <button class="btn btn-danger rounded-circle position-fixed shadow-lg d-none" id="btn-exit-fullscreen" style="top: 20px; right: 20px; z-index: 1050; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-fullscreen-exit" style="font-size: 1.2rem;"></i>
+            </button>
+
             <h2 class="story-title-heading">{{ $cerita->judul }}</h2>
 
             {{-- Language info & switcher --}}

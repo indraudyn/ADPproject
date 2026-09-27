@@ -22,6 +22,7 @@ class CeritaController extends Controller
                 'isi'        => $c->isi ?? $c->isi_id,
                 'sumber'     => $c->sumber,
                 'status'     => $c->status,
+                'view_count' => $c->view_count,
                 'user'       => (object)['name' => $c->user ? $c->user->name : 'User'],
                 'created_at' => $c->created_at,
             ];

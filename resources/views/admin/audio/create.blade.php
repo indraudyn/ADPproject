@@ -97,33 +97,18 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Sumber Audio</label>
-                            <ul class="nav nav-tabs mb-3" id="audioTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-content" type="button" role="tab" onclick="setAudioType('upload')">Upload Audio File</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="link-tab" data-bs-toggle="tab" data-bs-target="#link-content" type="button" role="tab" onclick="setAudioType('link')">Link / URL Audio</button>
-                                </li>
-                            </ul>
+                            <label class="form-label fw-bold">Upload Audio File</label>
                             
                             <div class="tab-content" id="audioTabContent">
                                 <div class="tab-pane fade show active" id="upload-content" role="tabpanel">
                                     <div class="mb-3">
-                                        <label for="audioFile" class="form-label">File Audio (.mp3, .wav, .ogg, .m4a)</label>
+                                        <label for="audioFile" class="form-label">File Audio (.mp3)</label>
                                         <input type="file" name="audio_file" class="form-control" id="audioFile" accept="audio/*">
                                         <small class="text-muted">Maksimum 20MB</small>
                                      </div>
                                      <div class="mb-3">
                                         <label for="audioSource" class="form-label">Sumber Audio (Opsional)</label>
                                         <input type="text" name="source" class="form-control" id="audioSource" placeholder="Kosongkan jika sumber dari Anda sendiri ({{ auth()->user()->name }})">
-                                     </div>
-                                </div>
-                                <div class="tab-pane fade" id="link-content" role="tabpanel">
-                                     <div class="mb-3">
-                                        <label for="audioLink" class="form-label">URL Link Audio</label>
-                                        <input type="url" name="url" class="form-control" id="audioLink" placeholder="https://example.com/audio.mp3">
-                                        <small class="text-muted">Sumber akan otomatis diambil dari domain link</small>
                                      </div>
                                 </div>
                             </div>

@@ -280,3 +280,36 @@ document.getElementById("menu-toggle")?.addEventListener("click", () => {
 
 // Placeholder jika nanti mau ditambah fitur interaktif
 console.log("Cerita page loaded");
+
+// ============================================
+// FULLSCREEN MODE
+// ============================================
+const btnFullscreenToggle = document.getElementById("btn-fullscreen-toggle");
+const btnExitFullscreen = document.getElementById("btn-exit-fullscreen");
+const readerContainer = document.getElementById("story-reader-container");
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // Enter fullscreen
+        if (readerContainer.requestFullscreen) {
+            readerContainer.requestFullscreen();
+        } else if (readerContainer.webkitRequestFullscreen) {
+            readerContainer.webkitRequestFullscreen(); // Safari
+        }
+    } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen(); // Safari
+        }
+    }
+}
+
+if (btnFullscreenToggle) {
+    btnFullscreenToggle.addEventListener("click", toggleFullscreen);
+}
+
+if (btnExitFullscreen) {
+    btnExitFullscreen.addEventListener("click", toggleFullscreen);
+}

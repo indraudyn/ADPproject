@@ -581,5 +581,238 @@ body.forum-show-page {
     color: var(--forum-red) !important;
 }
 
+/* =============================================
+   ROLE-BASED BUBBLE COLORS (Other people's messages)
+   ============================================= */
 
+/* Admin bubble - Dark blue/navy theme */
+.bubble-other-v2.bubble-role-admin {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+    color: #ffffff;
+    border-left: 4px solid #63b3ed;
+}
 
+.bubble-other-v2.bubble-role-admin .bubble-name-v2 {
+    color: #90cdf4;
+}
+
+.bubble-other-v2.bubble-role-admin .bubble-time-v2 {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bubble-other-v2.bubble-role-admin .chat-link {
+    color: #90cdf4 !important;
+}
+
+/* Narasumber bubble - Emerald/green theme */
+.bubble-other-v2.bubble-role-narasumber {
+    background: linear-gradient(135deg, #1a4731 0%, #276749 100%);
+    color: #ffffff;
+    border-left: 4px solid #68d391;
+}
+
+.bubble-other-v2.bubble-role-narasumber .bubble-name-v2 {
+    color: #9ae6b4;
+}
+
+.bubble-other-v2.bubble-role-narasumber .bubble-time-v2 {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bubble-other-v2.bubble-role-narasumber .chat-link {
+    color: #9ae6b4 !important;
+}
+
+/* User bubble stays gray (default) */
+.bubble-other-v2.bubble-role-user {
+    background: #f1f1f1;
+    color: #444;
+}
+
+/* =============================================
+   ROLE BADGES
+   ============================================= */
+.role-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.role-badge-admin {
+    background: rgba(99, 179, 237, 0.2);
+    color: #63b3ed;
+    border: 1px solid rgba(99, 179, 237, 0.4);
+}
+
+.role-badge-narasumber {
+    background: rgba(104, 211, 145, 0.2);
+    color: #68d391;
+    border: 1px solid rgba(104, 211, 145, 0.4);
+}
+
+/* When bubble is "me" (my own), adapt badge to light style */
+.bubble-me-v2 .role-badge-admin {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.bubble-me-v2 .role-badge-narasumber {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* =============================================
+   REPLY PREVIEW (inside bubble)
+   ============================================= */
+.reply-preview {
+    background: rgba(0, 0, 0, 0.08);
+    border-left: 3px solid rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.bubble-me-v2 .reply-preview {
+    background: rgba(255, 255, 255, 0.12);
+    border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+.bubble-other-v2.bubble-role-admin .reply-preview,
+.bubble-other-v2.bubble-role-narasumber .reply-preview {
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.4);
+}
+
+.reply-preview-name {
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+}
+
+.reply-preview-text {
+    opacity: 0.85;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* =============================================
+   REPLY INDICATOR BAR (above input)
+   ============================================= */
+.reply-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 3rem;
+    background: #f8f9fa;
+    border-top: 1px solid #eef0f2;
+    border-left: 4px solid #8b0000;
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.reply-indicator-content {
+    display: flex;
+    align-items: center;
+    color: #8b0000;
+    font-size: 0.85rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.reply-indicator-content i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.reply-indicator-name {
+    font-weight: 700;
+    display: block;
+    font-size: 0.8rem;
+}
+
+.reply-indicator-text {
+    display: block;
+    font-size: 0.78rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.reply-indicator-close {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.reply-indicator-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+/* =============================================
+   BUBBLE ACTIONS (reply + delete buttons)
+   ============================================= */
+.bubble-actions-v2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.bubble-reply-btn {
+    color: inherit;
+    opacity: 0.5;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    background: none !important;
+}
+
+.bubble-reply-btn:hover {
+    opacity: 1;
+    color: #8b0000;
+    transform: scale(1.15);
+}
+
+.bubble-me-v2 .bubble-reply-btn:hover {
+    color: var(--forum-gold);
+}
+
+/* Highlight animation when clicking reply */
+.bubble-highlight {
+    animation: highlightPulse 1.5s ease;
+}
+
+@keyframes highlightPulse {
+    0% { box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(139, 0, 0, 0); }
+    100% { box-shadow: none; }
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+    .reply-indicator { padding: 0.6rem 1.5rem; }
+    .reply-indicator-text { max-width: 200px; }
+    .reply-preview-text { max-width: 180px; }
+}

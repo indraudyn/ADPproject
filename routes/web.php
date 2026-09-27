@@ -19,7 +19,14 @@ use App\Http\Controllers\QuizPlayController;
 */
 Route::get('/', function () {
     $parwas = \App\Models\Parwa::take(3)->get();
-    return view('welcome', compact('parwas'));
+
+    // Cerita rekomendasi (berdasarkan view_count terbanyak)
+    $recommendedStories = \App\Models\Cerita::where('status', 'approved')
+        ->orderBy('view_count', 'desc')
+        ->take(6)
+        ->get();
+
+    return view('welcome', compact('parwas', 'recommendedStories'));
 });
 
 Route::get('/set-locale/{locale}', function ($locale) {

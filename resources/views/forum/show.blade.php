@@ -37,10 +37,29 @@
             
             <div class="chat-body-v2">
                 @forelse($messages as $message)
-                    @php $isMe = (auth()->id() === $message->user_id); @endphp
+                    @php
+                        $isMe = (auth()->id() === $message->user_id);
+                        $userRole = $message->user->role ?? 'user';
+                    @endphp
                     
-                    <div class="bubble-v2 {{ $isMe ? 'bubble-me-v2' : 'bubble-other-v2' }}">
-                        <span class="bubble-name-v2">{{ $isMe ? 'Anda' : $message->user->name }}</span>
+                    <div class="bubble-v2 {{ $isMe ? 'bubble-me-v2' : 'bubble-other-v2' }} bubble-role-{{ $userRole }}" id="msg-{{ $message->id }}">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="bubble-name-v2">{{ $isMe ? 'Anda' : $message->user->name }}</span>
+                            @if($userRole === 'admin')
+                                <span class="role-badge role-badge-admin">Admin</span>
+                            @elseif($userRole === 'narasumber')
+                                <span class="role-badge role-badge-narasumber">Narasumber</span>
+                            @endif
+                        </div>
+
+                        {{-- Reply preview --}}
+                        @if($message->replyTo)
+                            <div class="reply-preview">
+                                <div class="reply-preview-name">{{ $message->replyTo->user->name ?? 'User' }}</div>
+                                <div class="reply-preview-text">{{ Illuminate\Support\Str::limit($message->replyTo->message, 80) }}</div>
+                            </div>
+                        @endif
+
                         <div class="bubble-content-v2">
                             @php
                                 $escapedMessage = e($message->message);
@@ -56,15 +75,24 @@
                         <div class="bubble-footer-v2">
                             <span class="bubble-time-v2">{{ $message->created_at->format('H:i') }}</span>
                             
-                            @if($isMe)
-                            <form action="{{ route('forum.destroy', $message->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn p-0 border-0 bubble-delete-v2" onclick="return confirm('Hapus pesan ini?')">
-                                    <i class="bi bi-trash3"></i>
+                            <div class="bubble-actions-v2">
+                                {{-- Reply button --}}
+                                <button type="button" class="btn p-0 border-0 bubble-reply-btn" 
+                                    onclick="setReply({{ $message->id }}, '{{ addslashes($message->user->name) }}', '{{ addslashes(Illuminate\Support\Str::limit($message->message, 60)) }}')"
+                                    title="Balas">
+                                    <i class="bi bi-reply-fill"></i>
                                 </button>
-                            </form>
-                            @endif
+
+                                @if($isMe)
+                                <form action="{{ route('forum.destroy', $message->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn p-0 border-0 bubble-delete-v2" onclick="return confirm('Hapus pesan ini?')">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -76,9 +104,25 @@
 
             <!-- CHAT FOOTER -->
             @auth
-            <form action="{{ route('forum.store') }}" method="POST">
+            <form action="{{ route('forum.store') }}" method="POST" id="chat-form">
                 @csrf
                 <input type="hidden" name="topic_id" value="{{ $topic->id }}">
+                <input type="hidden" name="reply_to_id" id="reply-to-id" value="">
+
+                {{-- Reply indicator bar --}}
+                <div class="reply-indicator" id="reply-indicator" style="display: none;">
+                    <div class="reply-indicator-content">
+                        <i class="bi bi-reply-fill me-2"></i>
+                        <div>
+                            <span class="reply-indicator-name" id="reply-indicator-name"></span>
+                            <span class="reply-indicator-text" id="reply-indicator-text"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="reply-indicator-close" onclick="clearReply()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
                 <div class="chat-footer-v2">
                     <input type="text" name="message" class="chat-input-v2" placeholder="Write message" required>
 
@@ -104,6 +148,28 @@
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
         });
+
+        function setReply(messageId, userName, messagePreview) {
+            document.getElementById('reply-to-id').value = messageId;
+            document.getElementById('reply-indicator-name').textContent = userName;
+            document.getElementById('reply-indicator-text').textContent = messagePreview;
+            document.getElementById('reply-indicator').style.display = 'flex';
+            
+            // Focus on input
+            document.querySelector('.chat-input-v2').focus();
+            
+            // Scroll to the message being replied to briefly
+            const targetMsg = document.getElementById('msg-' + messageId);
+            if (targetMsg) {
+                targetMsg.classList.add('bubble-highlight');
+                setTimeout(() => targetMsg.classList.remove('bubble-highlight'), 1500);
+            }
+        }
+
+        function clearReply() {
+            document.getElementById('reply-to-id').value = '';
+            document.getElementById('reply-indicator').style.display = 'none';
+        }
     </script>
 </body>
 </html>

@@ -421,3 +421,70 @@ body.cerita-show-page {
 }
 
 
+
+/* ===============================
+   FULLSCREEN READER MODE
+   =============================== */
+#story-reader-container:fullscreen {
+    background-color: #ffffff;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+    padding: 3rem 1.5rem !important;
+    box-sizing: border-box !important;
+}
+
+/* For WebKit (Safari) */
+#story-reader-container:-webkit-full-screen {
+    background-color: #ffffff;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+    padding: 3rem 1.5rem !important;
+    box-sizing: border-box !important;
+}
+
+#story-reader-container:fullscreen #btn-exit-fullscreen {
+    display: flex !important;
+}
+
+#story-reader-container:-webkit-full-screen #btn-exit-fullscreen {
+    display: flex !important;
+}
+
+#story-reader-container:fullscreen .story-title-heading {
+    margin-top: 1rem;
+}
+
+#story-reader-container:-webkit-full-screen .story-title-heading {
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    #story-reader-container:fullscreen {
+        padding: 2rem 1rem !important;
+    }
+    #story-reader-container:-webkit-full-screen {
+        padding: 2rem 1rem !important;
+    }
+}
+
+/* Fullscreen Styling */
+.story-content-card:fullscreen { background: #fff; padding: 3rem 5rem; overflow-y: auto; }
+.story-content-card:-webkit-full-screen { background: #fff; padding: 3rem 5rem; overflow-y: auto; }
+@media (max-width: 768px) {
+  .story-content-card:fullscreen { padding: 4rem 1.25rem 2rem; }
+  .story-content-card:-webkit-full-screen { padding: 4rem 1.25rem 2rem; }
+  #btn-exit-fullscreen { top: 10px !important; right: 10px !important; width: 35px !important; height: 35px !important; opacity: 0.5; }
+}
+
+@media (max-width: 576px) {
+  .premium-pagination .page-item .page-link { width: 32px; height: 32px; font-size: 0.85rem; padding: 0; }
+  .premium-pagination { flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
+}

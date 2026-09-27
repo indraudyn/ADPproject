@@ -12,6 +12,7 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/welcome.css') }}?v={{ time() }}">
@@ -64,9 +65,55 @@
         </div>
     </section>
 
+    <!-- CERITA REKOMENDASI -->
+    @if($recommendedStories->count() > 0)
+    <section class="stories-section popular-section py-5">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <span class="section-badge">Rekomendasi</span>
+                <h2 class="section-title">Cerita Rekomendasi</h2>
+            </div>
+
+            <div class="stories-scroll-wrapper">
+                <button class="scroll-arrow scroll-arrow-left" onclick="scrollStories('recommended-scroll', -350)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <div class="stories-scroll" id="recommended-scroll">
+                    @foreach($recommendedStories as $story)
+                    <a href="{{ route('cerita.show', $story->id) }}" class="story-card story-card-popular">
+                        <div class="story-card-badge">
+                            <i class="bi bi-eye-fill"></i> {{ number_format($story->view_count) }}
+                        </div>
+                        <h4 class="story-card-title">{{ \Illuminate\Support\Str::limit($story->judul, 50) }}</h4>
+                        <p class="story-card-parwa">{{ $story->book }}</p>
+                        <div class="story-card-footer">
+                            <span class="story-card-section">{{ $story->section ?? 'Bab 1' }}</span>
+                            <span class="story-card-views"><i class="bi bi-bookmark-star-fill"></i> Rekomendasi</span>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+
+                <button class="scroll-arrow scroll-arrow-right" onclick="scrollStories('recommended-scroll', 350)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
+    <script>
+        function scrollStories(containerId, amount) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.scrollBy({ left: amount, behavior: 'smooth' });
+            }
+        }
+    </script>
 
 </body>
 </html>

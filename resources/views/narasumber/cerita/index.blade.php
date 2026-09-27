@@ -63,6 +63,7 @@
                                 <th>Nama</th>
                                 <th>Sumber</th>
                                 <th>Tanggal Upload</th>
+                                <th><i class="bi bi-eye-fill me-1"></i>Dibaca</th>
                                 <th>Status</th>
                                 <th class="text-end"></th>
                             </tr>
@@ -75,6 +76,11 @@
                             <td>{{ $cerita->user->name }}</td>
                             <td>{{ $cerita->sumber }}</td>
                             <td>{{ $cerita->created_at->format('Y-m-d') }}</td>
+                            <td>
+                                <span class="badge {{ $cerita->view_count > 0 ? 'bg-success' : 'bg-secondary' }} bg-opacity-10 {{ $cerita->view_count > 0 ? 'text-success' : 'text-secondary' }} fw-bold" style="font-size: 0.85rem;">
+                                    <i class="bi bi-eye-fill me-1"></i>{{ number_format($cerita->view_count ?? 0) }}
+                                </span>
+                            </td>
                             <td>
                                 <form action="{{ route('narasumber.cerita.updateStatus', $cerita->id) }}" method="POST" class="status-form">
                                     @csrf
