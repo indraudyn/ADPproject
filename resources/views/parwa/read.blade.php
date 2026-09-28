@@ -321,6 +321,25 @@
         .premium-toggle .btn:hover:not(.active) {
             background-color: #e2e8f0;
         }
+
+        /* Fallback for iOS / pseudo-fullscreen */
+        .fullscreen-mode {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+            background: #fff !important;
+            overflow-y: auto !important;
+            margin: 0 !important;
+            padding: 2rem 1rem !important;
+            border-radius: 0 !important;
+        }
+        
+        .fullscreen-mode .story-title-container {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body class="cerita-show-page">
@@ -501,9 +520,6 @@
                         </button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-sm ms-3" id="btn-fullscreen-toggle" title="Layar Penuh" style="background: rgba(139, 30, 30, 0.1); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(139, 30, 30, 0.2); color: #8b1e1e;">
-                    <i class="bi bi-arrows-fullscreen"></i>
-                </button>
             </div>
 
             <!-- Main Story Area -->
@@ -517,10 +533,14 @@
                     @if(!empty($content))
                         @php $item = $content[0]; @endphp
                         <div class="version-content" id="version-0">
-                            <div class="story-title-container text-center mb-5 pb-4 border-bottom">
+                            <div class="story-title-container text-center mb-5 pb-4 border-bottom position-relative">
                                 <h2 class="story-title-heading fw-bold m-0" style="font-family: 'Cinzel', serif; color: #2c3e50; font-size: 1.85rem; line-height: 1.4; letter-spacing: 0.5px;">
                                     {{ $item['judul'] }}
                                 </h2>
+                                <!-- Fullscreen Button Moved Here -->
+                                <button type="button" class="btn btn-sm position-absolute" id="btn-fullscreen-toggle" title="Layar Penuh" style="top: 0; right: 0; background: rgba(139, 30, 30, 0.1); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(139, 30, 30, 0.2); color: #8b1e1e;">
+                                    <i class="bi bi-arrows-fullscreen"></i>
+                                </button>
                             </div>
                             
                             <div class="story-text-body mt-4">
@@ -879,17 +899,27 @@
             const readerContainer = document.getElementById("story-reader-container");
 
             function toggleFullscreen() {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                readerContainer.classList.toggle('fullscreen-mode');
+                const isFs = readerContainer.classList.contains('fullscreen-mode');
+                
+                if (btnExitFullscreen) {
+                    if (isFs) btnExitFullscreen.classList.remove('d-none');
+                    else btnExitFullscreen.classList.add('d-none');
+                }
+
+                if (isFs) {
                     if (readerContainer.requestFullscreen) {
-                        readerContainer.requestFullscreen();
+                        readerContainer.requestFullscreen().catch(e => console.log(e));
                     } else if (readerContainer.webkitRequestFullscreen) {
                         readerContainer.webkitRequestFullscreen();
                     }
                 } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
+                    if (document.fullscreenElement || document.webkitFullscreenElement) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        }
                     }
                 }
             }
@@ -937,7 +967,7 @@
             }
 
             function handleSwipe() {
-                const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+                const isFullscreen = readerContainer.classList.contains('fullscreen-mode') || document.fullscreenElement || document.webkitFullscreenElement;
                 if (!isFullscreen) return;
                 
                 const currentMode = localStorage.getItem("reading_mode") || "split";
