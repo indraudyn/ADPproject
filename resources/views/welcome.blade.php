@@ -81,7 +81,7 @@
 
                 <div class="stories-scroll" id="recommended-scroll">
                     @foreach($recommendedStories as $story)
-                    <a href="{{ route('cerita.show', $story->id) }}" class="story-card story-card-popular">
+                    <a href="{{ route('parwa.read', ['bookSlug' => \Illuminate\Support\Str::slug($story->book), 'sectionSlug' => \Illuminate\Support\Str::slug($story->section ?? 'Bab 1')]) }}" class="story-card story-card-popular">
                         <div class="story-card-badge">
                             <i class="bi bi-eye-fill"></i> {{ number_format($story->view_count) }}
                         </div>
