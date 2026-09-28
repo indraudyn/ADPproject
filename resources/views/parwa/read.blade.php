@@ -550,8 +550,13 @@
 
             <!-- Main Story Area -->
             <div class="mb-4">
-                <article class="story-content-card" id="story-reader-container">
+                <article class="story-content-card position-relative" id="story-reader-container">
                     
+                    <!-- Fullscreen Toggle Button (Top right of card) -->
+                    <button type="button" class="btn btn-sm position-absolute" id="btn-fullscreen-toggle" title="Layar Penuh" style="top: 15px; right: 15px; background: rgba(139, 30, 30, 0.1); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(139, 30, 30, 0.2); color: #8b1e1e; z-index: 10;">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+
                     <!-- Floating Exit Fullscreen Button (Hidden by default) -->
                     <button type="button" class="btn rounded-circle position-fixed shadow-lg d-none" id="btn-exit-fullscreen" style="top: max(20px, env(safe-area-inset-top, 20px)); right: max(20px, env(safe-area-inset-right, 20px)); z-index: 1050; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background: #8b1e1e; border: 2px solid #fff; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;">
                         <i class="bi bi-fullscreen-exit" style="font-size: 1.4rem;"></i>
@@ -559,14 +564,10 @@
                     @if(!empty($content))
                         @php $item = $content[0]; @endphp
                         <div class="version-content" id="version-0">
-                            <div class="story-title-container text-center mb-5 pb-4 border-bottom position-relative">
+                            <div class="story-title-container text-center mb-5 pb-4 border-bottom">
                                 <h2 class="story-title-heading fw-bold m-0" style="font-family: 'Cinzel', serif; color: #2c3e50; font-size: 1.85rem; line-height: 1.4; letter-spacing: 0.5px; padding: 0 40px;">
                                     {{ $item['judul'] }}
                                 </h2>
-                                <!-- Fullscreen Button Moved Here -->
-                                <button type="button" class="btn btn-sm position-absolute" id="btn-fullscreen-toggle" title="Layar Penuh" style="top: 0; right: 0; background: rgba(139, 30, 30, 0.1); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(139, 30, 30, 0.2); color: #8b1e1e; z-index: 10;">
-                                    <i class="bi bi-arrows-fullscreen"></i>
-                                </button>
                             </div>
                             
                             <div class="story-text-body mt-4">
