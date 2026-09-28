@@ -323,18 +323,26 @@
         }
 
         /* Fallback for iOS / pseudo-fullscreen */
+        body.fullscreen-active {
+            overflow: hidden !important;
+        }
+
         .fullscreen-mode {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: -webkit-fill-available !important;
             z-index: 9999 !important;
             background: #fff !important;
             overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
             margin: 0 !important;
-            padding: 2rem 1rem !important;
             border-radius: 0 !important;
+            padding: 2rem 2rem 4rem 2rem !important; /* Add padding at bottom so text is not cut off */
         }
         
         .fullscreen-mode .story-title-container {
@@ -347,10 +355,15 @@
 
         @media (max-width: 768px) {
             .story-title-heading {
-                font-size: 1.4rem !important;
+                font-size: 1.3rem !important;
+                padding: 0 10px !important;
             }
             .fullscreen-mode {
-                padding: env(safe-area-inset-top, 40px) env(safe-area-inset-right, 15px) 2rem env(safe-area-inset-left, 15px) !important;
+                padding: max(20px, env(safe-area-inset-top, 40px)) max(15px, env(safe-area-inset-right, 20px)) 60px max(15px, env(safe-area-inset-left, 20px)) !important;
+            }
+            .fullscreen-mode .story-text-body {
+                font-size: 0.95rem !important;
+                line-height: 1.7 !important;
             }
         }
     </style>
@@ -914,6 +927,8 @@
             function toggleFullscreen() {
                 readerContainer.classList.toggle('fullscreen-mode');
                 const isFs = readerContainer.classList.contains('fullscreen-mode');
+                
+                document.body.classList.toggle('fullscreen-active', isFs);
                 
                 if (btnExitFullscreen) {
                     if (isFs) btnExitFullscreen.classList.remove('d-none');
